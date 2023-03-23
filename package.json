@@ -1,0 +1,28 @@
+{
+  "name": "movie-calendar",
+  "version": "1.0.0",
+  "description": "movie-calendar",
+  "main": "main.js",
+  "scripts": {
+    "build": "node main.js && node buildindex.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wind8866/movie-calendar.git"
+  },
+  "keywords": [
+    "movie",
+    "calendar"
+  ],
+  "author": "wind8866",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/wind8866/movie-calendar/issues"
+  },
+  "homepage": "https://github.com/wind8866/movie-calendar#readme",
+  "dependencies": {
+    "dayjs": "^1.11.7",
+    "ics": "^3.1.0"
+  }
+}
