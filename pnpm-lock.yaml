@@ -2,10 +2,12 @@ lockfileVersion: 5.3
 
 specifiers:
   dayjs: ^1.11.7
+  dotenv: ^16.0.3
   ics: ^3.1.0
 
 dependencies:
   dayjs: 1.11.7
+  dotenv: 16.0.3
   ics: 3.1.0
 
 packages:
@@ -23,6 +25,11 @@ packages:
 
   /dayjs/1.11.7:
     resolution: {integrity: sha512-+Yw9U6YO5TQohxLcIkrXBeY73WP3ejHWVvx8XCk3gxvQDCTEmS48ZrSZCKciI7Bhl/uCMyxYtE9UqRILmFphkQ==}
+    dev: false
+
+  /dotenv/16.0.3:
+    resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
+    engines: {node: '>=12'}
     dev: false
 
   /ics/3.1.0:

@@ -2,6 +2,7 @@ const { writeFileSync } = require('fs')
 const ics = require('ics')
 const dayjs = require('dayjs')
 const localData = require('./data/gorgor.json')
+require('dotenv').config()
 
 const categories = [ '资料馆' ]
 const config = {
