@@ -108,3 +108,6 @@ typings/
 
 # Editor
 .vscode
+
+# cache
+*.cache.json
