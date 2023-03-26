@@ -45,6 +45,8 @@ export interface IMovieInfo extends IDoubanInfo {
   saleTime?: string
   country?: string[]
   otherDate?: string[]
+  regionCategoryNameList?: IServerMovieInfo['regionCategoryNameList']
+  movieCinemaListMore?: IServerMovieInfo['movieCinemaList']
 }
 export interface ICal {}
 

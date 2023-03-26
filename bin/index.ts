@@ -50,13 +50,13 @@ const config = {
 async function main() {
   const dayList = getDayList(config.year, config.month)
   const localFilePath = `${config.localPath}/${config.year}${config.month}.json`
-  let movieListFormat = []
+  let movieListFormat: IMovieInfo[] = []
 
   // 获取原始数据
   if (fs.existsSync(localFilePath) && config.useLocal) {
     movieListFormat = JSON.parse(
       (await fsPromise.readFile(localFilePath)).toString(),
-    ) as IMovieInfo[]
+    )
   } else {
     const movieList = await queryMovieList(dayList)
     if (config.cache) {
@@ -72,6 +72,11 @@ async function main() {
   }
 
   // 处理数据
+  movieListFormat.forEach((movie) => {
+    movie.movieCinemaListMore?.forEach((data) => {
+      config.saleTime.add(data.movieActiveDto.saleTime)
+    })
+  })
   const calData: EventAttributes[] = createCalData(movieListFormat)
   calData.unshift(...createAlarm())
   const calendarStr = createCalendar(calData)
@@ -199,10 +204,7 @@ function infoFormat(movieList: IServerMovieItemInfo[]): IMovieInfo[] {
     const countryList = movie.otherInfo?.regionCategoryNameList.map(
       (info) => info.categoryName,
     )
-    movie.otherInfo?.movieCinemaList.forEach((data) => {
-      const sale = data.movieActiveDto.saleTime
-      config.saleTime.add(sale)
-    })
+
     return {
       name: movie.movieName,
       minute: movie.movieMinute,
@@ -221,6 +223,14 @@ function infoFormat(movieList: IServerMovieItemInfo[]): IMovieInfo[] {
       doubanId: movie.doubanId,
       score: movie.score,
       commentCount: movie.commentCount,
+      regionCategoryNameList: movie.otherInfo?.regionCategoryNameList.map(
+        (data) => ({ categoryName: data.categoryName }),
+      ),
+      movieCinemaListMore: movie.otherInfo?.movieCinemaList.map((data) => ({
+        saleTime: data.saleTime,
+        playTime: data.playTime,
+        movieActiveDto: data.movieActiveDto,
+      })),
     }
   })
 }
