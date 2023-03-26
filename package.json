@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "build": "ts-node --esm bin/index",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "version": "node -v"
   },
   "repository": {
     "type": "git",
