@@ -23,8 +23,10 @@ export interface IDoubanInfo {
   doubanId?: string
   score?: number
   commentCount?: number
+  poster?: string
 }
 export interface IMovieInfo extends IDoubanInfo {
+  movieId: number
   name: string
   minute: number
   cinema: string
@@ -47,6 +49,7 @@ export interface IMovieInfo extends IDoubanInfo {
   otherDate?: string[]
   regionCategoryNameList?: IServerMovieInfo['regionCategoryNameList']
   movieCinemaListMore?: IServerMovieInfo['movieCinemaList']
+  doubanList?: IDoubanInfo[]
 }
 export interface ICal {}
 

@@ -20,7 +20,7 @@ function sleep(time: number = 1000) {
 
 dotent.config()
 const config = {
-  categories: ['电影资料馆'],
+  categories: ['资料馆'],
   year: '2023',
   month: '04',
   useLocal: true,
@@ -93,10 +93,12 @@ function createCalendar(calData: EventAttributes[]): string {
   return value ?? ''
 }
 function createAlarm(): EventAttributes[] {
+  const title = `🎬${config.categories[0]}${Number(config.month)}月观影日历`
   const monthInfo: EventAttributes = {
+    title: title,
+    calName: title,
     start: [Number(config.year), Number(config.month), 1, 9, 0],
     duration: { hours: 0, minutes: 30 },
-    title: `🎬${config.categories[0]}${Number(config.month)}月观影日历`,
     alarms: [
       {
         action: 'display',
@@ -145,9 +147,15 @@ function createCalData(movieList: IMovieInfo[]): EventAttributes[] {
     let doubanInfo = ''
     if (m.doubanId) {
       doubanInfo = `
-豆瓣评分${m.score}  \
-评论人数${m.commentCount?.toLocaleString()}
-`
+评分${m.score}  \
+人数${m.commentCount?.toLocaleString()}`
+    } else if (m.doubanList) {
+      doubanInfo = m.doubanList.reduce((per, current) => {
+        return `${per}
+豆瓣评分${current.score}  \
+评论人数${current.commentCount?.toLocaleString() ?? 0} \
+https://movie.douban.com/subject/${m.doubanId}/`
+      }, '')
     }
     const country = (m.country ?? []).join('/')
     let otherDate = m.otherDate
@@ -206,6 +214,7 @@ function infoFormat(movieList: IServerMovieItemInfo[]): IMovieInfo[] {
     )
 
     return {
+      movieId: movie.movieId,
       name: movie.movieName,
       minute: movie.movieMinute,
       cinema: movie.cinemaName,
