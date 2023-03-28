@@ -60,6 +60,8 @@ export interface IServerMovieInfo {
   movieCinemaList: {
     saleTime: string
     playTime: string
+    seatTotal?: number
+    seatSold?: number
     movieActiveDto: {
       saleTime: string
     }

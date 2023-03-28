@@ -23,8 +23,8 @@ const config = {
   categories: ['资料馆'],
   year: '2023',
   month: '04',
-  useLocal: true,
-  cache: true,
+  useLocal: false,
+  cache: false,
   localPath: `${process.cwd()}/data/zlg`,
   saleTime: new Set<string>(),
   douList: {
@@ -45,6 +45,10 @@ const config = {
     小西天艺术影院2号厅: '2号厅',
     百子湾艺术影院1号厅: '百子湾',
   } as { [k: string]: string },
+  printSeatInfo(
+    movie: IServerMovieItemInfo,
+    info: IServerMovieInfo['movieCinemaList'][number],
+  ): void {},
 }
 
 async function main() {
@@ -206,9 +210,11 @@ async function wFile(string: string, path: string) {
 
 function infoFormat(movieList: IServerMovieItemInfo[]): IMovieInfo[] {
   return movieList.map((movie) => {
-    const otherDate = movie.otherInfo?.movieCinemaList.map(
-      (info) => info.playTime,
-    )
+    const otherDate: string[] = []
+    movie.otherInfo?.movieCinemaList.forEach((info) => {
+      otherDate.push(info.playTime)
+      config?.printSeatInfo(movie, info)
+    })
     const countryList = movie.otherInfo?.regionCategoryNameList.map(
       (info) => info.categoryName,
     )
