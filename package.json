@@ -5,9 +5,10 @@
   "main": "main.js",
   "type": "module",
   "scripts": {
-    "build": "ts-node --esm bin/index",
-    "douban-patch": "ts-node --esm bin/douban-patch.ts",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsx bin/build",
+    "douban-patch": "tsx bin/douban-patch.ts",
+    "douban-info": "tsx bin/getDoubanInfo.ts",
+    "test": "tsx bin/test.ts",
     "version": "node -v"
   },
   "repository": {
@@ -25,6 +26,7 @@
   },
   "homepage": "https://github.com/wind8866/movie-calendar#readme",
   "dependencies": {
+    "colors": "^1.4.0",
     "dayjs": "^1.11.7",
     "dotenv": "^16.0.3",
     "ics": "^3.1.0"
@@ -32,6 +34,7 @@
   "devDependencies": {
     "@types/node": "^18.15.8",
     "ts-node": "^10.9.1",
+    "tsx": "^3.12.6",
     "typescript": "^5.0.2"
   }
 }

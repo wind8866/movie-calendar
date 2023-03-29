@@ -5,26 +5,31 @@ import ics, { EventAttributes } from 'ics'
 import dayjs from 'dayjs'
 import dotent from 'dotenv'
 import { IServerMovieItemInfo, IMovieInfo, IServerMovieInfo } from './types'
+import { insertDoubanInfo } from './getDoubanInfo'
+import 'colors/safe'
 
 // [min, max]
-function getTime(min: number, max: number) {
+export function getTime(min: number, max: number) {
   return min + Math.round(Math.random() * (max - min))
 }
 
 // staus n time
-function sleep(time: number = 1000) {
+export function sleep(time: number = 1000) {
   return new Promise((resolve) => {
     setTimeout(resolve, time)
   })
 }
 
 dotent.config()
-const config = {
+export const config = {
   categories: ['资料馆'],
   year: '2023',
   month: '04',
-  useLocal: false,
-  cache: false,
+  days: 31,
+  useLocal: true,
+  cache: true,
+  printLog: true,
+  doubanCookie: ``,
   localPath: `${process.cwd()}/data/zlg`,
   saleTime: new Set<string>(),
   douList: {
@@ -51,7 +56,7 @@ const config = {
   ): void {},
 }
 
-async function main() {
+export async function main() {
   const dayList = getDayList(config.year, config.month)
   const localFilePath = `${config.localPath}/${config.year}${config.month}.json`
   let movieListFormat: IMovieInfo[] = []
@@ -61,6 +66,10 @@ async function main() {
     movieListFormat = JSON.parse(
       (await fsPromise.readFile(localFilePath)).toString(),
     )
+    movieListFormat = await insertDoubanInfo(movieListFormat)
+    if (config.cache) {
+      await wFile(JSON.stringify(movieListFormat), localFilePath)
+    }
   } else {
     const movieList = await queryMovieList(dayList)
     if (config.cache) {
@@ -70,6 +79,7 @@ async function main() {
       )
     }
     movieListFormat = infoFormat(movieList)
+    movieListFormat = await insertDoubanInfo(movieListFormat)
     if (config.cache) {
       await wFile(JSON.stringify(movieListFormat), localFilePath)
     }
@@ -90,7 +100,6 @@ async function main() {
   )
   console.log('Successful! 🎉')
 }
-main()
 
 function createCalendar(calData: EventAttributes[]): string {
   const { error, value } = ics.createEvents(calData)
@@ -250,7 +259,7 @@ function infoFormat(movieList: IServerMovieItemInfo[]): IMovieInfo[] {
   })
 }
 
-async function fetchMovie(day: string) {
+export async function fetchMovie(day: string) {
   return new Promise<IServerMovieItemInfo[]>((resolve, reject) => {
     const hostname = process.env.HOSTNAME
     const url = `${process.env.API_PREFIX}${process.env.API_DAY_MOVIE_LIST}`
@@ -278,7 +287,7 @@ async function fetchMovie(day: string) {
   })
 }
 
-async function fetchMovieInfo(movieId: number) {
+export async function fetchMovieInfo(movieId: number) {
   return new Promise<IServerMovieInfo>((resolve, reject) => {
     const hostname = process.env.HOSTNAME
     const url = `${process.env.API_PREFIX}${process.env.API_MOVIE_INFO}`
@@ -314,16 +323,6 @@ function queryMovieList(dayList: string[]) {
       for (const m of listSegment) {
         const otherInfo = await fetchMovieInfo(m.movieId)
         m.otherInfo = otherInfo
-        // TODO
-        // const douban = await queryDoubanMovieInfo({
-        //   name: m.movieName,
-        //   year: dayjs(m.movieTime).format('YYYY'),
-        // })
-        // if (douban) {
-        //   m.doubanId = douban.doubanId
-        //   m.score = douban.score
-        //   m.commentCount = douban.commentCount
-        // }
       }
       allList.push(...listSegment)
       await sleep(getTime(100, 500))
@@ -333,7 +332,7 @@ function queryMovieList(dayList: string[]) {
 }
 
 function getDayList(year: string, month: string): string[] {
-  return new Array(31).fill('').map((_, index) => {
+  return new Array(config.days).fill('').map((_, index) => {
     const monthFormat = month.padStart(2, '0')
     const dayFormat = String(index + 1).padStart(2, '0')
     return `${year}-${monthFormat}-${dayFormat}`
