@@ -49,7 +49,7 @@ export interface IMovieInfo extends IDoubanInfo {
   otherDate?: string[]
   regionCategoryNameList?: IServerMovieInfo['regionCategoryNameList']
   movieCinemaListMore?: IServerMovieInfo['movieCinemaList']
-  doubanList?: IDoubanInfo[]
+  doubanList?: IDoubanInfo[] // 和豆瓣的信息不会同时存在
 }
 export interface ICal {}
 

@@ -114,7 +114,6 @@ export async function insertDoubanInfo(
   for (const index in movieList) {
     const movie = movieList[index]
     if (movie.doubanId || movie.doubanList) {
-      console.log(`跳过${movie.doubanId}`)
       continue
     }
     const specialItem = special[movie.name]
