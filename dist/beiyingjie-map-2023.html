@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+      * {
+        box-sizing: border-box;
+        padding: 0;
+        margin: 0;
+        font-size: 14px;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+          Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
+          sans-serif;
+      }
+      .main {
+        display: flex;
+        height: 100vh;
+        width: 100vw;
+      }
+      #container {
+        height: 100vh;
+        width: 100vw;
+      }
+      .sidebar {
+        padding: 10px;
+        z-index: 100;
+        position: absolute;
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+      }
+      .sidebar > * {
+        margin-bottom: 0.6em;
+      }
+      a {
+        color: #fff;
+      }
+      ul {
+        list-style-position: inside;
+      }
+    </style>
+    <title>2023北京电影节展映合作影院</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+  </head>
+  <body>
+    <script
+      type="text/javascript"
+      src="https://api.map.baidu.com/api?v=3.0&type=webgl&ak=VPwwNsZ35ESn2NurEvEgZ0p8YO104vsD"
+    ></script>
+    <div class="main">
+      <div class="sidebar">
+        <h1>2023年北京电影节展映合作影院</h1>
+        <ul>
+          <li>点击标注点📍可在百度地图打开</li>
+          <li>放大可查看怀柔地区的影院</li>
+          <li>奥林匹克公园有两家靠的很近的影厅</li>
+        </ul>
+        <p>点我全屏查看</p>
+        <p>
+          <a target="_blank" href="https://www.bjiff.com/bjzy/zyyy/"
+            >数据来源(北影官网)</a
+          >
+        </p>
+        <p><a target="_blank" href="/">欢迎订阅资料馆电影日历</a></p>
+      </div>
+      <div id="container"></div>
+    </div>
+
+    <script>
+      // sidebar
+      document.querySelector('.sidebar').addEventListener('click', (e) => {
+        if (e.target.tagName === 'A') return
+        e.currentTarget.style.display = 'none'
+        document.body.requestFullscreen()
+      })
+
+      var map = new BMapGL.Map('container')
+      // 116.404, 39.915 市中心
+      // 116.414901, 39.997431
+      var point = new BMapGL.Point(116.414901, 39.997431)
+      map.centerAndZoom(point, 12)
+      map.enableScrollWheelZoom()
+
+      function add_control() {
+        var top_right_navigation = new BMapGL.NavigationControl({
+          anchor: 1,
+          type: 1,
+        })
+        map.addControl(top_right_navigation)
+      }
+      add_control()
+
+      // 复杂的自定义覆盖物
+      function ComplexCustomOverlay(point, text, mouseoverText) {
+        this._point = point
+        this._text = text
+        this._overText = mouseoverText
+      }
+      ComplexCustomOverlay.prototype = new BMapGL.Overlay()
+      ComplexCustomOverlay.prototype.initialize = function (map) {
+        this._map = map
+        var div = (this._div = document.createElement('div'))
+        div.style.position = 'absolute'
+        div.style.zIndex = BMapGL.Overlay.getZIndex(this._point.lat)
+        div.style.backgroundColor = 'rgb(255,0,0,0.5)'
+        // div.style.border = '1px solid #BC3B3A'
+        div.style.color = 'white'
+        // div.style.height = '18px'
+        div.style.padding = '2px'
+        div.style.lineHeight = '18px'
+        div.style.whiteSpace = 'nowrap'
+        div.style.MozUserSelect = 'none'
+        div.style.fontSize = '12px'
+        var span = (this._span = document.createElement('span'))
+        div.appendChild(span)
+        span.appendChild(document.createTextNode(this._text))
+        var that = this
+
+        var arrow = (this._arrow = document.createElement('div'))
+        arrow.style.background =
+          'url(//map.baidu.com/fwmap/upload/r/map/fwmap/static/house/images/label.png) no-repeat'
+        arrow.style.position = 'absolute'
+        arrow.style.width = '11px'
+        arrow.style.height = '10px'
+        arrow.style.top = '22px'
+        arrow.style.left = '10px'
+        arrow.style.overflow = 'hidden'
+        div.appendChild(arrow)
+
+        div.onmouseover = function () {
+          this.style.backgroundColor = '#6BADCA'
+          this.style.borderColor = '#0000ff'
+          this.getElementsByTagName('span')[0].innerHTML = that._overText
+          arrow.style.backgroundPosition = '0px -20px'
+        }
+
+        div.onmouseout = function () {
+          this.style.backgroundColor = '#EE5D5B'
+          this.style.borderColor = '#BC3B3A'
+          this.getElementsByTagName('span')[0].innerHTML = that._text
+          arrow.style.backgroundPosition = '0px 0px'
+        }
+
+        map.getPanes().labelPane.appendChild(div)
+
+        return div
+      }
+      ComplexCustomOverlay.prototype.draw = function () {
+        var map = this._map
+        var pixel = map.pointToOverlayPixel(this._point)
+        this._div.style.left = pixel.x - parseInt(this._arrow.style.left) + 'px'
+        this._div.style.top = pixel.y - 30 + 'px'
+      }
+
+      const cinemaList = [
+        {
+          name: '保利国际影城北京天安门店',
+          address: '北京市西城区前门煤市街北京坊东区B2层',
+          point: [116.403923, 39.904604],
+        },
+        {
+          name: '横店电影城（王府井店）',
+          address: '北京市东城区王府井大街253号8层',
+          point: [116.416866, 39.920324],
+        },
+        {
+          name: '卢米埃北京芳草地影城',
+          address: '北京市朝阳区东大桥路9号侨福芳草地大厦LG2-26',
+          point: [116.45624, 39.925246],
+        },
+        {
+          name: '北京ACE影城（后沙LUXE店）',
+          address: '北京市顺义区后沙峪镇安平街五号院1号楼四层ACE影城',
+          point: [116.565512, 40.124905],
+        },
+        {
+          name: '环球城市大道电影院',
+          address: '北京市通州区环球大道1号院北京环球城市大道RE-02',
+          point: [116.683251, 39.856519],
+        },
+        {
+          name: '星典影城北京怀柔店',
+          address: '北京市怀柔区开放东路13号院2号楼1层01',
+          point: [116.657581, 40.330339],
+        },
+        {
+          name: '首都电影院西单店',
+          address: '北京市西城区西单北大街甲131号大悦城商场10层',
+          point: [116.379308, 39.917015],
+        },
+        {
+          name: '中影国际影城（党史馆CINITY影院）',
+          address: '北京市朝阳区北辰东路7号B01M-99、B01-99号',
+          point: [116.404804, 40.011158],
+        },
+        {
+          name: '英皇电影城北京英皇集团中心店',
+          address:
+            '北京市朝阳区建外大街丁12号英皇集团中心B1层108、B2M层-209、B2层-202',
+          point: [116.451731, 39.913173],
+        },
+        {
+          name: '中国科学技术馆影院',
+          address: '北京市朝阳区北辰东路5号',
+          point: [116.40504, 40.012384],
+        },
+        {
+          name: '美嘉欢乐影城（三里屯店）',
+          address: '北京市朝阳区三里屯路19号太古里南区LG层-SLG18',
+          point: [116.460876, 39.940148],
+        },
+        {
+          name: '万象影城（北京丽泽天街杜比影院）',
+          address: '北京市丰台区首创龙湖丽泽天街4层万象影城',
+          point: [116.34121, 39.87198],
+        },
+        {
+          name: '北京耀莱成龙国际影城（慈云寺店）',
+          address: '北京市朝阳区慈云寺八里庄北里209号未来汇三层',
+          point: [116.498712, 39.922146],
+        },
+        {
+          name: '红剧场',
+          address: '北京市东城区幸福大街44号',
+          point: [116.438603, 39.891659],
+        },
+        {
+          name: '百老汇电影中心（万国城店）',
+          address: '北京市东城区东直门香河园路1号院北区T4座',
+          point: [116.44467, 39.956502],
+        },
+        {
+          name: '北京地质礼堂',
+          address: '北京市西城区西四羊肉胡同三十号',
+          point: [116.377759, 39.928618],
+        },
+        {
+          name: '北京寰映影城合生汇店',
+          address: '北京市朝阳区西大望路甲22号朝阳合生汇5层',
+          point: [116.486251, 39.899828],
+        },
+        {
+          name: '北京剧院',
+          address: '北京市朝阳区安慧里三区十号',
+          point: [116.414901, 39.997431],
+        },
+        {
+          name: '北京万达影城',
+          address: '北京市朝阳区建国路93号万达广场B座3层',
+          point: [116.47723, 39.914727],
+        },
+        {
+          name: '北京万达影城怀柔店',
+          address: '北京市怀柔区龙山街道府前西街1号万达广场',
+          point: [116.636605, 40.322634],
+        },
+        {
+          name: '卢米埃影城（长楹天街IMAX店）',
+          address: '北京市朝阳区朝阳北路长楹天街购物中心东区五层',
+          point: [116.609348, 39.931047],
+        },
+        {
+          name: '天幕新彩云国际影城',
+          address: '北京市海淀区北三环中路67号',
+          point: [116.374527, 39.974153],
+        },
+        {
+          name: 'UME影城（北京华星店）',
+          address: '北京市海淀区中关村街道科学院南路44号UME国际影城（华星店）',
+          point: [116.332549, 39.973634],
+        },
+        {
+          name: '英嘉国际影城',
+          address: '北京市海淀区远大路1号E段5层5501号',
+          point: [116.297529, 39.965323],
+        },
+        {
+          name: '中国电影资料馆艺术影院',
+          address: '北京市海淀区小西天文慧园路3号',
+          point: [116.376471, 39.958857],
+        },
+        {
+          name: '中间影院',
+          address: '北京市海淀区杏石口路中间艺术园区中间影院',
+          point: [116.23753, 39.95936],
+        },
+      ]
+
+      // ✅控件
+      // https://lbs.baidu.com/jsdemo3.0.htm#contrlv3-0
+
+      // ✅marker标记
+      // https://lbs.baidu.com/jsdemo3.0.htm#js3_8
+
+      // ✅地图标记
+      // https://lbs.baidu.com/jsdemo3.0.htm#inforwindowv3.0
+
+      // ✅文本标注
+      // https://lbsyun.baidu.com/index.php?title=jspopularGL/guide/label
+
+      cinemaList.forEach((cinema) => {
+        // const myCompOverlay = new ComplexCustomOverlay(
+        //   new BMapGL.Point(...cinema.point),
+        //   cinema.name,
+        //   cinema.address,
+        // )
+        // map.addOverlay(myCompOverlay)
+
+        var point = new BMapGL.Point(...cinema.point)
+        var marker = new BMapGL.Marker(point)
+        map.addOverlay(marker)
+        var infoWindow = new BMapGL.InfoWindow(cinema.address, {
+          width: 260, // 信息窗口宽度
+          height: 100, // 信息窗口高度
+          title: cinema.name, // 信息窗口标题
+          enableMessage: true, //设置允许信息窗发送短息
+          message: cinema.address,
+        })
+
+        var label = new BMapGL.Label(cinema.name, {
+          position: point,
+          offset: new BMapGL.Size(0, 0),
+        })
+        map.addOverlay(label)
+        label.setStyle({
+          color: 'rgba(255,255,255,0.9)',
+          fontSize: '12px',
+          backgroundColor: 'rgba(0,0,0,0.4)',
+          borderRadius: '2px',
+          transform: 'translate(-50%, 0px)',
+          border: 'none',
+        })
+
+        // marker.addEventListener('hover', function () {})
+        // marker.addEventListener('mouseover', function () {
+        //   map.openInfoWindow(infoWindow, point)
+        // })
+        marker.addEventListener('click', function () {
+          window.open(
+            `http://api.map.baidu.com/marker?location=${cinema.point[1]},${cinema.point[0]}&title=${cinema.name}&content=${cinema.address}&output=html&src=movie.wind8866.top`,
+          )
+        })
+      })
+    </script>
+  </body>
+</html>
