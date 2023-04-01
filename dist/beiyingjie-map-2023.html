@@ -54,7 +54,7 @@
         <h1>2023年北京电影节展映合作影院</h1>
         <ul>
           <li>点击标注点📍可在百度地图打开</li>
-          <li>放大可查看怀柔地区的影院</li>
+          <li>缩小可查看怀柔地区的影院</li>
           <li>奥林匹克公园有两家靠的很近的影厅</li>
         </ul>
         <p>点我全屏查看</p>
@@ -74,6 +74,11 @@
         if (e.target.tagName === 'A') return
         e.currentTarget.style.display = 'none'
         document.body.requestFullscreen()
+      })
+      document.addEventListener('fullscreenchange', (event) => {
+        if (!document.fullscreenElement) {
+          document.querySelector('.sidebar').style.display = 'block'
+        }
       })
 
       var map = new BMapGL.Map('container')
