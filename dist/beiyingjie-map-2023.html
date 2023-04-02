@@ -15,6 +15,9 @@
           Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
           sans-serif;
       }
+      h1 {
+        font-size: 18px;
+      }
       .main {
         display: flex;
         height: 100vh;
@@ -25,20 +28,44 @@
         width: 100vw;
       }
       .sidebar {
-        padding: 10px;
+        padding: 16px;
         z-index: 100;
         position: absolute;
-        background: rgba(0, 0, 0, 0.8);
+        background: rgba(0, 0, 0, 0.7);
         color: #fff;
+        /* background: rgba(255, 255, 255, 0.3);
+        color: #000; */
+        -webkit-backdrop-filter: blur(4px);
+        backdrop-filter: blur(4px);
+        border-bottom-right-radius: 10px;
       }
       .sidebar > * {
         margin-bottom: 0.6em;
       }
       a {
-        color: #fff;
+        color: #3198ff;
+        text-decoration: none;
       }
-      ul {
+      a:hover {
+        color: #66b0fa;
+      }
+      ul,
+      ol {
         list-style-position: inside;
+        margin-bottom: 10px;
+      }
+      li {
+        margin-bottom: 4px;
+      }
+      @media only screen and (min-width: 600px) {
+        .mobile {
+          display: none;
+        }
+      }
+      @media only screen and (max-width: 600px) {
+        .desktop {
+          display: none;
+        }
       }
     </style>
     <title>2023北京电影节展映合作影院</title>
@@ -61,18 +88,29 @@
     <div class="main">
       <div class="sidebar">
         <h1>2023年北京电影节展映合作影院</h1>
-        <ul>
-          <li>点击标注点📍可在百度地图打开</li>
-          <li>缩小可查看怀柔地区的影院</li>
-          <li>奥林匹克公园有两家靠的很近的影厅</li>
-        </ul>
-        <p>点我全屏查看</p>
+        <ol>
+          <li>点击标注点📍可在百度地图打开并导航</li>
+          <li>顺义1家/怀柔2家/环球度假区1家，缩小查看</li>
+          <li>奥林匹克公园有两家靠的很近</li>
+          <li>
+            买票尽量避开剧院、礼堂
+            <a
+              target="_blank"
+              href="https://www.douban.com/group/topic/286015287/#sep?_i=0445959EOdLjT2"
+              >原因</a
+            >
+          </li>
+          <li>
+            <span class="desktop">点我全屏查看</span>
+            <span class="mobile">点我关闭提示</span>
+          </li>
+        </ol>
         <p>
           <a target="_blank" href="https://www.bjiff.com/bjzy/zyyy/"
             >数据来源(北影官网)</a
           >
         </p>
-        <p><a target="_blank" href="/">欢迎订阅资料馆电影日历</a></p>
+        <p><a href="/">欢迎订阅资料馆电影日历📅</a></p>
       </div>
       <div id="container"></div>
     </div>
