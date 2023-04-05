@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "tsx spider-man",
+    "type-check": "tsc --noEmit",
     "douban-patch": "tsx spider-man/douban-patch.ts",
     "douban-info": "tsx spider-man/getDoubanInfo.ts",
     "test": "tsx spider-man/test.ts",
@@ -35,9 +36,9 @@
     "papaparse": "^5.4.1"
   },
   "devDependencies": {
-    "@types/papaparse": "^5.3.7",
     "@types/ali-oss": "^6.16.7",
     "@types/node": "^18.15.8",
+    "@types/papaparse": "^5.3.7",
     "tsx": "^3.12.6",
     "typescript": "^5.0.2"
   }

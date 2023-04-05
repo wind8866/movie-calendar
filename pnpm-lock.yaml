@@ -1,12 +1,6 @@
 lockfileVersion: '6.0'
 
 dependencies:
-  '@types/ali-oss':
-    specifier: ^6.16.7
-    version: 6.16.7
-  '@types/papaparse':
-    specifier: ^5.3.7
-    version: 5.3.7
   ali-oss:
     specifier: ^6.17.1
     version: 6.17.1
@@ -27,9 +21,15 @@ dependencies:
     version: 5.4.1
 
 devDependencies:
+  '@types/ali-oss':
+    specifier: ^6.16.7
+    version: 6.16.7
   '@types/node':
     specifier: ^18.15.8
     version: 18.15.8
+  '@types/papaparse':
+    specifier: ^5.3.7
+    version: 5.3.7
   tsx:
     specifier: ^3.12.6
     version: 3.12.6
@@ -272,7 +272,7 @@ packages:
 
   /@types/ali-oss@6.16.7:
     resolution: {integrity: sha512-o3jORqeXEgooIkOfXk1r77BaIZtPHaPRJvTus/yvFDrjRVt65POGalmt9w72d1amGq39mag/t7Rd99MLs3nasw==}
-    dev: false
+    dev: true
 
   /@types/lodash@4.14.192:
     resolution: {integrity: sha512-km+Vyn3BYm5ytMO13k9KTp27O75rbQ0NFw+U//g+PX7VZyjCioXaRFisqSIJRECljcTv73G3i6BpglNGHgUQ5A==}
@@ -280,12 +280,13 @@ packages:
 
   /@types/node@18.15.8:
     resolution: {integrity: sha512-kzGNJZ57XEH7RdckxZ7wfRjB9hgZABF+NLgR1B2zogUvV0gmK0/60VYA4yb4oKZckPiiJlmmfpdqTfCN0VRX+Q==}
+    dev: true
 
   /@types/papaparse@5.3.7:
     resolution: {integrity: sha512-f2HKmlnPdCvS0WI33WtCs5GD7X1cxzzS/aduaxSu3I7TbhWlENjSPs6z5TaB9K0J+BH1jbmqTaM+ja5puis4wg==}
     dependencies:
       '@types/node': 18.15.8
-    dev: false
+    dev: true
 
   /acorn-walk@8.2.0:
     resolution: {integrity: sha512-k+iyHEuPgSw6SbuDpGQM+06HQUa04DZ3o+F6CSzXMvvI5KMvnaEqXe+YVe555R9nn6GPt404fos4wcgpw12SDA==}

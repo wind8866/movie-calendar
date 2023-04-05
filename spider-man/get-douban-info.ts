@@ -3,7 +3,8 @@ import https from 'node:https'
 import URL from 'node:url'
 import colors from 'colors/safe'
 import { IDoubanInfo, IDoubanSearchItem, IMovieInfo } from './types'
-import { sleep, getTime, config } from './main'
+import { config } from './main'
+import { getTime, sleep } from '@/utils'
 
 function getRequest<T>(options: { url: string; parse?: boolean }) {
   const { url, parse = true } = options

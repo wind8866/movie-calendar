@@ -1,5 +1,5 @@
-import { fetchMovie, fetchMovieInfo } from './main'
-import { queryDoubanMovieInfo } from './getDoubanInfo'
+import { queryDoubanMovieInfo } from './get-douban-info'
+import { fetchMovie, fetchMovieInfo } from './server'
 
 async function test() {
   // const listSegment = await fetchMovie('2023/04/03')
