@@ -93,7 +93,7 @@ export const config = {
   month: '04',
   days: 31,
   useLocal: true,
-  cache: true,
+  cache: false,
   printLog: true,
   doubanCookie: ``,
   localPath: `${process.cwd()}/data/zlg`,

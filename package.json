@@ -5,11 +5,11 @@
   "main": "main.js",
   "type": "module",
   "scripts": {
-    "build": "tsx bin/build",
-    "douban-patch": "tsx bin/douban-patch.ts",
-    "douban-info": "tsx bin/getDoubanInfo.ts",
-    "test": "tsx bin/test.ts",
-    "oss": "tsx bin/oss.ts",
+    "build": "tsx spider-man",
+    "douban-patch": "tsx spider-man/douban-patch.ts",
+    "douban-info": "tsx spider-man/getDoubanInfo.ts",
+    "test": "tsx spider-man/test.ts",
+    "oss": "tsx spider-man/oss.ts",
     "version": "node -v"
   },
   "repository": {
