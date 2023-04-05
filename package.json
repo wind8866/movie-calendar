@@ -9,6 +9,7 @@
     "douban-patch": "tsx bin/douban-patch.ts",
     "douban-info": "tsx bin/getDoubanInfo.ts",
     "test": "tsx bin/test.ts",
+    "oss": "tsx bin/oss.ts",
     "version": "node -v"
   },
   "repository": {
@@ -26,7 +27,7 @@
   },
   "homepage": "https://github.com/wind8866/movie-calendar#readme",
   "dependencies": {
-    "@types/papaparse": "^5.3.7",
+    "ali-oss": "^6.17.1",
     "colors": "^1.4.0",
     "dayjs": "^1.11.7",
     "dotenv": "^16.0.3",
@@ -34,6 +35,8 @@
     "papaparse": "^5.4.1"
   },
   "devDependencies": {
+    "@types/papaparse": "^5.3.7",
+    "@types/ali-oss": "^6.16.7",
     "@types/node": "^18.15.8",
     "tsx": "^3.12.6",
     "typescript": "^5.0.2"
