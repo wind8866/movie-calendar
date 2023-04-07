@@ -33,20 +33,23 @@ const headers = {
   // 指定PutObject操作时是否覆盖同名目标Object。此处设置为true，表示禁止覆盖同名Object。
   'x-oss-forbid-overwrite': 'false',
 }
-async function put() {
+export async function put(
+  localPath: string,
+  servePath: string,
+): Promise<string | void> {
   try {
     // 填写OSS文件完整路径和本地文件的完整路径。OSS文件完整路径中不能包含Bucket名称。
     // 如果本地文件的完整路径中未指定本地路径，则默认从示例程序所属项目对应本地路径中上传文件。
     const result = await client.put(
-      '202304.json',
-      `${process.cwd()}/data/zlg/202304.json`,
+      servePath,
+      localPath,
       // 自定义headers
       { headers },
     )
-    console.log(result)
+    return result.url
   } catch (e) {
     console.log(e)
   }
 }
 
-put()
+// put('202304.json', `${process.cwd()}/data/zlg/202304.json`)

@@ -5,8 +5,8 @@
   "main": "main.js",
   "type": "module",
   "scripts": {
-    "build": "tsx spider-man",
-    "type-check": "tsc --noEmit",
+    "build": "tsx spider-man/main",
+    "check": "tsc --noEmit",
     "douban-patch": "tsx spider-man/douban-patch.ts",
     "douban-info": "tsx spider-man/getDoubanInfo.ts",
     "test": "tsx spider-man/test.ts",
@@ -29,6 +29,7 @@
   "homepage": "https://github.com/wind8866/movie-calendar#readme",
   "dependencies": {
     "ali-oss": "^6.17.1",
+    "axios": "^1.3.5",
     "colors": "^1.4.0",
     "dayjs": "^1.11.7",
     "dotenv": "^16.0.3",

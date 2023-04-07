@@ -7,16 +7,17 @@ export default function toCSV(movieList: IMovieInfo[]): string {
     let url = ''
     let score: number | string = 0
     let commentCount: number | string = 0
-    if (m.doubanId) {
-      url = `https://movie.douban.com/subject/${m.doubanId}/`
-      score = m.score ?? 0
-      commentCount = m.commentCount ?? 0
-    } else if (m.doubanList) {
-      url = m.doubanList
+    const doubanInfo = m.doubanInfo?.info
+    if (Array.isArray(doubanInfo)) {
+      url = doubanInfo
         ?.map((d) => `https://movie.douban.com/subject/${d.doubanId}/`)
         .join(' ')
-      score = m.doubanList?.map((d) => d.score).join(' ')
-      commentCount = m.doubanList?.map((d) => d.commentCount).join(' ')
+      score = doubanInfo.map((d) => d.score).join(' ')
+      commentCount = doubanInfo.map((d) => d.commentCount).join(' ')
+    } else if (doubanInfo) {
+      url = `https://movie.douban.com/subject/${doubanInfo.doubanId}/`
+      score = doubanInfo.score ?? 0
+      commentCount = doubanInfo.commentCount ?? 0
     }
     const director = m.movieActorList
       .filter((v) => v.position === '导演')

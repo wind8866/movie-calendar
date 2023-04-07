@@ -1,4 +1,22 @@
-export interface IServerMovieItemInfo extends IDoubanInfo {
+export interface IAllData {
+  now: number
+  dayList: string[]
+  month: (string | undefined)[]
+  movieList: IMovieInfo[]
+  movieListRaw: {
+    updateTime: number
+    list: IServerMovieItem[]
+  }
+  movieInfoMapRaw: IMovieInfoList
+  doubanInfoMap: IZLGToDoubanMap
+  douToZlg: {
+    [k: number]: number
+    updateTime: number
+  }
+  saleTimeList: Set<string>
+}
+
+export interface IServerMovieItem {
   movieId: number
   movieName: string
   movieMinute: number
@@ -16,16 +34,16 @@ export interface IServerMovieItemInfo extends IDoubanInfo {
   movieCinemaList: { playTime: string; fares: number }[]
   movieActorList: { position: string; realName: string }[]
   movieTime: string
-  otherInfo?: IServerMovieInfo
 }
 
 export interface IDoubanInfo {
-  doubanId?: string
-  score?: number
-  commentCount?: number
-  poster?: string
+  doubanId: string
+  score: number
+  commentCount: number
+  poster: string
+  year: string
 }
-export interface IMovieInfo extends IDoubanInfo {
+export interface IMovieInfo {
   movieId: number
   name: string
   minute: number
@@ -49,9 +67,8 @@ export interface IMovieInfo extends IDoubanInfo {
   otherDate?: string[]
   regionCategoryNameList?: IServerMovieInfo['regionCategoryNameList']
   movieCinemaListMore?: IServerMovieInfo['movieCinemaList']
-  doubanList?: IDoubanInfo[] // 和豆瓣的信息不会同时存在
+  doubanInfo?: IZLGToDoubanMap[number]
 }
-export interface ICal {}
 
 export interface IServerMovieInfo {
   regionCategoryNameList: {
@@ -77,4 +94,30 @@ export interface IDoubanSearchItem {
   type: string
   url: string
   year: string
+}
+
+export interface IPlayTimeList {
+  currentMonth?: {
+    month: string // '4'
+    cinemaDateDtoList: {
+      playTime: string // '2023-04-06'
+      isActivity: boolean
+    }[]
+  }
+  nextMonth?: IPlayTimeList['currentMonth']
+  cinemaNames: string[]
+}
+
+export interface IMovieInfoList {
+  updateTime: number
+  [key: number]: IServerMovieInfo
+}
+
+/** key: movieId */
+export interface IZLGToDoubanMap {
+  [key: number]: {
+    name: string
+    updateTime: number
+    info: IDoubanInfo | IDoubanInfo[]
+  }
 }

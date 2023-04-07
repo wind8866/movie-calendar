@@ -2,8 +2,12 @@ import dayjs from 'dayjs'
 import https from 'node:https'
 import URL from 'node:url'
 import colors from 'colors/safe'
-import { IDoubanInfo, IDoubanSearchItem, IMovieInfo } from './types'
-import { config } from './main'
+import {
+  IDoubanInfo,
+  IDoubanSearchItem,
+  IServerMovieItem,
+  IZLGToDoubanMap,
+} from './types'
 import { getTime, sleep } from '@/utils'
 
 function getRequest<T>(options: { url: string; parse?: boolean }) {
@@ -23,7 +27,8 @@ function getRequest<T>(options: { url: string; parse?: boolean }) {
         // TODO: why add content-type error
         // 'Content-Type': 'application/json; charset=utf-8',
         // 'Transfer-Encoding': 'chunked',
-        Cookie: config.doubanCookie,
+        // Cookie: config.doubanCookie,
+        // TODO: Cookie
       },
     }
     https
@@ -77,66 +82,71 @@ export async function queryDoubanMovieInfo({
         doubanId: target.id,
         score: Number(scoreExec?.[1]),
         commentCount: Number(commentCountExec?.[1]),
-        poster: posterExec?.[1],
+        poster: posterExec?.[1] ?? '',
+        year: target.year,
       })
     } else {
-      console.error('未找到', name + ' ' + year)
+      // console.error('未找到', name + ' ' + year)
       resolve(null)
     }
   })
 }
 
-const special: {
-  [k: string]: IDoubanInfo | IDoubanInfo[]
-} = {
-  '面包店的女孩+苏姗娜的故事': [
-    {
-      doubanId: '1394348',
-      score: 8.2,
-      commentCount: 22755,
-      poster:
-        'https://img1.doubanio.com/view/photo/s_ratio_poster/public/p2559172988.jpg',
-    },
-    {
-      doubanId: '1293030',
-      score: 7.2,
-      commentCount: 11749,
-      poster:
-        'https://img2.doubanio.com/view/photo/s_ratio_poster/public/p2202641383.jpg',
-    },
-  ],
+export async function getDouToZLG(doubanMap: IZLGToDoubanMap, now: number) {
+  const douToZlg: { updateTime: number; [k: number]: number } = {
+    updateTime: now,
+  }
+  for (const movieId in Object.entries(doubanMap)) {
+    const { info } = doubanMap[movieId]
+    if (Array.isArray(info)) {
+      info.forEach((item) => {
+        douToZlg[Number(item.doubanId)] = Number(movieId)
+      })
+    } else {
+      douToZlg[Number(info.doubanId)] = Number(movieId)
+    }
+  }
+  return douToZlg
 }
 
-export async function insertDoubanInfo(
-  movieList: IMovieInfo[],
-  timer: number = 0,
-): Promise<IMovieInfo[]> {
+export async function queryDoubanInfoMap({
+  movieList,
+  now,
+  doubanInfoMap = {},
+  timer = 0,
+  retryTimes = 3,
+  zlgToDoubanCache,
+}: {
+  movieList: IServerMovieItem[]
+  now: number
+  zlgToDoubanCache: IZLGToDoubanMap
+  doubanInfoMap?: IZLGToDoubanMap
+  retryTimes?: number
+  timer?: number
+}): Promise<IZLGToDoubanMap> {
   let failedCount = 0
-  for (const index in movieList) {
-    const movie = movieList[index]
-    if (movie.doubanId || movie.doubanList) {
-      continue
-    }
-    const specialItem = special[movie.name]
-    if (specialItem) {
-      if (specialItem instanceof Array) {
-        movie.doubanList = specialItem
-      } else {
-        movie.doubanId = specialItem.doubanId
-        movie.score = specialItem.score
-        movie.commentCount = specialItem.commentCount
-        movie.poster = specialItem.poster
+  for (const movie of movieList) {
+    const movieId = movie.movieId
+    const movieName = movie.movieName
+    if (doubanInfoMap[movieId]) continue
+    if (zlgToDoubanCache[movieId]) {
+      doubanInfoMap[movieId] = {
+        updateTime: now,
+        name: movieName,
+        info: zlgToDoubanCache[movieId]?.info,
       }
       continue
     }
+
     const info = await queryDoubanMovieInfo({
-      name: movie.name,
+      name: movieName,
       year: dayjs(movie.movieTime).format('YYYY'),
     })
     if (info) {
-      movieList[index] = {
-        ...movie,
-        ...info,
+      doubanInfoMap[movieId] = {
+        updateTime: now,
+        name: movieName,
+        info: info,
       }
     } else {
       failedCount++
@@ -144,9 +154,11 @@ export async function insertDoubanInfo(
     await sleep(getTime(500, 1500))
   }
 
-  if (timer > 2) {
-    console.log(colors.red(`已尝试3次，仍有${failedCount}条未搜索到数据`))
-    return movieList
+  if (timer >= retryTimes) {
+    console.log(
+      colors.red(`已尝试${retryTimes}次，仍有${failedCount}条未搜索到数据`),
+    )
+    return doubanInfoMap
   } else if (failedCount > 0) {
     console.log(
       colors.green(
@@ -155,7 +167,13 @@ export async function insertDoubanInfo(
         }，失败${failedCount}`,
       ),
     )
-    insertDoubanInfo(movieList, timer + 1)
+    queryDoubanInfoMap({
+      movieList,
+      now,
+      doubanInfoMap,
+      timer: timer + 1,
+      zlgToDoubanCache,
+    })
   }
-  return movieList
+  return doubanInfoMap
 }

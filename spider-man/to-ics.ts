@@ -1,23 +1,35 @@
-import { IMovieInfo } from './types'
+import { IAllData, IMovieInfo } from './types'
 import dayjs from 'dayjs'
-import { config } from './main'
+import { config } from './config'
 import ics, { EventAttributes } from 'ics'
+
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+
+// TODO: 时区设置
+dayjs.extend(utc)
+dayjs.extend(timezone)
+dayjs.tz.setDefault('America/New_York')
 
 export function createCalData(movieList: IMovieInfo[]): EventAttributes[] {
   return movieList.map((m) => {
-    let doubanInfo = ''
-    if (m.doubanId) {
-      doubanInfo = `
-评分${m.score}  \
-人数${m.commentCount?.toLocaleString()}`
-    } else if (m.doubanList) {
-      doubanInfo = m.doubanList.reduce((per, current) => {
+    let douURL: undefined | string = undefined
+    const doubanInfo = m.doubanInfo?.info
+    let doubanInfoText = ''
+    if (Array.isArray(doubanInfo)) {
+      doubanInfoText = doubanInfo.reduce((per, current) => {
         return `${per}
 豆瓣评分${current.score}  \
 评论人数${current.commentCount?.toLocaleString() ?? 0} \
-https://movie.douban.com/subject/${m.doubanId}/`
+https://movie.douban.com/subject/${current.doubanId}/`
       }, '')
+    } else if (doubanInfo) {
+      douURL = `https://movie.douban.com/subject/${doubanInfo.doubanId}/`
+      doubanInfoText = `
+评分${doubanInfo.score}  \
+人数${doubanInfo.commentCount?.toLocaleString()}`
     }
+
     const country = (m.country ?? []).join('/')
     let otherDate = m.otherDate
       ?.filter((date) => date !== m.playTime)
@@ -27,7 +39,7 @@ https://movie.douban.com/subject/${m.doubanId}/`
 ${dayjs(m.movieTime).format('YYYY')}年 \
 ${m.minute}分钟 \
 ${country} \
-${doubanInfo}
+${doubanInfoText}
 
 ${m.price}元 \
 ${m.cinema}${m.room}
@@ -53,20 +65,24 @@ ${
       },
       title,
       description,
-      categories: config.categories,
-      url: m.doubanId
-        ? `https://movie.douban.com/subject/${m.doubanId}/`
-        : undefined,
+      categories: ['资料馆'],
+      url: douURL,
     } as EventAttributes
+    // TODO: type
   })
 }
 
-export function createAlarm(): EventAttributes[] {
-  const title = `🎬${config.categories[0]}${Number(config.month)}月观影日历`
+export function createAlarm([
+  current,
+  next,
+]: IAllData['month']): EventAttributes[] {
+  const year = dayjs().year() + (next === '1' ? 1 : 0)
+  const month = next ?? current ?? dayjs().month() + 1
+  const title = `🎬资料馆${month}月观影日历`
   const monthInfo: EventAttributes = {
     title: title,
     calName: title,
-    start: [Number(config.year), Number(config.month), 1, 9, 0],
+    start: [year, Number(month), 1, 9, 0],
     duration: { hours: 0, minutes: 30 },
     alarms: [
       {
@@ -76,14 +92,14 @@ export function createAlarm(): EventAttributes[] {
       },
     ],
     description: `\
-其他月份日历：https://movie.wind8866.top
-修改意见(New issue)：https://github.com/wind8866/movie-calendar/issues
-数据更新日期：${dayjs(Date.now()).format('MM/DD HH:mm:ss')}
+首页🏠：https://movie.wind8866.top
+修改意见📩：https://github.com/wind8866/movie-calendar/issues
+更新日期🕙：${dayjs().format('MM/DD HH:mm:ss')}
 
-${config.month}月豆列(精红)
-${config.douList[config.year + config.month]?.join('\n')}
+豆列(精红)
+${config.douList.join('\n')}
 `,
-    categories: config.categories,
+    categories: ['资料馆'],
     url: 'https://movie.wind8866.top',
   }
   const alarmList: EventAttributes[] = [monthInfo]
@@ -107,13 +123,18 @@ ${config.douList[config.year + config.month]?.join('\n')}
         },
       ],
       description: ``,
-      categories: config.categories,
+      categories: ['资料馆'],
     })
   })
   return alarmList
 }
 
-export function createCalendar(calData: EventAttributes[]): string {
-  const { error, value } = ics.createEvents(calData)
-  return value ?? ''
+export function createCalendar(calData: EventAttributes[]): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const { error, value } = ics.createEvents(calData)
+    if (error) {
+      reject(error)
+    }
+    resolve(value as string)
+  })
 }

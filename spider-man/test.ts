@@ -1,5 +1,5 @@
 import { queryDoubanMovieInfo } from './get-douban-info'
-import { fetchMovie, fetchMovieInfo } from './server'
+import { fetchMovie, fetchMovieInfo, fetchPlayTimeList } from './server'
 
 async function test() {
   // const listSegment = await fetchMovie('2023/04/03')
@@ -9,11 +9,14 @@ async function test() {
   // console.log(otherInfo)
 
   // 获取豆瓣接口
-  const info = await queryDoubanMovieInfo({
-    name: '平原上的摩西',
-    year: '2021',
-  })
-  console.log(info)
+  // const info = await queryDoubanMovieInfo({
+  //   name: '平原上的摩西',
+  //   year: '2021',
+  // })
+  // console.log(info)
+
+  const playlist = await fetchPlayTimeList()
+  console.log(playlist)
 }
 async function main() {
   await test()
