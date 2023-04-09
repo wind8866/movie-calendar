@@ -1,7 +1,6 @@
 import dayjs from 'dayjs'
-import https from 'node:https'
-import URL from 'node:url'
 import colors from 'colors/safe'
+import axios from 'axios'
 import {
   IDoubanInfo,
   IDoubanSearchItem,
@@ -10,44 +9,10 @@ import {
 } from './types'
 import { getTime, sleep } from '@/utils'
 
-function getRequest<T>(options: { url: string; parse?: boolean }) {
-  const { url, parse = true } = options
-  const urlObject = URL.parse('https://' + url)
+const iaxios = axios.create({
+  baseURL: `https://movie.douban.com`,
+})
 
-  return new Promise<T>((resolve, reject) => {
-    const options = {
-      hostname: urlObject.hostname,
-      port: 443,
-      path: urlObject.path,
-      headers: {
-        Host: urlObject.hostname!,
-        'Cache-Control': 'no-cache',
-        Connection: 'keep-alive',
-        // Referer: 'https://movie.douban.com',
-        // TODO: why add content-type error
-        // 'Content-Type': 'application/json; charset=utf-8',
-        // 'Transfer-Encoding': 'chunked',
-        // Cookie: config.doubanCookie,
-        // TODO: Cookie
-      },
-    }
-    https
-      .get(options, (res) => {
-        const data: Buffer[] = []
-        res.on('data', (chunk) => {
-          data.push(chunk)
-        })
-        res.on('end', () => {
-          const resString = Buffer.concat(data).toString()
-          const res = parse ? JSON.parse(resString) : resString
-          resolve(res)
-        })
-      })
-      .on('error', (err) => {
-        console.error(err)
-      })
-  })
-}
 export async function queryDoubanMovieInfo({
   name,
   year,
@@ -56,9 +21,11 @@ export async function queryDoubanMovieInfo({
   year: string
 }) {
   return new Promise<IDoubanInfo | null>(async (resolve, reject) => {
-    const searchList = await getRequest<IDoubanSearchItem[]>({
-      url: `movie.douban.com/j/subject_suggest?q=${encodeURI(name)}`,
+    const response = await iaxios<IDoubanSearchItem[]>({
+      url: `/j/subject_suggest`,
+      params: { q: name },
     })
+    const searchList = response.data
     let target = searchList?.filter((item) => item.year === year)[0]
     if (!target && searchList.length > 0) {
       target = searchList?.filter(
@@ -68,10 +35,10 @@ export async function queryDoubanMovieInfo({
       console.log(searchList)
     }
     if (target) {
-      const moviePageHTML = await getRequest<string>({
-        url: `movie.douban.com/subject/${target.id}/`,
-        parse: false,
+      const response = await iaxios<string>({
+        url: `/subject/${target.id}/`,
       })
+      const moviePageHTML = response.data
       const scoreExec = /v:average">([\d.]*)<\/strong>/.exec(moviePageHTML)
       const commentCountExec =
         /<span property="v:votes">(\d+)<\/span>人评价/.exec(moviePageHTML)
@@ -96,7 +63,7 @@ export async function getDouToZLG(doubanMap: IZLGToDoubanMap, now: number) {
   const douToZlg: { updateTime: number; [k: number]: number } = {
     updateTime: now,
   }
-  for (const movieId in Object.entries(doubanMap)) {
+  for (const movieId in doubanMap) {
     const { info } = doubanMap[movieId]
     if (Array.isArray(info)) {
       info.forEach((item) => {
@@ -109,7 +76,7 @@ export async function getDouToZLG(doubanMap: IZLGToDoubanMap, now: number) {
   return douToZlg
 }
 
-export async function queryDoubanInfoMap({
+export async function getDoubanInfoMap({
   movieList,
   now,
   doubanInfoMap = {},
@@ -167,7 +134,7 @@ export async function queryDoubanInfoMap({
         }，失败${failedCount}`,
       ),
     )
-    queryDoubanInfoMap({
+    getDoubanInfoMap({
       movieList,
       now,
       doubanInfoMap,

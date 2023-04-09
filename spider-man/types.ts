@@ -1,14 +1,18 @@
 export interface IAllData {
   now: number
-  dayList: string[]
-  month: (string | undefined)[]
+  playDate: {
+    dayList: string[]
+    month: (string | undefined)[]
+  }
   movieList: IMovieInfo[]
+  addedMovie: IMovieInfo[]
   movieListRaw: {
     updateTime: number
     list: IServerMovieItem[]
   }
   movieInfoMapRaw: IMovieInfoList
   doubanInfoMap: IZLGToDoubanMap
+  doubanInfoMapAll: IZLGToDoubanMap
   douToZlg: {
     [k: number]: number
     updateTime: number
@@ -115,6 +119,7 @@ export interface IMovieInfoList {
 
 /** key: movieId */
 export interface IZLGToDoubanMap {
+  // movieId
   [key: number]: {
     name: string
     updateTime: number

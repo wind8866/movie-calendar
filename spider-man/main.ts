@@ -1,41 +1,48 @@
 import dotent from 'dotenv'
-import {
-  IMovieInfo,
-  IServerMovieInfo,
-  IServerMovieItem,
-  IAllData,
-} from './types'
-import { createAlarm, createCalData, createCalendar } from './to-ics'
-import { queryDoubanInfoMap, getDouToZLG } from './get-douban-info'
 import 'colors/safe'
-import toCSV from './to-csv'
-import { wFile } from '@/utils'
-import { fetchPlayTimeList, queryMovieInfoMap, queryMovieList } from './server'
-import { put } from './oss'
-import zlgToDouban from './douban-special'
+
+import { IMovieInfo, IAllData } from './types'
+import { getDoubanInfoMap, getDouToZLG } from './server-douban'
+import { queryPlayDayList, getMovieInfoMap, getMovieList } from './server-zlg'
+import { pullDoubanInfoMap, pullMovieList, pushOSS } from './server-oss'
 import { config } from './config'
+import { createAlarm, createCalData, createCalendar } from './to-ics'
+import toCSV from './to-csv'
 
 dotent.config()
 
+async function diffMovieList(movieList: IMovieInfo[]) {
+  const movieListOld = await pullMovieList()
+  const movieMap: { [k: string]: IMovieInfo } = {}
+  movieListOld.forEach((m) => {
+    movieMap[`${m.movieId}-${m.playTime}`] = m
+  })
+  return movieList.filter((m) => {
+    return !movieMap[`${m.movieId}-${m.playTime}`]
+  })
+}
+
 export async function getAllData(): Promise<IAllData> {
   const now = Date.now()
-  const { dayList, month } = await fetchPlayTimeList()
-  const movieListRaw = await queryMovieList(dayList, now)
-  const movieInfoMapRaw = await queryMovieInfoMap(movieListRaw.list, now)
+  const playDate = await queryPlayDayList()
+  const movieListRaw = await getMovieList(playDate.dayList, now)
+  const movieInfoMapRaw = await getMovieInfoMap(movieListRaw.list, now)
 
-  // TODO: zlgToDouban[movieId] 从OSS取
-  const doubanInfoMap = await queryDoubanInfoMap({
+  const oldDoubanInfoMap = await pullDoubanInfoMap()
+  const doubanInfoMap = await getDoubanInfoMap({
     movieList: movieListRaw.list,
     now,
-    zlgToDoubanCache: zlgToDouban,
+    zlgToDoubanCache: oldDoubanInfoMap ?? {},
   })
   const douToZlg = await getDouToZLG(doubanInfoMap, now)
+  const doubanInfoMapAll = { ...oldDoubanInfoMap, ...doubanInfoMap }
 
   const movieList: IMovieInfo[] = combineData({
     movieListRaw,
     movieInfoMapRaw,
     doubanInfoMap,
   })
+  const addedMovie = await diffMovieList(movieList)
   const saleTimeList = new Set<string>()
   movieList.forEach((movie) => {
     movie.movieCinemaListMore?.forEach((data) => {
@@ -45,25 +52,22 @@ export async function getAllData(): Promise<IAllData> {
 
   return {
     now,
-    month,
-    dayList,
+    playDate,
+    doubanInfoMapAll,
     movieList,
     movieListRaw,
     movieInfoMapRaw,
     doubanInfoMap,
     douToZlg,
     saleTimeList,
+    addedMovie,
   }
 }
 
-export async function pushOSS(allData: IAllData) {}
-// export async function pullOSS(): IAllData {
-//   // TODO
-// }
 interface CombineDataProps {
-  movieListRaw: Awaited<ReturnType<typeof queryMovieList>>
-  movieInfoMapRaw: Awaited<ReturnType<typeof queryMovieInfoMap>>
-  doubanInfoMap: Awaited<ReturnType<typeof queryDoubanInfoMap>>
+  movieListRaw: Awaited<ReturnType<typeof getMovieList>>
+  movieInfoMapRaw: Awaited<ReturnType<typeof getMovieInfoMap>>
+  doubanInfoMap: Awaited<ReturnType<typeof getDoubanInfoMap>>
 }
 function combineData({
   movieListRaw,
@@ -118,8 +122,9 @@ function combineData({
 
 async function main() {
   const allData = await getAllData()
-  const calObject = createCalData(allData.movieList)
-  const calAlert = createAlarm(allData.month)
-  const calString = await createCalendar(calObject.concat(calAlert))
+  await pushOSS(allData)
+  // const calObject = createCalData(allData.movieList)
+  // const calAlert = createAlarm(allData.month)
+  // const calString = await createCalendar(calObject.concat(calAlert))
 }
 main()
