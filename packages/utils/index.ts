@@ -23,7 +23,3 @@ export function sleep(time: number = 1000) {
     setTimeout(resolve, time)
   })
 }
-
-export async function wFile(string: string, path: string) {
-  return fsPromise.writeFile(path, string)
-}

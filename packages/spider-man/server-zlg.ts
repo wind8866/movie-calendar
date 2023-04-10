@@ -1,7 +1,7 @@
 import dotent from 'dotenv'
 import axios from 'axios'
 
-import { getTime, sleep } from '@/utils'
+import { getTime, sleep } from '@moviecal/utils'
 import {
   IMovieInfoList,
   IPlayTimeList,

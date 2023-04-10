@@ -5,13 +5,11 @@
   "main": "main.js",
   "type": "module",
   "scripts": {
-    "build": "tsx spider-man/main",
+    "version": "node -v",
+    "pull": "tsx packages/spider-man/main",
+    "pull-demo": "tsx packages/spider-man/test.ts",
     "check": "tsc --noEmit",
-    "douban-patch": "tsx spider-man/douban-patch.ts",
-    "douban-info": "tsx spider-man/getDoubanInfo.ts",
-    "test": "tsx spider-man/test.ts",
-    "oss": "tsx spider-man/oss.ts",
-    "version": "node -v"
+    "preinstall": "npx -y only-allow pnpm"
   },
   "repository": {
     "type": "git",

@@ -8,7 +8,7 @@ import {
   IServerMovieItem,
   IZLGToDoubanMap,
 } from './types'
-import { getTime, sleep } from '@/utils'
+import { getTime, sleep } from '@moviecal/utils'
 import { pullDoubanInfoMap } from './server-oss'
 
 const iaxios = axios.create({

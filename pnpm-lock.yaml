@@ -1,44 +1,60 @@
 lockfileVersion: '6.0'
 
-dependencies:
-  ali-oss:
-    specifier: ^6.17.1
-    version: 6.17.1
-  axios:
-    specifier: ^1.3.5
-    version: 1.3.5
-  colors:
-    specifier: ^1.4.0
-    version: 1.4.0
-  dayjs:
-    specifier: ^1.11.7
-    version: 1.11.7
-  dotenv:
-    specifier: ^16.0.3
-    version: 16.0.3
-  ics:
-    specifier: ^3.1.0
-    version: 3.1.0
-  papaparse:
-    specifier: ^5.4.1
-    version: 5.4.1
+importers:
 
-devDependencies:
-  '@types/ali-oss':
-    specifier: ^6.16.7
-    version: 6.16.7
-  '@types/node':
-    specifier: ^18.15.8
-    version: 18.15.8
-  '@types/papaparse':
-    specifier: ^5.3.7
-    version: 5.3.7
-  tsx:
-    specifier: ^3.12.6
-    version: 3.12.6
-  typescript:
-    specifier: ^5.0.2
-    version: 5.0.2
+  .:
+    dependencies:
+      ali-oss:
+        specifier: ^6.17.1
+        version: 6.17.1
+      axios:
+        specifier: ^1.3.5
+        version: 1.3.5
+      colors:
+        specifier: ^1.4.0
+        version: 1.4.0
+      dayjs:
+        specifier: ^1.11.7
+        version: 1.11.7
+      dotenv:
+        specifier: ^16.0.3
+        version: 16.0.3
+      ics:
+        specifier: ^3.1.0
+        version: 3.1.0
+      papaparse:
+        specifier: ^5.4.1
+        version: 5.4.1
+    devDependencies:
+      '@types/ali-oss':
+        specifier: ^6.16.7
+        version: 6.16.7
+      '@types/node':
+        specifier: ^18.15.8
+        version: 18.15.8
+      '@types/papaparse':
+        specifier: ^5.3.7
+        version: 5.3.7
+      tsx:
+        specifier: ^3.12.6
+        version: 3.12.6
+      typescript:
+        specifier: ^5.0.2
+        version: 5.0.2
+
+  packages/homepage:
+    dependencies:
+      '@moviecal/utils':
+        specifier: workspace:^
+        version: link:../utils
+
+  packages/spider-man:
+    dependencies:
+      '@moviecal/utils':
+        specifier: workspace:^
+        version: link:../utils
+
+  packages/utils: {}
 
 packages:
 
