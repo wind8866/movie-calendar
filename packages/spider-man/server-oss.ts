@@ -66,17 +66,13 @@ interface PullParams {
   servePath: string
   serveName: string
   type?: 'json' | 'text' | 'buff'
-  headers?: {}
 }
 async function pull<T>({
   servePath,
   serveName,
-  headers = {},
   type = 'json',
 }: PullParams): Promise<T> {
-  const result = await client.get(servePath + serveName, undefined, {
-    headers,
-  })
+  const result = await client.get(servePath + serveName)
   if (type === 'json') {
     return JSON.parse(result.content.toString())
   } else if (type === 'text') {

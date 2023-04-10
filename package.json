@@ -9,6 +9,8 @@
     "pull": "tsx packages/spider-man/main",
     "pull-demo": "tsx packages/spider-man/test.ts",
     "check": "tsc --noEmit",
+    "lint-fix": "eslint --ext .js,.ts,.jsx,.tsx --fix --quiet ./packages",
+    "lint": "eslint --ext .js,.ts,.jsx,.tsx --quiet ./packages",
     "preinstall": "npx -y only-allow pnpm"
   },
   "repository": {
@@ -35,6 +37,18 @@
     "papaparse": "^5.4.1"
   },
   "devDependencies": {
+    "@commitlint/cli": "^17.5.1",
+    "@commitlint/config-conventional": "^17.4.4",
+    "@typescript-eslint/eslint-plugin": "^5.57.1",
+    "@typescript-eslint/parser": "^5.57.1",
+    "commitlint": "^17.5.1",
+    "eslint": "^8.38.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin,": "link:@typescript-eslint/eslint-plugin,",
+    "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.3",
+    "prettier": "^2.8.7",
     "@types/ali-oss": "^6.16.7",
     "@types/node": "^18.15.8",
     "@types/papaparse": "^5.3.7",

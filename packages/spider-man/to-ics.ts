@@ -31,7 +31,7 @@ https://movie.douban.com/subject/${current.doubanId}/`
     }
 
     const country = (m.country ?? []).join('/')
-    let otherDate = m.otherDate
+    const otherDate = m.otherDate
       ?.filter((date) => date !== m.playTime)
       .map((date) => dayjs(date).format('D'))
       .join(',')

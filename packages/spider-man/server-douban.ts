@@ -22,43 +22,41 @@ export async function queryDoubanMovieInfo({
   name: string
   year: string
 }) {
-  return new Promise<IDoubanInfo | null>(async (resolve, reject) => {
-    const response = await iaxios<IDoubanSearchItem[]>({
-      url: `/j/subject_suggest`,
-      params: { q: name },
-    })
-    const searchList = response.data
-    let target = searchList?.filter((item) => item.year === year)[0]
-    if (!target && searchList.length > 0) {
-      target = searchList?.filter(
-        (item) => Number(item.year) - Number(year) <= 2,
-      )[0]
-      console.log(`年份对不上: 豆瓣${target.year} 原始数据${year}`)
-      console.log(searchList)
-    }
-    if (target) {
-      const response = await iaxios<string>({
-        url: `/subject/${target.id}/`,
-      })
-      const moviePageHTML = response.data
-      const scoreExec = /v:average">([\d.]*)<\/strong>/.exec(moviePageHTML)
-      const commentCountExec =
-        /<span property="v:votes">(\d+)<\/span>人评价/.exec(moviePageHTML)
-      const posterExec = /<img src="(.*)" title="点击看更多海报"/.exec(
-        moviePageHTML,
-      )
-      resolve({
-        doubanId: target.id,
-        score: Number(scoreExec?.[1]),
-        commentCount: Number(commentCountExec?.[1]),
-        poster: posterExec?.[1] ?? '',
-        year: target.year,
-      })
-    } else {
-      // console.error('未找到', name + ' ' + year)
-      resolve(null)
-    }
+  const response = await iaxios<IDoubanSearchItem[]>({
+    url: `/j/subject_suggest`,
+    params: { q: name },
   })
+  const searchList = response.data
+  let target = searchList?.filter((item) => item.year === year)[0]
+  if (!target && searchList.length > 0) {
+    target = searchList?.filter(
+      (item) => Number(item.year) - Number(year) <= 2,
+    )[0]
+    console.log(`年份对不上: 豆瓣${target.year} 原始数据${year}`)
+    console.log(searchList)
+  }
+  if (target) {
+    const response = await iaxios<string>({
+      url: `/subject/${target.id}/`,
+    })
+    const moviePageHTML = response.data
+    const scoreExec = /v:average">([\d.]*)<\/strong>/.exec(moviePageHTML)
+    const commentCountExec =
+      /<span property="v:votes">(\d+)<\/span>人评价/.exec(moviePageHTML)
+    const posterExec = /<img src="(.*)" title="点击看更多海报"/.exec(
+      moviePageHTML,
+    )
+    return {
+      doubanId: target.id,
+      score: Number(scoreExec?.[1]),
+      commentCount: Number(commentCountExec?.[1]),
+      poster: posterExec?.[1] ?? '',
+      year: target.year,
+    }
+  } else {
+    // console.error('未找到', name + ' ' + year)
+    return null
+  }
 }
 
 export async function getDouToZLG(doubanMap: IZLGToDoubanMap, now: number) {
@@ -93,7 +91,7 @@ export async function getDoubanInfoMap({
   retryTimes?: number
   timer?: number
 }): Promise<IZLGToDoubanMap> {
-  let failed: string[] = []
+  const failed: string[] = []
   for (const movie of movieList) {
     const movieId = movie.movieId
     const movieName = movie.name
