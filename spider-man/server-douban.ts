@@ -4,10 +4,12 @@ import axios from 'axios'
 import {
   IDoubanInfo,
   IDoubanSearchItem,
+  IMovieInfo,
   IServerMovieItem,
   IZLGToDoubanMap,
 } from './types'
 import { getTime, sleep } from '@/utils'
+import { pullDoubanInfoMap } from './server-oss'
 
 const iaxios = axios.create({
   baseURL: `https://movie.douban.com`,
@@ -84,17 +86,17 @@ export async function getDoubanInfoMap({
   retryTimes = 3,
   zlgToDoubanCache,
 }: {
-  movieList: IServerMovieItem[]
+  movieList: IMovieInfo[]
   now: number
   zlgToDoubanCache: IZLGToDoubanMap
   doubanInfoMap?: IZLGToDoubanMap
   retryTimes?: number
   timer?: number
 }): Promise<IZLGToDoubanMap> {
-  let failedCount = 0
+  let failed: string[] = []
   for (const movie of movieList) {
     const movieId = movie.movieId
-    const movieName = movie.movieName
+    const movieName = movie.name
     if (doubanInfoMap[movieId]) continue
     if (zlgToDoubanCache[movieId]) {
       doubanInfoMap[movieId] = {
@@ -116,22 +118,23 @@ export async function getDoubanInfoMap({
         info: info,
       }
     } else {
-      failedCount++
+      failed.push(movieName)
     }
     await sleep(getTime(500, 1500))
   }
 
   if (timer >= retryTimes) {
     console.log(
-      colors.red(`已尝试${retryTimes}次，仍有${failedCount}条未搜索到数据`),
+      colors.red(`已尝试${retryTimes}次，仍有${failed.length}条未搜索到数据`),
     )
+    console.log(failed.join(','))
     return doubanInfoMap
-  } else if (failedCount > 0) {
+  } else if (failed.length > 0) {
     console.log(
       colors.green(
-        `第${timer + 1}次查找，已成功${
-          movieList.length - failedCount
-        }，失败${failedCount}`,
+        `第${timer + 1}次查找，已成功${movieList.length - failed.length}，失败${
+          failed.length
+        }`,
       ),
     )
     getDoubanInfoMap({
@@ -142,5 +145,23 @@ export async function getDoubanInfoMap({
       zlgToDoubanCache,
     })
   }
+  console.log(colors.green(`已全部找到`))
   return doubanInfoMap
+}
+
+export async function getDoubanData(movieList: IMovieInfo[], now: number) {
+  const oldDoubanInfoMap = await pullDoubanInfoMap()
+  const doubanInfoMap = await getDoubanInfoMap({
+    movieList,
+    now,
+    zlgToDoubanCache: oldDoubanInfoMap ?? {},
+  })
+  const douToZlg = await getDouToZLG(doubanInfoMap, now)
+  const doubanInfoMapAll = { ...oldDoubanInfoMap, ...doubanInfoMap }
+
+  return {
+    douToZlg,
+    doubanInfoMap,
+    doubanInfoMapAll,
+  }
 }

@@ -1,8 +1,10 @@
 import OSS from 'ali-oss'
 import dotent from 'dotenv'
 import qs from 'querystring'
-import { IAllData, IMovieInfo, IZLGToDoubanMap } from './types'
+import { IAllData, IDoubanInfo, IMovieInfo, IZLGToDoubanMap } from './types'
 import dayjs from 'dayjs'
+import { getSaleTimeSet } from './main'
+import { getDouToZLG } from './server-douban'
 
 dotent.config()
 
@@ -100,6 +102,11 @@ const doubanInfoMapName = 'douban-info-map.json'
 const doubanInfoMapAllName = 'douban-info-map-all.json'
 const doubanListName = 'douban-list.json'
 const douIdToMovieIdName = 'douTo-zlg-mapping.json'
+
+const exportPath = 'latest-export/'
+const calName = 'zlg-cal.ics'
+const csvName = 'zlg-csv.csv'
+
 const backupPath = `backup/${dayjs().format('YYYY-MM-DD-HH')}/`
 
 export function pullDoubanInfoMap() {
@@ -126,6 +133,38 @@ export function pullMovieList(): Promise<IMovieInfo[]> {
     })
 }
 
+export async function doubanDataPutOSS({
+  doubanInfoMap,
+  doubanInfoMapAll,
+  douToZlg,
+}: {
+  doubanInfoMap: IZLGToDoubanMap
+  doubanInfoMapAll: IZLGToDoubanMap
+  douToZlg: Awaited<ReturnType<typeof getDouToZLG>>
+}) {
+  const encoder = new TextEncoder()
+  // movieId to douId
+  await ossServer.put({
+    servePath: dataPath,
+    serveName: doubanInfoMapName,
+    local: new Buffer(encoder.encode(JSON.stringify(doubanInfoMap))),
+  })
+
+  // movieId to douId All
+  await ossServer.put({
+    servePath: dataPath,
+    serveName: doubanInfoMapAllName,
+    local: new Buffer(encoder.encode(JSON.stringify(doubanInfoMapAll))),
+  })
+
+  // douId to movieId
+  await ossServer.put({
+    servePath: dataPath,
+    serveName: douIdToMovieIdName,
+    local: new Buffer(encoder.encode(JSON.stringify(douToZlg))),
+  })
+}
+
 export async function pushOSS(allData: IAllData) {
   const encoder = new TextEncoder()
 
@@ -135,25 +174,57 @@ export async function pushOSS(allData: IAllData) {
     serveName: movieListName,
     local: new Buffer(encoder.encode(JSON.stringify(allData.movieList))),
   })
+}
+
+export async function putCal(str: string) {
+  const encoder = new TextEncoder()
+  await ossServer.put({
+    servePath: exportPath,
+    serveName: calName,
+    local: Buffer.from(encoder.encode(str)),
+  })
+}
+export async function putCSV(str: string) {
+  const encoder = new TextEncoder()
+  await ossServer.put({
+    servePath: exportPath,
+    serveName: csvName,
+    local: Buffer.from(encoder.encode(str)),
+  })
+}
+
+export async function pullOSS() {
+  // movie list
+  const movieList: IMovieInfo[] = await ossServer.pull({
+    servePath: dataPath,
+    serveName: movieListName,
+  })
 
   // movieId to douId
-  await ossServer.put({
+  const doubanInfoMap: IZLGToDoubanMap = await ossServer.pull({
     servePath: dataPath,
     serveName: doubanInfoMapName,
-    local: new Buffer(encoder.encode(JSON.stringify(allData.doubanInfoMap))),
   })
 
   // movieId to douId All
-  await ossServer.put({
+  const doubanInfoMapAll: IZLGToDoubanMap = await ossServer.pull({
     servePath: dataPath,
     serveName: doubanInfoMapAllName,
-    local: new Buffer(encoder.encode(JSON.stringify(allData.doubanInfoMapAll))),
   })
 
   // douId to movieId
-  await ossServer.put({
-    servePath: dataPath,
-    serveName: douIdToMovieIdName,
-    local: new Buffer(encoder.encode(JSON.stringify(allData.douToZlg))),
-  })
+  const douToZlg: Awaited<ReturnType<typeof getDouToZLG>> =
+    await ossServer.pull({
+      servePath: dataPath,
+      serveName: douIdToMovieIdName,
+    })
+  const saleTimeList = getSaleTimeSet(movieList)
+
+  return {
+    movieList,
+    douToZlg,
+    doubanInfoMap,
+    doubanInfoMapAll,
+    saleTimeList,
+  }
 }

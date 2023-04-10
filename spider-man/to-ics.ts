@@ -75,7 +75,7 @@ ${
 export function createAlarm([
   current,
   next,
-]: IAllData['month']): EventAttributes[] {
+]: IAllData['playDate']['month']): EventAttributes[] {
   const year = dayjs().year() + (next === '1' ? 1 : 0)
   const month = next ?? current ?? dayjs().month() + 1
   const title = `🎬资料馆${month}月观影日历`

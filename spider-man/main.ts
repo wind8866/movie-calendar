@@ -2,9 +2,16 @@ import dotent from 'dotenv'
 import 'colors/safe'
 
 import { IMovieInfo, IAllData } from './types'
-import { getDoubanInfoMap, getDouToZLG } from './server-douban'
+import { getDoubanData, getDoubanInfoMap, getDouToZLG } from './server-douban'
 import { queryPlayDayList, getMovieInfoMap, getMovieList } from './server-zlg'
-import { pullDoubanInfoMap, pullMovieList, pushOSS } from './server-oss'
+import {
+  doubanDataPutOSS,
+  pullMovieList,
+  pullOSS,
+  pushOSS,
+  putCSV,
+  putCal,
+} from './server-oss'
 import { config } from './config'
 import { createAlarm, createCalData, createCalendar } from './to-ics'
 import toCSV from './to-csv'
@@ -22,43 +29,47 @@ async function diffMovieList(movieList: IMovieInfo[]) {
   })
 }
 
+export function getSaleTimeSet(movieList: IMovieInfo[]) {
+  const saleTimeSet = new Set<string>()
+  movieList.forEach((movie) => {
+    movie.movieCinemaListMore?.forEach((data) => {
+      saleTimeSet.add(data.movieActiveDto.saleTime)
+    })
+  })
+  return saleTimeSet
+}
+
 export async function getAllData(): Promise<IAllData> {
   const now = Date.now()
   const playDate = await queryPlayDayList()
   const movieListRaw = await getMovieList(playDate.dayList, now)
   const movieInfoMapRaw = await getMovieInfoMap(movieListRaw.list, now)
 
-  const oldDoubanInfoMap = await pullDoubanInfoMap()
-  const doubanInfoMap = await getDoubanInfoMap({
-    movieList: movieListRaw.list,
-    now,
-    zlgToDoubanCache: oldDoubanInfoMap ?? {},
-  })
-  const douToZlg = await getDouToZLG(doubanInfoMap, now)
-  const doubanInfoMapAll = { ...oldDoubanInfoMap, ...doubanInfoMap }
+  const movieList: IMovieInfo[] = combineData({ movieListRaw, movieInfoMapRaw })
 
-  const movieList: IMovieInfo[] = combineData({
-    movieListRaw,
-    movieInfoMapRaw,
-    doubanInfoMap,
+  const { doubanInfoMapAll, doubanInfoMap, douToZlg } = await getDoubanData(
+    movieList,
+    now,
+  )
+
+  movieList.forEach((m) => {
+    if (doubanInfoMapAll[m.movieId]) {
+      m.doubanInfo = doubanInfoMapAll[m.movieId]
+    }
   })
+
   const addedMovie = await diffMovieList(movieList)
-  const saleTimeList = new Set<string>()
-  movieList.forEach((movie) => {
-    movie.movieCinemaListMore?.forEach((data) => {
-      saleTimeList.add(data.movieActiveDto.saleTime)
-    })
-  })
+  const saleTimeList = getSaleTimeSet(movieList)
 
   return {
     now,
     playDate,
+    doubanInfoMap,
     doubanInfoMapAll,
+    douToZlg,
     movieList,
     movieListRaw,
     movieInfoMapRaw,
-    doubanInfoMap,
-    douToZlg,
     saleTimeList,
     addedMovie,
   }
@@ -67,12 +78,10 @@ export async function getAllData(): Promise<IAllData> {
 interface CombineDataProps {
   movieListRaw: Awaited<ReturnType<typeof getMovieList>>
   movieInfoMapRaw: Awaited<ReturnType<typeof getMovieInfoMap>>
-  doubanInfoMap: Awaited<ReturnType<typeof getDoubanInfoMap>>
 }
 function combineData({
   movieListRaw,
   movieInfoMapRaw,
-  doubanInfoMap,
 }: CombineDataProps): IMovieInfo[] {
   return movieListRaw.list.map((movie) => {
     const movieId = movie.movieId
@@ -110,7 +119,6 @@ function combineData({
       movieCinemaList: movie.movieCinemaList,
       movieActorList: movie.movieActorList,
       movieTime: movie.movieTime,
-      doubanInfo: doubanInfoMap[movieId],
       otherDate,
       country: countryList,
       regionCategoryNameList,
@@ -120,11 +128,39 @@ function combineData({
   })
 }
 
-async function main() {
+async function completeProcess() {
   const allData = await getAllData()
   await pushOSS(allData)
-  // const calObject = createCalData(allData.movieList)
-  // const calAlert = createAlarm(allData.month)
-  // const calString = await createCalendar(calObject.concat(calAlert))
+  await doubanDataPutOSS({
+    doubanInfoMap: allData.doubanInfoMap,
+    doubanInfoMapAll: allData.doubanInfoMapAll,
+    douToZlg: allData.douToZlg,
+  })
+
+  const calObject = createCalData(allData.movieList)
+  const calAlert = createAlarm(allData.playDate.month)
+  const calString = await createCalendar(calObject.concat(calAlert))
+  putCal(calString)
+  const csvStr = toCSV(allData.movieList)
+  putCSV(csvStr)
+  // TODO 新增数据发送邮件、生成rss.xml、浏览器通知
 }
-main()
+async function doubanInfoPatch() {
+  const allData = await pullOSS()
+  const { doubanInfoMapAll, doubanInfoMap, douToZlg } = await getDoubanData(
+    allData.movieList,
+    Date.now(),
+  )
+  await doubanDataPutOSS({
+    doubanInfoMap,
+    doubanInfoMapAll,
+    douToZlg,
+  })
+
+  const calObject = createCalData(allData.movieList)
+  const calAlert = createAlarm(['4'])
+  const calString = await createCalendar(calObject.concat(calAlert))
+  putCal(calString)
+  const csvStr = toCSV(allData.movieList)
+  putCSV(csvStr)
+}
