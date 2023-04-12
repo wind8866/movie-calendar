@@ -94,6 +94,7 @@ export const ossServer = {
 
 const dataPath = 'latest-data/'
 const movieListName = 'movie-list.json'
+const movieListMapName = 'movie-list-map.json'
 const doubanInfoMapName = 'douban-info-map.json'
 const doubanInfoMapAllName = 'douban-info-map-all.json'
 const doubanListName = 'douban-list.json'
@@ -161,6 +162,19 @@ export async function doubanDataPutOSS({
   })
 }
 
+export async function putMovieListMap(movieList: IMovieInfo[]) {
+  // movie list map
+  const encoder = new TextEncoder()
+  const movieListMap: { [k: string]: IMovieInfo } = {}
+  movieList.forEach((m) => {
+    movieListMap[Number(m.movieId)] = m
+  })
+  await ossServer.put({
+    servePath: dataPath,
+    serveName: movieListMapName,
+    local: new Buffer(encoder.encode(JSON.stringify(movieListMap))),
+  })
+}
 export async function pushOSS(allData: IAllData) {
   const encoder = new TextEncoder()
 
@@ -170,6 +184,9 @@ export async function pushOSS(allData: IAllData) {
     serveName: movieListName,
     local: new Buffer(encoder.encode(JSON.stringify(allData.movieList))),
   })
+
+  // movie list map
+  await putMovieListMap(allData.movieList)
 }
 
 export async function putCal(str: string) {

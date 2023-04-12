@@ -1,7 +1,7 @@
 import { IAllData, IMovieInfo } from './types'
 import dayjs from 'dayjs'
 import { config } from './config'
-import ics, { EventAttributes } from 'ics'
+import { EventAttributes, createEvents } from 'ics'
 
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
@@ -131,7 +131,7 @@ ${config.douList.join('\n')}
 
 export function createCalendar(calData: EventAttributes[]): Promise<string> {
   return new Promise((resolve, reject) => {
-    const { error, value } = ics.createEvents(calData)
+    const { error, value } = createEvents(calData)
     if (error) {
       reject(error)
     }

@@ -1,0 +1,9 @@
+{
+  "name": "douban-movie-calendar",
+  "version": "1.0.0",
+  "description": "用于在豆列和电影详情页面展示资料馆的放映日期，同时可以选择并导出到日历",
+  "main": "main.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

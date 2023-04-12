@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "豆瓣电影日历",
+  "description": "用于在豆列和电影详情页面展示资料馆的放映日期，同时可以选择并导出到日历",
+  "version": "1.0",
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": "logo.png"
+  },
+  "icons": {
+    "16": "logo.png",
+    "32": "logo.png",
+    "48": "logo.png",
+    "128": "logo.png"
+  },
+  "content_scripts": [
+    {
+      "js": ["main.js"],
+      "matches": ["https://*.douban.com/*"]
+    }
+  ]
+}

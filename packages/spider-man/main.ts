@@ -11,6 +11,7 @@ import {
   pushOSS,
   putCSV,
   putCal,
+  putMovieListMap,
 } from './server-oss'
 import { config } from './config'
 import { createAlarm, createCalData, createCalendar } from './to-ics'
@@ -164,3 +165,5 @@ async function doubanInfoPatch() {
   const csvStr = toCSV(allData.movieList)
   putCSV(csvStr)
 }
+completeProcess()
+// doubanInfoPatch()
