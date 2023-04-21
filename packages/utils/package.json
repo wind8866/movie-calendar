@@ -2,7 +2,7 @@
   "name": "@moviecal/utils",
   "version": "1.0.0",
   "description": "通用模块",
-  "main": "index.js",
+  "main": "index.ts",
   "keywords": [],
   "author": "",
   "license": "ISC"

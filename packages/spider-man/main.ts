@@ -1,5 +1,5 @@
 import dotent from 'dotenv'
-import 'colors/safe'
+import chalk from 'chalk'
 
 import { IMovieInfo, IAllData } from './types'
 import { getDoubanData, getDoubanInfoMap, getDouToZLG } from './server-douban'
@@ -8,14 +8,16 @@ import {
   doubanDataPutOSS,
   pullMovieList,
   pullOSS,
-  pushOSS,
+  putMovieList,
   putCSV,
   putCal,
-  putMovieListMap,
+  putAddedNewMovieList,
+  putAllData,
 } from './server-oss'
 import { config } from './config'
 import { createAlarm, createCalData, createCalendar } from './to-ics'
 import toCSV from './to-csv'
+import { messagePush } from './message-push'
 
 dotent.config()
 
@@ -43,8 +45,11 @@ export function getSaleTimeSet(movieList: IMovieInfo[]) {
 export async function getAllData(): Promise<IAllData> {
   const now = Date.now()
   const playDate = await queryPlayDayList()
+  console.log(chalk.green('[完成]获取排片日期'))
   const movieListRaw = await getMovieList(playDate.dayList, now)
+  console.log(chalk.green('[完成]获取排片列表'))
   const movieInfoMapRaw = await getMovieInfoMap(movieListRaw.list, now)
+  console.log(chalk.green('[完成]获取电影详情'))
 
   const movieList: IMovieInfo[] = combineData({ movieListRaw, movieInfoMapRaw })
 
@@ -131,39 +136,30 @@ function combineData({
 
 async function completeProcess() {
   const allData = await getAllData()
-  await pushOSS(allData)
-  await doubanDataPutOSS({
-    doubanInfoMap: allData.doubanInfoMap,
-    doubanInfoMapAll: allData.doubanInfoMapAll,
-    douToZlg: allData.douToZlg,
-  })
+  const { addedMovie, movieList, doubanInfoMap, douToZlg, playDate } = allData
+  await putAllData(allData)
+  console.log(chalk.green.bold('[完成]获取所有数据'))
 
-  const calObject = createCalData(allData.movieList)
-  const calAlert = createAlarm(allData.playDate.month)
+  if (addedMovie.length > 0) {
+    await putAddedNewMovieList(addedMovie)
+    await messagePush(movieList)
+
+    await doubanDataPutOSS({
+      doubanInfoMap: doubanInfoMap,
+      douToZlg: douToZlg,
+    })
+    console.log(chalk.bold.green('[完成]存储豆瓣数据'))
+
+    const csvStr = toCSV(movieList)
+    putCSV(csvStr)
+  }
+
+  await putMovieList(movieList)
+  const calObject = createCalData(movieList)
+  const calAlert = createAlarm(playDate.month)
   const calString = await createCalendar(calObject.concat(calAlert))
   putCal(calString)
-  const csvStr = toCSV(allData.movieList)
-  putCSV(csvStr)
-  // TODO 新增数据发送邮件、生成rss.xml、浏览器通知
-}
-async function doubanInfoPatch() {
-  const allData = await pullOSS()
-  const { doubanInfoMapAll, doubanInfoMap, douToZlg } = await getDoubanData(
-    allData.movieList,
-    Date.now(),
-  )
-  await doubanDataPutOSS({
-    doubanInfoMap,
-    doubanInfoMapAll,
-    douToZlg,
-  })
 
-  const calObject = createCalData(allData.movieList)
-  const calAlert = createAlarm(['4'])
-  const calString = await createCalendar(calObject.concat(calAlert))
-  putCal(calString)
-  const csvStr = toCSV(allData.movieList)
-  putCSV(csvStr)
+  console.log(chalk.bold.green('✅完成所有流程'))
 }
 completeProcess()
-// doubanInfoPatch()

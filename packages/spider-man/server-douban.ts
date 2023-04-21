@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
-import colors from 'colors/safe'
 import axios from 'axios'
+import chalk from 'chalk'
 import {
   IDoubanInfo,
   IDoubanSearchItem,
@@ -123,17 +123,15 @@ export async function getDoubanInfoMap({
 
   if (timer >= retryTimes) {
     console.log(
-      colors.red(`已尝试${retryTimes}次，仍有${failed.length}条未搜索到数据`),
+      chalk.red(`已尝试${retryTimes}次，仍有${failed.length}条未搜索到数据`),
     )
     console.log(failed.join(','))
     return doubanInfoMap
   } else if (failed.length > 0) {
     console.log(
-      colors.green(
-        `第${timer + 1}次查找，已成功${movieList.length - failed.length}，失败${
-          failed.length
-        }`,
-      ),
+      `第${timer + 1}次查找` +
+        chalk.green(`已成功${movieList.length - failed.length}`) +
+        chalk.green(`失败${failed.length}`),
     )
     getDoubanInfoMap({
       movieList,
@@ -143,7 +141,7 @@ export async function getDoubanInfoMap({
       zlgToDoubanCache,
     })
   }
-  console.log(colors.green(`已全部找到`))
+  console.log(chalk.green(`已全部找到`))
   return doubanInfoMap
 }
 

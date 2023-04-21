@@ -1,115 +1,30 @@
-import OSS from 'ali-oss'
 import dotent from 'dotenv'
-import qs from 'querystring'
-import { IAllData, IDoubanInfo, IMovieInfo, IZLGToDoubanMap } from './types'
+import { IAllData, IMovieInfo, IZLGToDoubanMap } from './types'
 import dayjs from 'dayjs'
 import { getSaleTimeSet } from './main'
 import { getDouToZLG } from './server-douban'
+import { ossServer } from '@moviecal/utils/oss'
 
 dotent.config()
 
-const client = new OSS({
-  region: process.env.OSS_REGION,
-  accessKeyId: process.env.OSS_KEY_ID as string,
-  accessKeySecret: process.env.OSS_KEY_SECRET as string,
-  bucket: process.env.OSS_BUCKET,
-  secure: true,
-})
+const currentPath = 'current/'
+const movieListName = 'movie-list.json' // 最新的排片
+const addedNewMovieListName = 'movie-list-added.json' // 新增的排片
+const doubanInfoMapName = 'mapping-movieid-douid.json' // movieId: douId
+const douIdToMovieIdName = 'mapping-douid-movieid.json' // douId: movieId
+const calName = 'current.ics' // 日历数据
 
-/**
- * 参考文档
- *  公共头：https://help.aliyun.com/document_detail/31955.htm
- *  存储类型区别：https://help.aliyun.com/document_detail/51374.htm
- *  putObject: https://help.aliyun.com/document_detail/31978.html
- * 备注
- *  设置公共头Date但OSS不会存储这个值
- */
-interface PutParams {
-  servePath: string
-  serveName: string
-  local: string | ArrayBuffer
-  headers?: {
-    'x-oss-storage-class'?: 'Standard' | 'IA' | 'Archive' | 'ColdArchive'
-    'x-oss-object-acl'?:
-      | 'default'
-      | 'public-read'
-      | 'private'
-      | 'public-read-write'
-    'x-oss-forbid-overwrite'?: 'false' | 'true'
-    'x-oss-tagging'?: { [k: string]: string } | string
-    'x-oss-meta-timestamp'?: number
-  }
-}
-async function put({ servePath, serveName, local, headers = {} }: PutParams) {
-  const defaultHeaders = {
-    'x-oss-storage-class': 'Standard', // 标准存储
-    'x-oss-object-acl': 'public-read', // 公共读
-    'Content-Disposition': `inline; filename="${encodeURIComponent(
-      serveName,
-    )}"`,
-    'x-oss-forbid-overwrite': 'false', // 允许覆盖
-  }
-  if (typeof headers['x-oss-tagging'] === 'object') {
-    headers['x-oss-tagging'] = qs.stringify(headers['x-oss-tagging'])
-  }
+const archivedPath = 'archived/'
+const date = dayjs().format('YYYY-MM-DD-HH')
+const csvName = `csv-${date}.csv`
+const allDataName = `alldata-${date}.json`
+const addedNewMovieListBackupName = `movie-list-added-${date}.json` // 新增的排片
 
-  const result = await client.put(servePath + serveName, local, {
-    headers: {
-      ...defaultHeaders,
-      ...headers,
-    },
-  })
-  return result
-}
-
-interface PullParams {
-  servePath: string
-  serveName: string
-  type?: 'json' | 'text' | 'buff'
-}
-async function pull<T>({
-  servePath,
-  serveName,
-  type = 'json',
-}: PullParams): Promise<T> {
-  const result = await client.get(servePath + serveName)
-  if (type === 'json') {
-    return JSON.parse(result.content.toString())
-  } else if (type === 'text') {
-    return result.content.toString()
-  } else if (type === 'buff') {
-    return result.content
-  }
-  return result.content
-}
-// 判断是否存在
-// https://help.aliyun.com/document_detail/111392.html?spm=a2c4g.32074.0.0.36c2786c1TyRCb
-// 修改元数据
-// https://help.aliyun.com/document_detail/111412.html?spm=a2c4g.111392.0.0.996710cbNUg94A
-// 拷贝文件：用不着拷贝，在写入文件时写入一个备份文件，写入失败报警
-export const ossServer = {
-  put,
-  pull,
-}
-
-const dataPath = 'latest-data/'
-const movieListName = 'movie-list.json'
-const movieListMapName = 'movie-list-map.json'
-const doubanInfoMapName = 'douban-info-map.json'
-const doubanInfoMapAllName = 'douban-info-map-all.json'
-const doubanListName = 'douban-list.json'
-const douIdToMovieIdName = 'douTo-zlg-mapping.json'
-
-const exportPath = 'latest-export/'
-const calName = 'zlg-cal.ics'
-const csvName = 'zlg-csv.csv'
-
-const backupPath = `backup/${dayjs().format('YYYY-MM-DD-HH')}/`
-
+// 获取缓存的 movieId: douId
 export function pullDoubanInfoMap() {
   return ossServer
     .pull<IZLGToDoubanMap>({
-      servePath: dataPath,
+      servePath: currentPath,
       serveName: doubanInfoMapName,
     })
     .catch((e) => {
@@ -118,11 +33,53 @@ export function pullDoubanInfoMap() {
     })
 }
 
+// 缓存新增的排片
+export async function putAddedNewMovieList(movieList: IMovieInfo[]) {
+  const encoder = new TextEncoder()
+
+  await ossServer.put({
+    servePath: currentPath,
+    serveName: addedNewMovieListName,
+    local: new Buffer(encoder.encode(JSON.stringify(movieList))),
+  })
+  await ossServer.put({
+    servePath: archivedPath,
+    serveName: addedNewMovieListBackupName,
+    local: new Buffer(encoder.encode(JSON.stringify(movieList))),
+  })
+}
+// 缓存所有数据
+export async function putAllData(allData: IAllData) {
+  const encoder = new TextEncoder()
+
+  await ossServer.put({
+    servePath: archivedPath,
+    serveName: allDataName,
+    local: new Buffer(encoder.encode(JSON.stringify(allData))),
+    headers: {
+      'x-oss-object-acl': 'private',
+      'x-oss-storage-class': 'IA',
+    },
+  })
+}
+
+// 缓存 movieList
+export async function putMovieList(movieList: IMovieInfo[]) {
+  const encoder = new TextEncoder()
+
+  // movie list
+  await ossServer.put({
+    servePath: currentPath,
+    serveName: movieListName,
+    local: new Buffer(encoder.encode(JSON.stringify(movieList))),
+  })
+}
+// 获取上次缓存的 movieList
 export function pullMovieList(): Promise<IMovieInfo[]> {
   return ossServer
     .pull<IMovieInfo[]>({
-      servePath: dataPath,
-      serveName: doubanListName,
+      servePath: currentPath,
+      serveName: movieListName,
     })
     .catch((e) => {
       console.error(e)
@@ -130,105 +87,67 @@ export function pullMovieList(): Promise<IMovieInfo[]> {
     })
 }
 
+// 缓存 douId <=> movieId
 export async function doubanDataPutOSS({
   doubanInfoMap,
-  doubanInfoMapAll,
   douToZlg,
 }: {
   doubanInfoMap: IZLGToDoubanMap
-  doubanInfoMapAll: IZLGToDoubanMap
   douToZlg: Awaited<ReturnType<typeof getDouToZLG>>
 }) {
   const encoder = new TextEncoder()
   // movieId to douId
   await ossServer.put({
-    servePath: dataPath,
+    servePath: currentPath,
     serveName: doubanInfoMapName,
     local: new Buffer(encoder.encode(JSON.stringify(doubanInfoMap))),
   })
 
-  // movieId to douId All
-  await ossServer.put({
-    servePath: dataPath,
-    serveName: doubanInfoMapAllName,
-    local: new Buffer(encoder.encode(JSON.stringify(doubanInfoMapAll))),
-  })
-
   // douId to movieId
   await ossServer.put({
-    servePath: dataPath,
+    servePath: currentPath,
     serveName: douIdToMovieIdName,
     local: new Buffer(encoder.encode(JSON.stringify(douToZlg))),
   })
 }
 
-export async function putMovieListMap(movieList: IMovieInfo[]) {
-  // movie list map
-  const encoder = new TextEncoder()
-  const movieListMap: { [k: string]: IMovieInfo } = {}
-  movieList.forEach((m) => {
-    movieListMap[Number(m.movieId)] = m
-  })
-  await ossServer.put({
-    servePath: dataPath,
-    serveName: movieListMapName,
-    local: new Buffer(encoder.encode(JSON.stringify(movieListMap))),
-  })
-}
-export async function pushOSS(allData: IAllData) {
-  const encoder = new TextEncoder()
-
-  // movie list
-  await ossServer.put({
-    servePath: dataPath,
-    serveName: movieListName,
-    local: new Buffer(encoder.encode(JSON.stringify(allData.movieList))),
-  })
-
-  // movie list map
-  await putMovieListMap(allData.movieList)
-}
-
+// 存储生成的日历
 export async function putCal(str: string) {
   const encoder = new TextEncoder()
   await ossServer.put({
-    servePath: exportPath,
+    servePath: currentPath,
     serveName: calName,
     local: Buffer.from(encoder.encode(str)),
   })
 }
+// 存储 excel
 export async function putCSV(str: string) {
   const encoder = new TextEncoder()
   await ossServer.put({
-    servePath: exportPath,
+    servePath: archivedPath,
     serveName: csvName,
     local: Buffer.from(encoder.encode(str)),
   })
 }
 
+// 同时获取movieList和豆瓣数据
 export async function pullOSS() {
   // movie list
   const movieList: IMovieInfo[] = await ossServer.pull({
-    servePath: dataPath,
+    servePath: currentPath,
     serveName: movieListName,
   })
 
   // movieId to douId
   const doubanInfoMap: IZLGToDoubanMap = await ossServer.pull({
-    servePath: dataPath,
+    servePath: currentPath,
     serveName: doubanInfoMapName,
-  })
-
-  // movieId to douId All
-  const doubanInfoMapAll: IZLGToDoubanMap = await ossServer.pull({
-    servePath: dataPath,
-    serveName: doubanInfoMapAllName,
   })
 
   // douId to movieId
   const douToZlg: Awaited<ReturnType<typeof getDouToZLG>> =
     await ossServer.pull({
-      servePath: dataPath,
+      servePath: currentPath,
       serveName: douIdToMovieIdName,
     })
   const saleTimeList = getSaleTimeSet(movieList)
@@ -237,7 +156,6 @@ export async function pullOSS() {
     movieList,
     douToZlg,
     doubanInfoMap,
-    doubanInfoMapAll,
     saleTimeList,
   }
 }
