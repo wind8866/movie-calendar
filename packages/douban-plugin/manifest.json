@@ -1,10 +1,10 @@
 {
   "manifest_version": 3,
   "name": "豆瓣电影日历",
-  "description": "用于在豆列和电影详情页面展示资料馆的放映日期，同时可以选择并导出到日历",
+  "description": "电影资料馆选片助手，会在电影详情页和豆列页显示资料馆的排片，只选片，导出Excel、日历等功能",
   "version": "1.0",
   "action": {
-    "default_popup": "index.html",
+    "default_popup": "popup/index.html",
     "default_icon": "logo.png"
   },
   "icons": {
@@ -16,7 +16,11 @@
   "content_scripts": [
     {
       "js": ["main.js"],
-      "matches": ["https://*.douban.com/*"]
+      "matches": ["https://www.douban.com/doulist/*"]
+    },
+    {
+      "js": ["info.js"],
+      "matches": ["https://movie.douban.com/subject/*"]
     }
   ]
 }

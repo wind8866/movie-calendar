@@ -1,0 +1,6 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  min-width: 200px;
+}

@@ -2,14 +2,19 @@ console.log('这里是豆瓣')
 
 async function pullDouId() {
   const res = await fetch(
-    'https://movie-data.oss-cn-hongkong.aliyuncs.com/current/mapping-douid-movieid.json',
+    'https://movie-data.wind8866.top/current/mapping-douid-movieid.json',
+    {
+      headers: {
+        'Access-Control-Allow-Origin': 'https://movie.douban.com',
+      },
+    },
   )
   console.log(res)
   return res.json()
 }
 async function pullMovieInfoMap() {
   const res = await fetch(
-    'https://movie-data.oss-cn-hongkong.aliyuncs.com/current/mapping-movieid-douid.json',
+    'https://movie-data.wind8866.top/current/mapping-movieid-douid.json',
   )
   console.log(res)
   return res.json()
