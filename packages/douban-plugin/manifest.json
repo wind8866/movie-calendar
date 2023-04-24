@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
   "name": "豆瓣电影日历",
-  "description": "电影资料馆选片助手，会在电影详情页和豆列页显示资料馆的排片，只选片，导出Excel、日历等功能",
-  "version": "1.0",
+  "author": "wind8866",
+  "description": "电影资料馆选片助手，支持排片展示、选片导出Excel与日历等功能",
+  "version": "0.1",
   "action": {
     "default_popup": "popup/index.html",
     "default_icon": "logo.png"

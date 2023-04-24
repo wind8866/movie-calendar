@@ -7,9 +7,9 @@ async function pullDouId() {
   console.log(res)
   return res.json()
 }
-async function pullMovieInfoMap() {
+async function pullMovieList() {
   const res = await fetch(
-    'https://movie-data.oss-cn-hongkong.aliyuncs.com/current/mapping-movieid-douid.json',
+    'https://movie-data.oss-cn-hongkong.aliyuncs.com/current/movie-list.json',
   )
   console.log(res)
   return res.json()
@@ -17,7 +17,11 @@ async function pullMovieInfoMap() {
 
 async function main() {
   const idMapping = await pullDouId()
-  const movieInfoMap = await pullMovieInfoMap()
+  const movieList = await pullMovieList()
+  const movieInfoMap = movieList.reduce((pre, current) => {
+    pre[current.movieId] = current
+    return pre
+  }, {})
   const wrap = document.querySelectorAll('.doulist-item')
   for (const dom of wrap) {
     dom.style.position = 'relative'
