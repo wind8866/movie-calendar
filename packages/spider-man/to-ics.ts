@@ -76,35 +76,26 @@ export function createAlarm([
   current,
   next,
 ]: IAllData['playDate']['month']): EventAttributes[] {
-  const year = dayjs().year() + (next === '1' ? 1 : 0)
-  const month = next ?? current ?? dayjs().month() + 1
-  const title = `🎬资料馆${month}月观影日历`
-  const monthInfo: EventAttributes = {
+  const yesterday = dayjs().subtract(1, 'day')
+  const title = `资料馆电影日历`
+  const titleInfo: EventAttributes = {
     title: title,
     calName: title,
-    start: [year, Number(month), 1, 9, 0],
+    start: [yesterday.year(), yesterday.month() + 1, yesterday.date(), 7, 0],
     duration: { hours: 0, minutes: 30 },
-    alarms: [
-      {
-        action: 'display',
-        description: 'Reminder',
-        trigger: { hours: 0, minutes: 1, before: true },
-      },
-    ],
     description: `\
 首页🏠：https://movie.wind8866.top
 修改意见📩：https://github.com/wind8866/movie-calendar/issues
 更新日期🕙：${dayjs().format('MM/DD HH:mm:ss')}
-
-豆列(精红)
-${config.douList.join('\n')}
 `,
     categories: ['资料馆'],
     url: 'https://movie.wind8866.top',
   }
-  const alarmList: EventAttributes[] = [monthInfo]
+  const alarmList: EventAttributes[] = [titleInfo]
   config.saleTime.forEach((date) => {
     const time = dayjs(date)
+    // hidden 24h ago
+    if (Number(dayjs()) - Number(time) > 86400000) return
     alarmList.push({
       start: [
         time.get('year'),
