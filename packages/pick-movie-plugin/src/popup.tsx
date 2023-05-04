@@ -1,64 +1,39 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Papa from 'papaparse'
 import { useStorage } from '@plasmohq/storage/hook'
 import dayjs from 'dayjs'
+import toCSV from '@moviecal/spider-man/to-csv'
+import { createCalData, createCalendar } from '@moviecal/spider-man/to-ics'
 
 import '~style.css'
-import type { MovieInfoSimple } from './background'
-
-function toCSV(movieList: MovieInfoSimple[]): string {
-  const printList = movieList.map((m, index) => {
-    return [
-      m.name,
-      // dayjs(m.saleTime).format('MM月DD日 HH:mm'),
-      dayjs(m.playTime).format(`MM月DD日`),
-      '周' + '日一二三四五六'[dayjs(m.playTime).day()],
-      dayjs(m.playTime).format('HH:mm'),
-      // m.minute,
-      m.cinema + m.room,
-      m.price,
-      m.isActivity ? '有' : '',
-      // m.movieCinemaListMore?.length,
-      // m.movieCateList.map((cate) => cate.categoryName).join(','),
-      // 'director',
-      // score,
-      '',
-    ]
-  })
-  return Papa.unparse({
-    fields: [
-      '电影名',
-      // '售票时间',
-      '放映日期',
-      '周几',
-      '放映时间',
-      // '时长',
-      '影厅',
-      '票价',
-      '活动',
-      // '多场放映',
-      // '年份',
-      // '国家|地区',
-      // '类型',
-      // '导演',
-      // '豆瓣评分',
-      // '评论人数',
-      // '豆瓣链接',
-      '备注',
-    ],
-    data: printList,
-  })
-}
+import type { IMovieInfo } from '@moviecal/spider-man/types'
+import { sendToBackground } from '@plasmohq/messaging'
+// @ts-ignore
+// import type {
+//   GetMovieMapRequest,
+//   GetMovieMapResponse,
+// } from '~background/messages/get-movie-map'
 
 export interface PrePickMovie {
   [movieId: number]: boolean
 }
 function IndexPopup() {
-  const [prePickMap, setPrePick] = useStorage<PrePickMovie>('prePickMap', {})
-  const [movieMap] = useStorage<{ [id: number]: MovieInfoSimple }>(
-    'movieInfoMap',
+  const [idMapping, setIDMapping] = useStorage<{ [id: number]: number }>(
+    'idMapping',
     {},
   )
+  const [prePickMap, setPrePick] = useStorage<PrePickMovie>('prePickMap', {})
+
+  const [movieMap, setMovieMap] = useState<{ [k: number]: IMovieInfo }>({})
+  useEffect(() => {
+    // sendToBackground<any, GetMovieMapResponse>({
+    //   name: 'get-movie-map',
+    //   body: {},
+    // }).then((result) => {
+    //   setMovieMap(result)
+    // })
+  }, [])
+
   function onChecked(id: number) {
     setPrePick({
       ...prePickMap,
@@ -83,10 +58,9 @@ function IndexPopup() {
   const checkboxAll = useMemo(() => {
     return Object.values(prePickMap).every((v) => v)
   }, [prePickMap])
-  console.log(prePickMap)
 
   const onExportExcel = async () => {
-    let checked: MovieInfoSimple[] = []
+    let checked: IMovieInfo[] = []
     for (const id in prePickMap) {
       if (prePickMap[id] && movieMap[id]) checked.push(movieMap[id])
     }
@@ -105,17 +79,33 @@ function IndexPopup() {
     })
   }
   const onExportICS = async () => {
-    // TODO
+    const checked: IMovieInfo[] = []
+    for (const id in prePickMap) {
+      if (prePickMap[id] && movieMap[id]) checked.push(movieMap[id])
+    }
+    const calObject = createCalData(checked)
+    const calString = await createCalendar(calObject)
+    const blob = new Blob([calString], { type: 'text/calendar' })
+    const typedBlob = new Blob([blob], { type: 'text/calendar' })
+    // TODO: pnpm type error
+    // @ts-ignore
+    await chrome.downloads.download({
+      filename: `待看的电影-${dayjs().format('MM月DD日')}.ics`,
+      url: URL.createObjectURL(typedBlob),
+      conflictAction: 'uniquify',
+    })
   }
 
-  const onClearCache = () => {
+  const onClearCache = async () => {
     if (window.confirm('确定清空缓存数据？')) {
-      // TODO clear
+      setPrePick({})
+      setMovieMap({})
+      setIDMapping({})
     }
   }
 
   return (
-    <div className="min-w-[320px] p-2">
+    <div className="min-w-[450px] p-2">
       <h2 className="mt-0 mb-3">
         资料馆电影日历小助手 <small>v1.0</small>
       </h2>
@@ -139,7 +129,7 @@ function IndexPopup() {
           清空缓存
         </span>
       </div>
-      <div className="overflow-auto min-h-20 max-h-[100vh]">
+      <div className="overflow-auto min-h-20 max-h-[300px]">
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-[#e3ebec]">

@@ -12,7 +12,6 @@ export interface IAllData {
   }
   movieInfoMapRaw: IMovieInfoList
   doubanInfoMap: IZLGToDoubanMap
-  doubanInfoMapAll: IZLGToDoubanMap
   douToZlg: {
     [k: number]: number
     updateTime: number
@@ -56,6 +55,7 @@ export interface IMovieInfo {
   playTime: string
   price: number
   isActivity: boolean
+  soldOut: boolean
   movieCateList: {
     categoryId: number
     categoryName: string

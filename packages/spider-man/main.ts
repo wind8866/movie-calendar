@@ -2,7 +2,7 @@ import dotent from 'dotenv'
 import chalk from 'chalk'
 
 import { IMovieInfo, IAllData } from './types'
-import { getDoubanData, getDoubanInfoMap, getDouToZLG } from './server-douban'
+import { getDoubanData, addToDoubanInfoMap, getDouToZLG } from './server-douban'
 import { queryPlayDayList, getMovieInfoMap, getMovieList } from './server-zlg'
 import {
   doubanDataPutOSS,
@@ -18,6 +18,7 @@ import { config } from './config'
 import { createAlarm, createCalData, createCalendar } from './to-ics'
 import toCSV from './to-csv'
 import { messagePush } from './message-push'
+import dayjs from 'dayjs'
 
 dotent.config()
 
@@ -53,14 +54,11 @@ export async function getAllData(): Promise<IAllData> {
 
   const movieList: IMovieInfo[] = combineData({ movieListRaw, movieInfoMapRaw })
 
-  const { doubanInfoMapAll, doubanInfoMap, douToZlg } = await getDoubanData(
-    movieList,
-    now,
-  )
+  const { doubanInfoMap, douToZlg } = await getDoubanData(movieList, now)
 
   movieList.forEach((m) => {
-    if (doubanInfoMapAll[m.movieId]) {
-      m.doubanInfo = doubanInfoMapAll[m.movieId]
+    if (doubanInfoMap[m.movieId]) {
+      m.doubanInfo = doubanInfoMap[m.movieId]
     }
   })
 
@@ -71,7 +69,6 @@ export async function getAllData(): Promise<IAllData> {
     now,
     playDate,
     doubanInfoMap,
-    doubanInfoMapAll,
     douToZlg,
     movieList,
     movieListRaw,
@@ -109,9 +106,19 @@ function combineData({
         saleTime: info.saleTime,
         playTime: info.playTime,
         movieActiveDto: info.movieActiveDto,
+        seatTotal: info.seatTotal,
+        seatSold: info.seatSold,
       }),
     )
-
+    let soldOut = false
+    movieCinemaListMore.forEach((info) => {
+      if (info.playTime === movie.playTime) {
+        if (info.seatSold === 0) {
+          soldOut = true
+        }
+      }
+      config.saleTime.add(info.saleTime)
+    })
     const movieInfo: IMovieInfo = {
       movieId: movie.movieId,
       name: movie.movieName,
@@ -125,6 +132,7 @@ function combineData({
       movieCinemaList: movie.movieCinemaList,
       movieActorList: movie.movieActorList,
       movieTime: movie.movieTime,
+      soldOut,
       otherDate,
       country: countryList,
       regionCategoryNameList,
@@ -141,6 +149,7 @@ async function completeProcess() {
   console.log(chalk.green.bold('[完成]获取所有数据'))
 
   if (addedMovie.length > 0) {
+    console.log('🆕本日有新增的排片')
     await putAddedNewMovieList(addedMovie)
     await messagePush(movieList)
 
@@ -154,12 +163,70 @@ async function completeProcess() {
     putCSV(csvStr)
   }
 
+  function logSoldState(movieList: IMovieInfo[]) {
+    const sale80Up = movieList
+      .map((m) => {
+        let scale = 0
+        let total = 0
+        m.movieCinemaListMore?.forEach((info) => {
+          if (info.playTime === m.playTime) {
+            if (info.seatTotal == null || info.seatSold == null) return
+            total = info.seatTotal
+            scale = (info.seatTotal - info.seatSold) / info.seatTotal
+          }
+        })
+        return {
+          name: m.name,
+          scale,
+          total,
+          playTime: m.playTime,
+          room: m.cinema + m.room,
+        }
+      })
+      .filter((m) => m.scale >= 0.8)
+    console.table(sale80Up)
+
+    console.log('\n')
+    const soldOutList = movieList
+      .filter((m) => m.soldOut)
+      .map((m) => ({
+        name: m.name,
+        playTime: m.playTime,
+        room: m.cinema + m.room,
+      }))
+    console.log(
+      chalk.bold.green(
+        `截至${dayjs().format('DD日HH时mm分')}，共有${
+          soldOutList.length
+        }场售罄`,
+      ),
+    )
+    console.table(soldOutList)
+    console.log('\n')
+  }
+
   await putMovieList(movieList)
   const calObject = createCalData(movieList)
   const calAlert = createAlarm(playDate.month)
   const calString = await createCalendar(calObject.concat(calAlert))
   putCal(calString)
-
+  logSoldState(movieList)
   console.log(chalk.bold.green('✅完成所有流程'))
 }
 completeProcess()
+
+async function pullDouban() {
+  const now = Date.now()
+  const movieList = await pullMovieList()
+  const { doubanInfoMap, douToZlg } = await getDoubanData(movieList, now)
+  movieList.forEach((m) => {
+    if (doubanInfoMap[m.movieId]) {
+      m.doubanInfo = doubanInfoMap[m.movieId]
+    }
+  })
+  await doubanDataPutOSS({
+    doubanInfoMap: doubanInfoMap,
+    douToZlg: douToZlg,
+  })
+}
+// pullDouban()

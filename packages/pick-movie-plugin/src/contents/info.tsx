@@ -7,9 +7,14 @@ import type {
 // @ts-ignore
 import cssText from 'data-text:~style.css'
 import { useStorage } from '@plasmohq/storage/hook'
-import type { MovieInfoSimple } from '../background'
 import { useEffect, useState } from 'react'
 import type { PrePickMovie } from '../popup'
+import type { IMovieInfo } from '@moviecal/spider-man/types'
+import { sendToBackground } from '@plasmohq/messaging'
+// import type {
+//   GetMovieMapRequest,
+//   GetMovieMapResponse,
+// } from '~background/messages/get-movie-map'
 
 export const getStyle = () => {
   const style = document.createElement('style')
@@ -33,15 +38,20 @@ export const mountShadowHost: PlasmoMountShadowHost = ({
 export const getShadowHostId = () => 'plasmo-inline-movie-timetable'
 
 const movieInfo = () => {
-  const [movieMap] = useStorage<{ [k: number]: MovieInfoSimple } | null>(
-    'movieInfoMap',
-    null,
-  )
+  const [movieMap, setMovieMap] = useState<{ [k: number]: IMovieInfo }>({})
+  useEffect(() => {
+    // sendToBackground<GetMovieMapRequest, GetMovieMapResponse>({
+    //   name: 'get-movie-map',
+    // }).then((result) => {
+    //   setMovieMap(result)
+    // })
+  }, [])
+
   const [idMapping] = useStorage<{ [k: number]: number } | null>(
     'idMapping',
     null,
   )
-  const [info, setInfo] = useState<MovieInfoSimple | null>(null)
+  const [info, setInfo] = useState<IMovieInfo | null>(null)
 
   useEffect(() => {
     if (movieMap == null || idMapping == null) {
@@ -61,7 +71,7 @@ const movieInfo = () => {
   }, [movieMap, idMapping])
 
   const [prePick, setPrePick] = useStorage<PrePickMovie>('prePickMap', {})
-  const onToggle = (info: MovieInfoSimple) => {
+  const onToggle = (info: IMovieInfo) => {
     if (prePick[info.movieId] == null) {
       setPrePick({
         ...prePick,

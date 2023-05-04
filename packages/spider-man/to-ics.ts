@@ -110,7 +110,7 @@ export function createAlarm([
         {
           action: 'display',
           description: 'Reminder',
-          trigger: { hours: 0, minutes: 11, before: true },
+          trigger: { hours: 0, minutes: 16, before: true },
         },
       ],
       description: ``,

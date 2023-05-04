@@ -50,6 +50,7 @@ async function test() {
 
   const all = [
     {
+      soldOut: false,
       movieId: 58,
       name: '花为媒',
       minute: 112,
@@ -127,6 +128,7 @@ async function test() {
       },
     },
     {
+      soldOut: false,
       movieId: 420,
       name: '偶然与想象',
       minute: 121,
@@ -200,6 +202,7 @@ async function test() {
       },
     },
     {
+      soldOut: false,
       movieId: 827,
       name: '步履不停',
       minute: 114,
@@ -268,6 +271,7 @@ async function test() {
       },
     },
     {
+      soldOut: false,
       movieId: 122,
       name: '夜以继日',
       minute: 119,
@@ -347,6 +351,7 @@ async function test() {
       },
     },
     {
+      soldOut: false,
       movieId: 158,
       name: '欢乐时光',
       minute: 318,

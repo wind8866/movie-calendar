@@ -2,6 +2,7 @@ import chalk from 'chalk'
 import dotent from 'dotenv'
 import { IMovieInfo } from './types'
 import nodemailer from 'nodemailer'
+import dayjs from 'dayjs'
 
 dotent.config()
 
@@ -18,21 +19,21 @@ async function sendMail(movieList: IMovieInfo[]) {
     },
   })
   const userList: string[] = []
+  const time = dayjs()
+  const today = `${time.month() + 1}月${time.date()}日`
   const info = await transporter.sendMail({
     from: `"电影日历" <${emailAddress}>`,
     to: 'liuzhen1010xyz@gmail.com',
     bcc: userList,
-    subject: '资料馆排片更新 4月15日',
+    subject: `资料馆排片更新 ${today}`,
     html: `
-<h1>今日（4月15日）上新${movieList.length}部电影</h1>
-<ul>
-  ${movieList
-    .map((m) => {
-      return `<li>${m.name} ${m.playTime}</li>`
-    })
-    .join('<br>')}
-</ul>
-<p>详情见附件</p>
+<h1>今日（${today}）上新${movieList.length}部电影</h1>
+${movieList
+  .map((m) => {
+    return `<div>${m.name}</div>`
+  })
+  .join('')}
+<div><a href="https://movie.wind8866.top/">https://movie.wind8866.top/</a></div>
 `,
   })
   console.log(info)
