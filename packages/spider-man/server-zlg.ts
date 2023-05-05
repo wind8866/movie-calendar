@@ -63,7 +63,7 @@ export async function queryMovie(day: string) {
 }
 
 export async function queryMovieInfo(movieId: number) {
-  const response = await iaxios<ResWrap<IServerMovieInfo>>({
+  const response = await iaxios<ResWrap<IServerMovieInfo | null>>({
     url: `/movieInfo/${movieId}`,
   })
   return response.data.data
@@ -90,6 +90,7 @@ export async function getMovieInfoMap(
   }
   for (const m of movieList) {
     const info = await queryMovieInfo(m.movieId)
+    if (info == null) continue
     movieInfoMap[m.movieId] = info
     await sleep(getTime(100, 500))
   }

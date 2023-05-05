@@ -75,6 +75,10 @@ export interface IMovieInfo {
 }
 
 export interface IServerMovieInfo {
+  movieId: number
+  movieName: string
+  movieMinute: number
+  movieTime: string
   regionCategoryNameList: {
     categoryName: string
   }[]

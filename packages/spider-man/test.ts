@@ -1,5 +1,4 @@
 import dayjs from 'dayjs'
-import { queryDoubanMovieInfo } from './server-douban'
 import { ossServer } from '@moviecal/utils/oss'
 import { queryMovie, queryMovieInfo, queryPlayDayList } from './server-zlg'
 import { messagePush } from './message-push'

@@ -8,6 +8,7 @@
     "version": "node -v",
     "pull": "tsx packages/spider-man/main",
     "pull-demo": "tsx packages/spider-man/test.ts",
+    "douban-loop": "tsx packages/spider-man/loop-search-mapping.ts",
     "check": "tsc --noEmit",
     "lint-fix": "eslint --ext .js,.ts,.jsx,.tsx --fix --quiet ./packages",
     "lint": "eslint --ext .js,.ts,.jsx,.tsx --quiet ./packages",

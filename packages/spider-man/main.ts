@@ -2,12 +2,11 @@ import dotent from 'dotenv'
 import chalk from 'chalk'
 
 import { IMovieInfo, IAllData } from './types'
-import { getDoubanData, addToDoubanInfoMap, getDouToZLG } from './server-douban'
+import { getDoubanDataUseCache } from './server-douban'
 import { queryPlayDayList, getMovieInfoMap, getMovieList } from './server-zlg'
 import {
   doubanDataPutOSS,
   pullMovieList,
-  pullOSS,
   putMovieList,
   putCSV,
   putCal,
@@ -54,7 +53,10 @@ export async function getAllData(): Promise<IAllData> {
 
   const movieList: IMovieInfo[] = combineData({ movieListRaw, movieInfoMapRaw })
 
-  const { doubanInfoMap, douToZlg } = await getDoubanData(movieList, now)
+  const { doubanInfoMap, douToZlg } = await getDoubanDataUseCache(
+    movieList,
+    now,
+  )
 
   movieList.forEach((m) => {
     if (doubanInfoMap[m.movieId]) {
@@ -213,20 +215,4 @@ async function completeProcess() {
   logSoldState(movieList)
   console.log(chalk.bold.green('✅完成所有流程'))
 }
-completeProcess()
-
-async function pullDouban() {
-  const now = Date.now()
-  const movieList = await pullMovieList()
-  const { doubanInfoMap, douToZlg } = await getDoubanData(movieList, now)
-  movieList.forEach((m) => {
-    if (doubanInfoMap[m.movieId]) {
-      m.doubanInfo = doubanInfoMap[m.movieId]
-    }
-  })
-  await doubanDataPutOSS({
-    doubanInfoMap: doubanInfoMap,
-    douToZlg: douToZlg,
-  })
-}
-// pullDouban()
+// completeProcess()
