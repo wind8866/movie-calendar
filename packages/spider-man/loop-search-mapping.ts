@@ -238,44 +238,54 @@ async function forEachSearch() {
     }
   }
   const resultList: Douban[] = []
+  const todoList = []
   const time = Date.now()
-  for (const id in movielist) {
-    // if (Number(id) > 20) break
+  for (const id of Object.keys(movielist).reverse()) {
     const info = movielist[id]
     if (mappingCache[Number(id)]) continue
     if (info != null) {
-      const infosimple = await queryDoubanMovieInfoUseSearchPage({
+      todoList.push({
         movieName: info.movieName,
         movieTime: info.movieTime,
         movieId: info.movieId,
         movieMinute: info.movieMinute,
       })
-      if (infosimple.doubanId) {
-        mappingCache[Number(id)] = {
-          name: info.movieName,
-          updateTime: time,
-          info: {
-            doubanId: String(infosimple.doubanId),
-            score: infosimple.score as number,
-            commentCount: infosimple.commentCount as number,
-            year: infosimple.movieTime,
-            poster: infosimple.poster as string,
-          },
-        }
-        console.log('search', infosimple.movieName)
-      } else {
-        console.log(
-          infosimple.doubanId,
-          infosimple.movieName,
-          infosimple.movieTime,
-        )
-      }
-
-      // console.log(infosimple)
-      resultList.push(infosimple)
-      await sleep(getTime(300, 1000))
     }
+    continue
+    // if (info != null) {
+    //   const infosimple = await queryDoubanMovieInfoUseSearchPage({
+    //     movieName: info.movieName,
+    //     movieTime: info.movieTime,
+    //     movieId: info.movieId,
+    //     movieMinute: info.movieMinute,
+    //   })
+    //   if (infosimple.doubanId) {
+    //     mappingCache[Number(id)] = {
+    //       name: info.movieName,
+    //       updateTime: time,
+    //       info: {
+    //         doubanId: String(infosimple.doubanId),
+    //         score: infosimple.score as number,
+    //         commentCount: infosimple.commentCount as number,
+    //         year: infosimple.movieTime,
+    //         poster: infosimple.poster as string,
+    //       },
+    //     }
+    //     console.log('search', infosimple.movieName, infosimple.movieId)
+    //   } else {
+    //     console.log(
+    //       infosimple.doubanId,
+    //       infosimple.movieName,
+    //       infosimple.movieTime,
+    //     )
+    //   }
+
+    //   // console.log(infosimple)
+    //   resultList.push(infosimple)
+    //   await sleep(getTime(1000, 1500))
+    // }
   }
+  console.log(JSON.stringify(todoList))
 
   writeFileSync(mappingPath, JSON.stringify(mappingCache))
   // console.log(JSON.stringify(resultList))

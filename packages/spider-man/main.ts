@@ -144,7 +144,7 @@ function combineData({
   })
 }
 
-async function completeProcess() {
+export async function completeProcess() {
   const allData = await getAllData()
   const { addedMovie, movieList, doubanInfoMap, douToZlg, playDate } = allData
   await putAllData(allData)
@@ -215,4 +215,3 @@ async function completeProcess() {
   logSoldState(movieList)
   console.log(chalk.bold.green('✅完成所有流程'))
 }
-// completeProcess()

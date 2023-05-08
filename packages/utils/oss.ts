@@ -3,6 +3,8 @@ import dotent from 'dotenv'
 dotent.config()
 import qs from 'querystring'
 
+const prefix = process.env.ENV === 'TEST' ? '/test/' : ''
+
 const client = new OSS({
   region: process.env.OSS_REGION,
   accessKeyId: process.env.OSS_KEY_ID as string,
@@ -49,7 +51,7 @@ async function put({ servePath, serveName, local, headers = {} }: PutParams) {
     headers['x-oss-tagging'] = qs.stringify(headers['x-oss-tagging'])
   }
 
-  const result = await client.put(servePath + serveName, local, {
+  const result = await client.put(prefix + servePath + serveName, local, {
     headers: {
       ...defaultHeaders,
       ...headers,

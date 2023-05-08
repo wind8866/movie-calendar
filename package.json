@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "version": "node -v",
-    "pull": "tsx packages/spider-man/main",
+    "pull": "tsx packages/spider-man/index",
     "pull-demo": "tsx packages/spider-man/test.ts",
     "douban-loop": "tsx packages/spider-man/loop-search-mapping.ts",
     "check": "tsc --noEmit",
