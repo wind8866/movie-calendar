@@ -1,7 +1,7 @@
 name: 'Pull Data'
 on:
   schedule:
-    - cron: '40 4,16 * * *'
+    - cron: '15 * * * *'
 env:
   API_HOSTNAME: ${{ vars.API_HOSTNAME }}
   API_PREFIX: ${{ vars.API_PREFIX }}
