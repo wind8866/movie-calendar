@@ -3,8 +3,13 @@ import dotent from 'dotenv'
 import { IMovieInfo } from './types'
 import nodemailer from 'nodemailer'
 import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
 
 dotent.config()
+dayjs.extend(utc)
+dayjs.extend(timezone)
+dayjs.tz.setDefault('Asia/Shanghai')
 
 export async function addedMovieMsgPush(movieList: IMovieInfo[]) {
   // 阿里云邮箱配置：https://help.aliyun.com/document_detail/36576.html
@@ -19,7 +24,7 @@ export async function addedMovieMsgPush(movieList: IMovieInfo[]) {
     },
   })
   const userList: string[] = []
-  const time = dayjs()
+  const time = dayjs.tz(Date.now())
   const today = `${time.month() + 1}月${time.date()}日`
   await transporter
     .sendMail({

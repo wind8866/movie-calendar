@@ -23,25 +23,28 @@ export default function toCSV(movieList: IMovieInfo[]): string {
       .filter((v) => v.position === '导演')
       .map((v) => v.realName)
       .join(' ')
+    const playTime = dayjs.tz(m.playTime)
     return [
       m.name,
-      // dayjs(m.saleTime).format('MM月DD日 HH:mm'),
-      dayjs(m.playTime).format(`MM月DD日`),
-      '周' + '日一二三四五六'[dayjs(m.playTime).day()],
-      dayjs(m.playTime).format('HH:mm'),
+      // dayjs.tz(m.saleTime).format('MM月DD日 HH:mm'),
+      playTime.format(`MM月DD日`),
+      '周' + '日一二三四五六'[playTime.day()],
+      playTime.format('HH:mm'),
       // m.minute,
       m.cinema + m.room,
       m.price,
       m.isActivity ? '有' : '',
       // m.movieCinemaListMore?.length,
-      dayjs(m.movieTime).format('YYYY'),
+      dayjs.tz(m.movieTime).format('YYYY'),
       m.country,
       // m.movieCateList.map((cate) => cate.categoryName).join(','),
       director,
       score,
       commentCount,
       url,
-      index === 0 ? `update: ${dayjs().format('MMDD HH:mm:ss')}` : '',
+      index === 0
+        ? `update: ${dayjs.tz(Date.now()).format('MMDD HH:mm:ss')}`
+        : '',
     ]
   })
   return Papa.unparse({

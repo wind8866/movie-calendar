@@ -32,10 +32,10 @@ https://movie.douban.com/subject/${current.doubanId}/`
     const country = (m.country ?? []).join('/')
     const otherDate = m.otherDate
       ?.filter((date) => date !== m.playTime)
-      .map((date) => dayjs(date).format('D'))
+      .map((date) => dayjs.tz(date).format('D'))
       .join(',')
     const description = `\
-${dayjs(m.movieTime).format('YYYY')}年 \
+${dayjs.tz(m.movieTime).format('YYYY')}年 \
 ${m.minute}分钟 \
 ${country} \
 ${doubanInfoText}
@@ -53,7 +53,8 @@ ${
     : ''
 }
 `
-    const start = dayjs(m.playTime)
+    const start = dayjs
+      .tz(m.playTime)
       .utc()
       .format('YYYY MM DD HH mm')
       .split(' ')
@@ -77,7 +78,7 @@ export function createAlarm([
   current,
   next,
 ]: IAllData['playDate']['month']): EventAttributes[] {
-  const yesterday = dayjs().subtract(1, 'day')
+  const yesterday = dayjs.tz(Date.now()).subtract(1, 'day')
   const title = `资料馆电影日历`
   const titleInfo: EventAttributes = {
     title: title,
@@ -87,16 +88,16 @@ export function createAlarm([
     description: `\
 首页🏠：https://movie.wind8866.top
 修改意见📩：https://github.com/wind8866/movie-calendar/issues
-更新日期🕙：${dayjs().format('MM/DD HH:mm:ss')}
+更新日期🕙：${dayjs.tz(Date.now()).format('MM/DD HH:mm:ss')}
 `,
     categories: ['资料馆'],
     url: 'https://movie.wind8866.top',
   }
   const alarmList: EventAttributes[] = [titleInfo]
   config.saleTime.forEach((date) => {
-    const time = dayjs(date)
+    const time = dayjs.tz(date)
     // hidden 24h ago
-    if (Number(dayjs()) - Number(time) > 86400000) return
+    if (Number(dayjs.tz(Date.now())) - Number(time) > 86400000) return
     alarmList.push({
       start: [
         time.get('year'),

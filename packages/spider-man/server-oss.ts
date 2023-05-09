@@ -5,8 +5,13 @@ import { getSaleTimeSet } from './main'
 import { getDouToCFA } from './server-douban'
 import { ossServer } from '@moviecal/utils/oss'
 import { appMessagePushEmail } from './message-push'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
 
 dotent.config()
+dayjs.extend(utc)
+dayjs.extend(timezone)
+dayjs.tz.setDefault('Asia/Shanghai')
 
 const currentPath = 'current/'
 const movieListName = 'movie-list.json' // 最新的排片
@@ -16,7 +21,7 @@ const douIdToMovieIdName = 'mapping-douid-movieid.json' // douId: movieId
 const calName = 'current.ics' // 日历数据
 
 const archivedPath = 'archived/'
-const date = dayjs().format('YYYY-MM-DD-HH')
+const date = dayjs.tz(Date.now()).format('YYYY-MM-DD-HH')
 const csvName = `csv-${date}.csv`
 const allDataName = `alldata-${date}.json`
 const addedNewMovieListBackupName = `movie-list-added-${date}.json` // 新增的排片

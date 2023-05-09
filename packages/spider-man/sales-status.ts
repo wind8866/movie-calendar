@@ -39,7 +39,9 @@ export function logSoldState(movieList: IMovieInfo[]) {
     }))
   console.log(
     chalk.bold.green(
-      `截至${dayjs().format('DD日HH时mm分')}，共有${soldOutList.length}场售罄`,
+      `截至${dayjs.tz(new Date()).format('DD日HH时mm分')}，共有${
+        soldOutList.length
+      }场售罄`,
     ),
   )
   console.table(soldOutList)
