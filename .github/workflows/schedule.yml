@@ -2,8 +2,9 @@
 #     - cron: '10,40,50 * * * *' # '0 7,20 * * *'
 
 name: 'Pull Data'
-schedule:
-  - cron: '40 7,19 * * *'
+on:
+  schedule:
+    - cron: '35 12,23 * * *'
 env:
   API_HOSTNAME: ${{ vars.API_HOSTNAME }}
   API_PREFIX: ${{ vars.API_PREFIX }}
