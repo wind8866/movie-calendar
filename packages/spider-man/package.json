@@ -10,6 +10,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@moviecal/utils": "workspace:^"
+    "@moviecal/utils": "workspace:^",
+    "cli-progress": "^3.12.0"
+  },
+  "devDependencies": {
+    "@types/cli-progress": "^3.11.0"
   }
 }

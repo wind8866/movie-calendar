@@ -1,18 +1,20 @@
 import dotent from 'dotenv'
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 
-import { getTime, sleep } from '@moviecal/utils'
+import { createBar, getTime, sleep } from '@moviecal/utils'
 import {
   IMovieInfoList,
   IPlayTimeList,
   IServerMovieInfo,
   IServerMovieItem,
 } from './types'
+import { appMessagePushEmail } from './message-push'
+import chalk from 'chalk'
 
 dotent.config()
 
-type ResWrap<T> = {
-  code: 0 | 1
+export type ResWrap<T> = {
+  code: number // 0 success | 1 | 500 | 45100
   data: T
   msg: string
 }
@@ -23,6 +25,36 @@ const iaxios = axios.create({
   baseURL: `https://${hostname}${prefix}`,
 })
 
+iaxios.interceptors.response.use(
+  async function (response: AxiosResponse<ResWrap<unknown>, unknown>) {
+    if (response.data.code !== 0) {
+      // TODO: throw error or (muite and setting default value)
+      await appMessagePushEmail({
+        type: 'error',
+        msg: response.data.msg,
+        json: JSON.stringify({
+          url: response.config.url,
+          requestData: response.config.data,
+          responseData: JSON.stringify(response.data),
+        }),
+      })
+    }
+    return response
+  },
+  async function (error) {
+    await appMessagePushEmail({
+      type: 'error',
+      msg: error?.message,
+      json: JSON.stringify({
+        message: error?.message,
+        stack: error?.stack,
+        // ...error,
+      }),
+    })
+    return Promise.reject(error)
+  },
+)
+
 /**
  * @returns {dayList: '2023-04-15'[], month: ['9', undefined]}
  */
@@ -30,12 +62,10 @@ export async function queryPlayDayList(): Promise<{
   dayList: string[]
   month: (undefined | string)[]
 }> {
-  // TODO: 怎么使用 ts 同时限制返回值和传入类型
   const response = await iaxios<ResWrap<IPlayTimeList>>({
     url: `/movieCinemaDate/new`,
   })
-  const body = response.data
-  const resData = body.data
+  const resData = response.data.data
   const dayList: string[] = []
   resData.currentMonth?.cinemaDateDtoList.forEach((m) => {
     dayList.push(m.playTime)
@@ -44,6 +74,7 @@ export async function queryPlayDayList(): Promise<{
     dayList.push(m.playTime)
   })
   const month = [resData.currentMonth?.month, resData.nextMonth?.month]
+  console.log(chalk.green('[完成]'), '排片日期')
   return {
     month,
     dayList,
@@ -58,7 +89,6 @@ export async function queryMovie(day: string) {
     url: `/movieCinemaList`,
     params: { now: day },
   })
-  // TODO: 处理code 500服务器异常
   return response.data.data
 }
 
@@ -69,18 +99,29 @@ export async function queryMovieInfo(movieId: number) {
   return response.data.data
 }
 
+const barList = createBar('排片')
 export async function getMovieList(dayList: string[], now: number) {
+  barList.start(dayList.length, 0, {
+    label: 'day',
+    val: '',
+  })
   const allList: IServerMovieItem[] = []
   for (const day of dayList) {
     const listSegment = await queryMovie(day.replaceAll('-', '/'))
     allList.push(...listSegment)
+    barList.increment({
+      val: day,
+    })
     await sleep(getTime(100, 500))
   }
+  barList.stop()
   return {
     updateTime: now,
     list: allList,
   }
 }
+
+const barInfo = createBar('详情')
 export async function getMovieInfoMap(
   movieList: IServerMovieItem[],
   now: number,
@@ -88,11 +129,22 @@ export async function getMovieInfoMap(
   const movieInfoMap: IMovieInfoList = {
     updateTime: now,
   }
+
+  barInfo.start(movieList.length, 0, {
+    label: 'movie',
+    val: '',
+  })
   for (const m of movieList) {
     const info = await queryMovieInfo(m.movieId)
     if (info == null) continue
     movieInfoMap[m.movieId] = info
+
+    barInfo.increment({
+      val: m.movieName,
+    })
     await sleep(getTime(100, 500))
   }
+
+  barInfo.stop()
   return movieInfoMap
 }

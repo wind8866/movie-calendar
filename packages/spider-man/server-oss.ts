@@ -1,9 +1,10 @@
 import dotent from 'dotenv'
-import { IAllData, IMovieInfo, IZLGToDoubanMap } from './types'
+import { IAllData, IMovieInfo, ICFAToDoubanMap } from './types'
 import dayjs from 'dayjs'
 import { getSaleTimeSet } from './main'
-import { getDouToZLG } from './server-douban'
+import { getDouToCFA } from './server-douban'
 import { ossServer } from '@moviecal/utils/oss'
+import { appMessagePushEmail } from './message-push'
 
 dotent.config()
 
@@ -20,10 +21,24 @@ const csvName = `csv-${date}.csv`
 const allDataName = `alldata-${date}.json`
 const addedNewMovieListBackupName = `movie-list-added-${date}.json` // 新增的排片
 
+async function catchError(title: string, error: Error, throwUp = true) {
+  await appMessagePushEmail({
+    type: 'error',
+    msg: title,
+    json: JSON.stringify(
+      JSON.stringify({
+        message: error?.message,
+        stack: error?.stack,
+      }),
+    ),
+  })
+  if (throwUp) throw error
+}
+
 // 获取缓存的 movieId: douId
 export function pullDoubanInfoMap() {
   return ossServer
-    .pull<IZLGToDoubanMap>({
+    .pull<ICFAToDoubanMap>({
       servePath: currentPath,
       serveName: doubanInfoMapName,
     })
@@ -37,30 +52,42 @@ export function pullDoubanInfoMap() {
 export async function putAddedNewMovieList(movieList: IMovieInfo[]) {
   const encoder = new TextEncoder()
 
-  await ossServer.put({
-    servePath: currentPath,
-    serveName: addedNewMovieListName,
-    local: new Buffer(encoder.encode(JSON.stringify(movieList))),
-  })
-  await ossServer.put({
-    servePath: archivedPath,
-    serveName: addedNewMovieListBackupName,
-    local: new Buffer(encoder.encode(JSON.stringify(movieList))),
-  })
+  await ossServer
+    .put({
+      servePath: currentPath,
+      serveName: addedNewMovieListName,
+      local: new Buffer(encoder.encode(JSON.stringify(movieList))),
+    })
+    .catch(async (error) => {
+      catchError('oss added movieList upload error', error)
+    })
+  await ossServer
+    .put({
+      servePath: archivedPath,
+      serveName: addedNewMovieListBackupName,
+      local: new Buffer(encoder.encode(JSON.stringify(movieList))),
+    })
+    .catch(async (error) => {
+      catchError('oss added movieList of archived upload error', error)
+    })
 }
 // 缓存所有数据
 export async function putAllData(allData: IAllData) {
   const encoder = new TextEncoder()
 
-  await ossServer.put({
-    servePath: archivedPath,
-    serveName: allDataName,
-    local: new Buffer(encoder.encode(JSON.stringify(allData))),
-    headers: {
-      'x-oss-object-acl': 'private',
-      'x-oss-storage-class': 'IA',
-    },
-  })
+  await ossServer
+    .put({
+      servePath: archivedPath,
+      serveName: allDataName,
+      local: new Buffer(encoder.encode(JSON.stringify(allData))),
+      headers: {
+        'x-oss-object-acl': 'private',
+        'x-oss-storage-class': 'IA',
+      },
+    })
+    .catch(async (error) => {
+      catchError('oss allData upload error', error)
+    })
 }
 
 // 缓存 movieList
@@ -68,11 +95,15 @@ export async function putMovieList(movieList: IMovieInfo[]) {
   const encoder = new TextEncoder()
 
   // movie list
-  await ossServer.put({
-    servePath: currentPath,
-    serveName: movieListName,
-    local: new Buffer(encoder.encode(JSON.stringify(movieList))),
-  })
+  await ossServer
+    .put({
+      servePath: currentPath,
+      serveName: movieListName,
+      local: new Buffer(encoder.encode(JSON.stringify(movieList))),
+    })
+    .catch(async (error) => {
+      catchError('!!! oss movieList upload error', error)
+    })
 }
 // 获取上次缓存的 movieList
 export function pullMovieList(): Promise<IMovieInfo[]> {
@@ -89,45 +120,61 @@ export function pullMovieList(): Promise<IMovieInfo[]> {
 
 // 缓存 douId <=> movieId
 export async function doubanDataPutOSS({
-  doubanInfoMap,
-  douToZlg,
+  cfaToDou,
+  douToCFA,
 }: {
-  doubanInfoMap: IZLGToDoubanMap
-  douToZlg: Awaited<ReturnType<typeof getDouToZLG>>
+  cfaToDou: ICFAToDoubanMap
+  douToCFA: Awaited<ReturnType<typeof getDouToCFA>>
 }) {
   const encoder = new TextEncoder()
   // movieId to douId
-  await ossServer.put({
-    servePath: currentPath,
-    serveName: doubanInfoMapName,
-    local: new Buffer(encoder.encode(JSON.stringify(doubanInfoMap))),
-  })
+  await ossServer
+    .put({
+      servePath: currentPath,
+      serveName: doubanInfoMapName,
+      local: new Buffer(encoder.encode(JSON.stringify(cfaToDou))),
+    })
+    .catch(async (error) => {
+      catchError('oss cfaToDou upload error', error)
+    })
 
   // douId to movieId
-  await ossServer.put({
-    servePath: currentPath,
-    serveName: douIdToMovieIdName,
-    local: new Buffer(encoder.encode(JSON.stringify(douToZlg))),
-  })
+  await ossServer
+    .put({
+      servePath: currentPath,
+      serveName: douIdToMovieIdName,
+      local: new Buffer(encoder.encode(JSON.stringify(douToCFA))),
+    })
+    .catch(async (error) => {
+      catchError('oss douToCFA upload error', error)
+    })
 }
 
 // 存储生成的日历
 export async function putCal(str: string) {
   const encoder = new TextEncoder()
-  await ossServer.put({
-    servePath: currentPath,
-    serveName: calName,
-    local: Buffer.from(encoder.encode(str)),
-  })
+  await ossServer
+    .put({
+      servePath: currentPath,
+      serveName: calName,
+      local: Buffer.from(encoder.encode(str)),
+    })
+    .catch(async (error) => {
+      catchError('!!!oss Calendar upload error', error)
+    })
 }
 // 存储 excel
 export async function putCSV(str: string) {
   const encoder = new TextEncoder()
-  await ossServer.put({
-    servePath: archivedPath,
-    serveName: csvName,
-    local: Buffer.from(encoder.encode(str)),
-  })
+  await ossServer
+    .put({
+      servePath: archivedPath,
+      serveName: csvName,
+      local: Buffer.from(encoder.encode(str)),
+    })
+    .catch(async (error) => {
+      catchError('oss CVS upload error', error)
+    })
 }
 
 // 同时获取movieList和豆瓣数据
@@ -139,13 +186,13 @@ export async function pullOSS() {
   })
 
   // movieId to douId
-  const doubanInfoMap: IZLGToDoubanMap = await ossServer.pull({
+  const doubanInfoMap: ICFAToDoubanMap = await ossServer.pull({
     servePath: currentPath,
     serveName: doubanInfoMapName,
   })
 
   // douId to movieId
-  const douToZlg: Awaited<ReturnType<typeof getDouToZLG>> =
+  const douToCFA: Awaited<ReturnType<typeof getDouToCFA>> =
     await ossServer.pull({
       servePath: currentPath,
       serveName: douIdToMovieIdName,
@@ -154,7 +201,7 @@ export async function pullOSS() {
 
   return {
     movieList,
-    douToZlg,
+    douToCFA,
     doubanInfoMap,
     saleTimeList,
   }

@@ -1,9 +1,14 @@
 import dayjs from 'dayjs'
 import { ossServer } from '@moviecal/utils/oss'
-import { queryMovie, queryMovieInfo, queryPlayDayList } from './server-zlg'
-import { messagePush } from './message-push'
+import { queryMovie, queryMovieInfo, queryPlayDayList } from './server-cfa'
+import { addedMovieMsgPush } from './message-push'
 
 async function test() {
+  // ;(async function () {
+  //   const response = await iaxios<ResWrap<IPlayTimeList>>({
+  //     url: `/movieInfo/1217`,
+  //   })
+  // })()
   // const playlist = await queryPlayDayList()
   // console.log(playlist)
   // const listSegment = await queryMovie('2023/04/09')
@@ -422,7 +427,7 @@ async function test() {
     },
   ]
 
-  messagePush(all)
+  addedMovieMsgPush(all)
 }
 async function main() {
   await test()

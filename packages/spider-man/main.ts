@@ -1,11 +1,15 @@
 import dotent from 'dotenv'
 import chalk from 'chalk'
+import dayjs from 'dayjs'
 
 import { IMovieInfo, IAllData } from './types'
 import { getDoubanDataUseCache } from './server-douban'
-import { queryPlayDayList, getMovieInfoMap, getMovieList } from './server-zlg'
+import { queryPlayDayList, getMovieInfoMap, getMovieList } from './server-cfa'
+import { config } from './config'
+import { createAlarm, createCalData, createCalendar } from './to-ics'
+import toCSV from './to-csv'
+import { appMessagePushEmail, addedMovieMsgPush } from './message-push'
 import {
-  doubanDataPutOSS,
   pullMovieList,
   putMovieList,
   putCSV,
@@ -13,11 +17,6 @@ import {
   putAddedNewMovieList,
   putAllData,
 } from './server-oss'
-import { config } from './config'
-import { createAlarm, createCalData, createCalendar } from './to-ics'
-import toCSV from './to-csv'
-import { messagePush } from './message-push'
-import dayjs from 'dayjs'
 
 dotent.config()
 
@@ -45,33 +44,45 @@ export function getSaleTimeSet(movieList: IMovieInfo[]) {
 export async function getAllData(): Promise<IAllData> {
   const now = Date.now()
   const playDate = await queryPlayDayList()
-  console.log(chalk.green('[完成]获取排片日期'))
   const movieListRaw = await getMovieList(playDate.dayList, now)
-  console.log(chalk.green('[完成]获取排片列表'))
   const movieInfoMapRaw = await getMovieInfoMap(movieListRaw.list, now)
-  console.log(chalk.green('[完成]获取电影详情'))
-
   const movieList: IMovieInfo[] = combineData({ movieListRaw, movieInfoMapRaw })
 
-  const { doubanInfoMap, douToZlg } = await getDoubanDataUseCache(
-    movieList,
-    now,
-  )
+  const { cfaToDou, douToCFA } = await getDoubanDataUseCache(movieList, now)
 
-  movieList.forEach((m) => {
-    if (doubanInfoMap[m.movieId]) {
-      m.doubanInfo = doubanInfoMap[m.movieId]
+  const noDouInfo: {
+    movieId: number
+    name: string
+    movieTime: string
+  }[] = []
+  movieList.forEach(async (m) => {
+    if (cfaToDou[m.movieId]) {
+      m.doubanInfo = cfaToDou[m.movieId]
+    } else {
+      const simpleInfo = {
+        movieId: m.movieId,
+        name: m.name,
+        movieTime: m.movieTime,
+      }
+      console.warn(chalk.yellow('[豆瓣信息]'), JSON.stringify(simpleInfo))
+      noDouInfo.push(simpleInfo)
     }
   })
-
+  if (noDouInfo.length > 0) {
+    await appMessagePushEmail({
+      type: 'warn',
+      msg: '没有查询到豆瓣信息',
+      json: JSON.stringify(noDouInfo),
+    })
+  }
   const addedMovie = await diffMovieList(movieList)
   const saleTimeList = getSaleTimeSet(movieList)
 
   return {
     now,
     playDate,
-    doubanInfoMap,
-    douToZlg,
+    cfaToDou,
+    douToCFA,
     movieList,
     movieListRaw,
     movieInfoMapRaw,
@@ -143,75 +154,21 @@ function combineData({
     return movieInfo
   })
 }
-
 export async function completeProcess() {
   const allData = await getAllData()
-  const { addedMovie, movieList, doubanInfoMap, douToZlg, playDate } = allData
+  const { addedMovie, movieList, playDate } = allData
   await putAllData(allData)
-  console.log(chalk.green.bold('[完成]获取所有数据'))
 
   if (addedMovie.length > 0) {
-    console.log('🆕本日有新增的排片')
     await putAddedNewMovieList(addedMovie)
-    await messagePush(movieList)
-
-    await doubanDataPutOSS({
-      doubanInfoMap: doubanInfoMap,
-      douToZlg: douToZlg,
-    })
-    console.log(chalk.bold.green('[完成]存储豆瓣数据'))
-
+    await addedMovieMsgPush(movieList)
     const csvStr = toCSV(movieList)
     putCSV(csvStr)
   }
-
-  function logSoldState(movieList: IMovieInfo[]) {
-    const sale80Up = movieList
-      .map((m) => {
-        let scale = 0
-        let total = 0
-        m.movieCinemaListMore?.forEach((info) => {
-          if (info.playTime === m.playTime) {
-            if (info.seatTotal == null || info.seatSold == null) return
-            total = info.seatTotal
-            scale = (info.seatTotal - info.seatSold) / info.seatTotal
-          }
-        })
-        return {
-          name: m.name,
-          scale,
-          total,
-          playTime: m.playTime,
-          room: m.cinema + m.room,
-        }
-      })
-      .filter((m) => m.scale >= 0.8)
-    console.table(sale80Up)
-
-    console.log('\n')
-    const soldOutList = movieList
-      .filter((m) => m.soldOut)
-      .map((m) => ({
-        name: m.name,
-        playTime: m.playTime,
-        room: m.cinema + m.room,
-      }))
-    console.log(
-      chalk.bold.green(
-        `截至${dayjs().format('DD日HH时mm分')}，共有${
-          soldOutList.length
-        }场售罄`,
-      ),
-    )
-    console.table(soldOutList)
-    console.log('\n')
-  }
-
   await putMovieList(movieList)
   const calObject = createCalData(movieList)
   const calAlert = createAlarm(playDate.month)
   const calString = await createCalendar(calObject.concat(calAlert))
   putCal(calString)
-  logSoldState(movieList)
-  console.log(chalk.bold.green('✅完成所有流程'))
+  console.log(chalk.bold.green('[结束]'), '完成所有流程')
 }

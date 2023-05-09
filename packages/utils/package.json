@@ -5,5 +5,11 @@
   "main": "index.ts",
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "cli-progress": "^3.12.0"
+  },
+  "devDependencies": {
+    "@types/cli-progress": "^3.11.0"
+  }
 }

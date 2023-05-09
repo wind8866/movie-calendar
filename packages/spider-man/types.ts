@@ -11,8 +11,8 @@ export interface IAllData {
     list: IServerMovieItem[]
   }
   movieInfoMapRaw: IMovieInfoList
-  doubanInfoMap: IZLGToDoubanMap
-  douToZlg: {
+  cfaToDou: ICFAToDoubanMap
+  douToCFA: {
     [k: number]: number
     updateTime: number
   }
@@ -71,7 +71,7 @@ export interface IMovieInfo {
   otherDate?: string[]
   regionCategoryNameList?: IServerMovieInfo['regionCategoryNameList']
   movieCinemaListMore?: IServerMovieInfo['movieCinemaList']
-  doubanInfo?: IZLGToDoubanMap[number]
+  doubanInfo?: ICFAToDoubanMap[number]
 }
 
 export interface IServerMovieInfo {
@@ -122,7 +122,7 @@ export interface IMovieInfoList {
 }
 
 /** key: movieId */
-export interface IZLGToDoubanMap {
+export interface ICFAToDoubanMap {
   // movieId
   [key: number]: {
     name: string

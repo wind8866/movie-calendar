@@ -1,31 +1,34 @@
-import { IMovieInfo, IZLGToDoubanMap } from './types'
+import { IMovieInfo, ICFAToDoubanMap } from './types'
 import { pullDoubanInfoMap } from './server-oss'
 
-export async function getDouToZLG(doubanMap: IZLGToDoubanMap, now: number) {
-  const douToZlg: { updateTime: number; [k: number]: number } = {
+export async function getDouToCFA(
+  movieIdToDouInfo: ICFAToDoubanMap,
+  now: number,
+) {
+  const douToCFA: { updateTime: number; [k: number]: number } = {
     updateTime: now,
   }
-  for (const movieId in doubanMap) {
-    const { info } = doubanMap[movieId]
+  for (const movieId in movieIdToDouInfo) {
+    const { info } = movieIdToDouInfo[movieId]
     if (Array.isArray(info)) {
       info.forEach((item) => {
-        douToZlg[Number(item.doubanId)] = Number(movieId)
+        douToCFA[Number(item.doubanId)] = Number(movieId)
       })
     } else {
-      douToZlg[Number(info.doubanId)] = Number(movieId)
+      douToCFA[Number(info.doubanId)] = Number(movieId)
     }
   }
-  return douToZlg
+  return douToCFA
 }
 
 export async function getDoubanDataUseCache(
   movieList: IMovieInfo[],
   now: number,
 ) {
-  const doubanInfoMap = (await pullDoubanInfoMap()) ?? {}
-  const douToZlg = await getDouToZLG(doubanInfoMap, now)
+  const cfaToDou = (await pullDoubanInfoMap()) ?? {}
+  const douToCFA = await getDouToCFA(cfaToDou, now)
   return {
-    douToZlg,
-    doubanInfoMap,
+    douToCFA,
+    cfaToDou,
   }
 }

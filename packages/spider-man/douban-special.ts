@@ -1,6 +1,6 @@
-import { IZLGToDoubanMap } from './types'
+import { ICFAToDoubanMap } from './types'
 
-export const doubanSpecial: IZLGToDoubanMap = {
+export const doubanSpecial: ICFAToDoubanMap = {
   1154: {
     name: '我住在凡尔赛的日子+你好，世界！',
     updateTime: 1683531985027,

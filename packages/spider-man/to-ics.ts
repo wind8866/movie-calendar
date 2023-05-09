@@ -54,11 +54,12 @@ ${
     : ''
 }
 `
+    const start = dayjs(m.playTime)
+      .format('YYYY MM DD HH mm')
+      .split(' ')
+      .map((str) => Number(str)) as [number, number, number, number, number]
     return {
-      start: dayjs(m.playTime)
-        .format('YYYY MM DD HH mm')
-        .split(' ')
-        .map((str) => Number(str)),
+      start,
       duration: {
         hours: Math.floor(m.minute / 60),
         minutes: m.minute % 60,
@@ -67,8 +68,7 @@ ${
       description,
       categories: ['资料馆'],
       url: douURL,
-    } as EventAttributes
-    // TODO: type
+    }
   })
 }
 

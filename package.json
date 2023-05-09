@@ -7,6 +7,7 @@
   "scripts": {
     "version": "node -v",
     "pull": "tsx packages/spider-man/index",
+    "status": "tsx packages/spider-man/sales-status",
     "pull-demo": "tsx packages/spider-man/test.ts",
     "douban-loop": "tsx packages/spider-man/loop-search-mapping.ts",
     "check": "tsc --noEmit",

@@ -1,12 +1,11 @@
 import chalk from 'chalk'
-import { getDouToZLG } from './server-douban'
+import { getDouToCFA } from './server-douban'
 import { pullDoubanInfoMap } from './server-oss'
-import { IDoubanSearchItem, IZLGToDoubanMap, IServerMovieInfo } from './types'
+import { ICFAToDoubanMap, IDoubanSearchItem, IServerMovieInfo } from './types'
 import { getTime, sleep } from '@moviecal/utils'
 import { doubanSpecial } from './douban-special'
 import dayjs from 'dayjs'
 import axios from 'axios'
-import { queryMovieInfo } from './server-zlg'
 import { readFileSync, writeFileSync } from 'node:fs'
 
 const iaxios = axios.create({
@@ -84,7 +83,7 @@ export async function addToDoubanInfoMap({
 }: {
   movieList: MovieInfoSimple[]
   now: number
-  doubanInfoMap: IZLGToDoubanMap
+  doubanInfoMap: ICFAToDoubanMap
 }): Promise<string[]> {
   const failed: string[] = []
   for (const movie of movieList) {
@@ -146,9 +145,9 @@ export async function getDoubanData(movieList: MovieInfoSimple[], now: number) {
     }
     await sleep(10000)
   }
-  const douToZlg = await getDouToZLG(doubanInfoMap, now)
+  const douToCFA = await getDouToCFA(doubanInfoMap, now)
   return {
-    douToZlg,
+    douToCFA,
     doubanInfoMap,
   }
 }
@@ -196,7 +195,7 @@ async function forEachSearch() {
     encoding: 'utf-8',
     flag: 'r',
   })
-  const mappingCache = JSON.parse(mappingStr) as IZLGToDoubanMap
+  const mappingCache = JSON.parse(mappingStr) as ICFAToDoubanMap
 
   const resData = JSON.parse(resStr) as { [id: string]: Info }
   const classify = {
