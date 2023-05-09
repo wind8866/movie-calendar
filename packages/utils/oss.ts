@@ -3,7 +3,7 @@ import dotent from 'dotenv'
 dotent.config()
 import qs from 'querystring'
 
-const prefix = process.env.ENV === 'TEST' ? '/test/' : ''
+const prefix = process.env.API_ENV === 'TEST' ? '/test/' : ''
 
 const client = new OSS({
   region: process.env.OSS_REGION,

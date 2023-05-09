@@ -4,6 +4,8 @@
 name: 'Pull Data'
 on:
   - push
+env:
+  API_ENV: ${{ secrets.API_ENV }}
 jobs:
   cache-and-install:
     runs-on: ubuntu-latest
@@ -41,8 +43,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Log all env
+        run: env
       - name: Log env
-        run: echo $HOSTNAME
-
-      - name: Pull Data
-        run: pnpm pull
+        run: echo $env.API_ENV
+      - name: log OSS_REGION
+        run: echo $OSS_REGION
+      - name: log
+        run: pnpm logenv

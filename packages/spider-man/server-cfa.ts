@@ -18,7 +18,7 @@ export type ResWrap<T> = {
   data: T
   msg: string
 }
-const hostname = process.env.HOSTNAME
+const hostname = process.env.API_HOSTNAME
 const prefix = process.env.API_PREFIX
 
 const iaxios = axios.create({
