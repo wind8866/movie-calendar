@@ -6,6 +6,7 @@ on:
   - push
 env:
   API_ENV: ${{ secrets.API_ENV }}
+  OSS_REGION: ${{ vars.OSS_REGION }}
 jobs:
   cache-and-install:
     runs-on: ubuntu-latest
