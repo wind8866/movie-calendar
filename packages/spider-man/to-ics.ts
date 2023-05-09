@@ -6,10 +6,9 @@ import { EventAttributes, createEvents } from 'ics'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 
-// TODO: 时区设置
 dayjs.extend(utc)
 dayjs.extend(timezone)
-dayjs.tz.setDefault('America/New_York')
+dayjs.tz.setDefault('Asia/Shanghai')
 
 export function createCalData(movieList: IMovieInfo[]): EventAttributes[] {
   return movieList.map((m) => {
@@ -55,11 +54,13 @@ ${
 }
 `
     const start = dayjs(m.playTime)
+      .utc()
       .format('YYYY MM DD HH mm')
       .split(' ')
       .map((str) => Number(str)) as [number, number, number, number, number]
     return {
       start,
+      startInputType: 'utc',
       duration: {
         hours: Math.floor(m.minute / 60),
         minutes: m.minute % 60,

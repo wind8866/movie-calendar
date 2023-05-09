@@ -6,7 +6,6 @@
   "type": "module",
   "scripts": {
     "version": "node -v",
-    "logenv": "tsx packages/spider-man/logenv",
     "pull": "tsx packages/spider-man/index",
     "status": "tsx packages/spider-man/sales-status",
     "pull-demo": "tsx packages/spider-man/test.ts",
