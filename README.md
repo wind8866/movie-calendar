@@ -3,6 +3,7 @@
     <img src="packages/homepage/logo.svg" height="128">
   </a>
 </p>
+
 # 电影日历(Movie Calendar)
 
 ![](https://img.shields.io/badge/license-Apache%202-blue) ![](https://img.shields.io/github/stars/wind8866/movie-calendar.svg?logo=github) ![](https://img.shields.io/coveralls/wind8866/movie-calendar.svg) ![](https://img.shields.io/chrome-web-store/v/1)
