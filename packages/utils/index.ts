@@ -1,5 +1,4 @@
 import chalk from 'chalk'
-import fsPromise from 'node:fs/promises'
 import cliProgress from 'cli-progress'
 
 export function getDayList(year: string, month: string, days = 31): string[] {
