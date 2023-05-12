@@ -7,8 +7,8 @@ import {
   IPlayTimeList,
   IServerMovieInfo,
   IServerMovieItem,
-} from './types'
-import { appMessagePushEmail } from './message-push'
+} from '../types'
+import { appMessagePushEmail } from '../export/message-push'
 import chalk from 'chalk'
 
 dotent.config()
@@ -27,18 +27,18 @@ const iaxios = axios.create({
 
 iaxios.interceptors.response.use(
   async function (response: AxiosResponse<ResWrap<unknown>, unknown>) {
-    if (response.data.code !== 0) {
-      // TODO: throw error or (muite and setting default value)
-      await appMessagePushEmail({
-        type: 'error',
-        msg: response.data.msg,
-        json: JSON.stringify({
-          url: response.config.url,
-          requestData: response.config.data,
-          responseData: JSON.stringify(response.data),
-        }),
-      })
-    }
+    // if (response.data.code !== 0) {
+    //   // TODO: throw error or (muite and setting default value)
+    //   await appMessagePushEmail({
+    //     type: 'error',
+    //     msg: response.data.msg,
+    //     json: JSON.stringify({
+    //       url: response.config.url,
+    //       requestData: response.config.data,
+    //       responseData: JSON.stringify(response.data),
+    //     }),
+    //   })
+    // }
     return response
   },
   async function (error) {

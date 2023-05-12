@@ -1,12 +1,13 @@
 import chalk from 'chalk'
-import { getDouToCFA } from './server-douban'
-import { pullDoubanInfoMap } from './server-oss'
-import { ICFAToDoubanMap, IDoubanSearchItem, IServerMovieInfo } from './types'
+import { getDouToCFA } from '../server/douban'
+// import { pullDoubanInfoMap } from '../server/oss'
+import { ICFAToDoubanMap, IDoubanSearchItem, IServerMovieInfo } from '../types'
 import { getTime, sleep } from '@moviecal/utils'
-import { doubanSpecial } from './douban-special'
+import { doubanSpecial } from '../data/douban-special'
 import dayjs from 'dayjs'
 import axios from 'axios'
 import { readFileSync, writeFileSync } from 'node:fs'
+import { queryMovieInfo } from '../server/cfa'
 
 const iaxios = axios.create({
   baseURL: `https://movie.douban.com`,
@@ -117,7 +118,7 @@ export async function addToDoubanInfoMap({
 
 export async function getDoubanData(movieList: MovieInfoSimple[], now: number) {
   const retryTimes = 1
-  const doubanInfoMap = (await pullDoubanInfoMap()) ?? {}
+  const doubanInfoMap = {}
 
   for (let timer = 0; timer < retryTimes; timer++) {
     const failed = await addToDoubanInfoMap({
@@ -152,40 +153,31 @@ export async function getDoubanData(movieList: MovieInfoSimple[], now: number) {
   }
 }
 
-async function forEachSearch() {
-  // let start = 1
-  // const end = 1216
-  // const list: { [id: number]: MovieInfoSimple } = {}
-  // const listAll: { [id: number]: any } = {}
-  // while (start <= end) {
-  //   const resData = await queryMovieInfo(start)
-  //   if (resData) {
-  //     const info: MovieInfoSimple = {
-  //       movieId: start,
-  //       name: resData.movieName,
-  //       movieTime: resData.movieTime,
-  //     }
-  //     console.log(start + ' ' + resData.movieName)
-  //     list[start] = info
-  //   }
-  //   listAll[start] = resData
-  //   sleep(getTime(100, 500))
-  //   start++
-  // }
-  // writeFileSync(`${__dirname}/.cache/list-all.json`, JSON.stringify(listAll))
-  // writeFileSync(`${__dirname}/.cache/list.json`, JSON.stringify(list))
-  // console.log(JSON.stringify(list))
-  // const infoList = []
-  // for (const info of list) {
-  //   const result = await queryDoubanMovieInfoUseSearchPage({
-  //     name: info.name,
-  //     year: info.movieTime,
-  //   })
-  //   infoList.push(result)
-  // }
-  // // const result = getDoubanData(list, Date.now())
-  // console.log(infoList)
+async function cacheMovieList() {
+  let start = 1
+  const end = 1224
+  const list: { [id: number]: MovieInfoSimple } = {}
+  const listAll: { [id: number]: any } = {}
+  while (start <= end) {
+    const resData = await queryMovieInfo(start)
+    if (resData) {
+      const info: MovieInfoSimple = {
+        movieId: start,
+        name: resData.movieName,
+        movieTime: resData.movieTime,
+      }
+      console.log(start + ' ' + resData.movieName)
+      list[start] = info
+    }
+    listAll[start] = resData
+    sleep(getTime(500, 1000))
+    start++
+  }
+  writeFileSync(`${__dirname}/.cache/list-all.json`, JSON.stringify(listAll))
+  writeFileSync(`${__dirname}/.cache/list.json`, JSON.stringify(list))
+}
 
+async function forEachSearch() {
   const resStr = await readFileSync(`${__dirname}/.cache/list-all.json`, {
     encoding: 'utf-8',
     flag: 'r',
@@ -236,11 +228,23 @@ async function forEachSearch() {
       }
     }
   }
+
+  writeFileSync(
+    `${__dirname}/.cache/影评.json`,
+    JSON.stringify(classify['影评']),
+  )
+  writeFileSync(
+    `${__dirname}/.cache/交流.json`,
+    JSON.stringify(classify['交流']),
+  )
+  return
   const resultList: Douban[] = []
   const todoList = []
   const time = Date.now()
-  for (const id of Object.keys(movielist).reverse()) {
+
+  for (let id = 0; id < 300; id++) {
     const info = movielist[id]
+    if (info == null) continue
     if (mappingCache[Number(id)]) continue
     if (info != null) {
       todoList.push({
@@ -249,40 +253,37 @@ async function forEachSearch() {
         movieId: info.movieId,
         movieMinute: info.movieMinute,
       })
-    }
-    continue
-    // if (info != null) {
-    //   const infosimple = await queryDoubanMovieInfoUseSearchPage({
-    //     movieName: info.movieName,
-    //     movieTime: info.movieTime,
-    //     movieId: info.movieId,
-    //     movieMinute: info.movieMinute,
-    //   })
-    //   if (infosimple.doubanId) {
-    //     mappingCache[Number(id)] = {
-    //       name: info.movieName,
-    //       updateTime: time,
-    //       info: {
-    //         doubanId: String(infosimple.doubanId),
-    //         score: infosimple.score as number,
-    //         commentCount: infosimple.commentCount as number,
-    //         year: infosimple.movieTime,
-    //         poster: infosimple.poster as string,
-    //       },
-    //     }
-    //     console.log('search', infosimple.movieName, infosimple.movieId)
-    //   } else {
-    //     console.log(
-    //       infosimple.doubanId,
-    //       infosimple.movieName,
-    //       infosimple.movieTime,
-    //     )
-    //   }
+      const infosimple = await queryDoubanMovieInfoUseSearchPage({
+        movieName: info.movieName,
+        movieTime: info.movieTime,
+        movieId: info.movieId,
+        movieMinute: info.movieMinute,
+      })
+      if (infosimple.doubanId) {
+        mappingCache[Number(id)] = {
+          name: info.movieName,
+          updateTime: time,
+          info: {
+            doubanId: String(infosimple.doubanId),
+            score: infosimple.score as number,
+            commentCount: infosimple.commentCount as number,
+            year: infosimple.movieTime,
+            poster: infosimple.poster as string,
+          },
+        }
+        console.log('search', infosimple.movieName, infosimple.movieId)
+      } else {
+        console.log(
+          infosimple.doubanId,
+          infosimple.movieName,
+          infosimple.movieTime,
+        )
+      }
 
-    //   // console.log(infosimple)
-    //   resultList.push(infosimple)
-    //   await sleep(getTime(1000, 1500))
-    // }
+      // console.log(infosimple)
+      resultList.push(infosimple)
+      await sleep(getTime(1000, 1500))
+    }
   }
   console.log(JSON.stringify(todoList))
 
@@ -343,3 +344,4 @@ export async function queryDoubanMovieInfoUseSearchPage(douban: Douban) {
 }
 
 forEachSearch()
+// cacheMovieList()

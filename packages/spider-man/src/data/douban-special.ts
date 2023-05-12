@@ -1,4 +1,4 @@
-import { ICFAToDoubanMap } from './types'
+import { ICFAToDoubanMap } from '../types'
 
 export const doubanSpecial: ICFAToDoubanMap = {
   1154: {

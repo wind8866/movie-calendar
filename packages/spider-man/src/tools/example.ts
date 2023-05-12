@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import { ossServer } from '@moviecal/utils/oss'
-import { queryMovie, queryMovieInfo, queryPlayDayList } from './server-cfa'
-import { addedMovieMsgPush } from './message-push'
+import { queryMovie, queryMovieInfo, queryPlayDayList } from '../server/cfa'
+import { addedMovieMsgPush } from '../export/message-push'
 
 async function test() {
   // ;(async function () {

@@ -1,6 +1,6 @@
-import { IAllData, IMovieInfo } from './types'
+import { IAllData, IMovieInfo } from '../types'
 import dayjs from 'dayjs'
-import { config } from './config'
+import { config } from '../config'
 import { EventAttributes, createEvents } from 'ics'
 
 import utc from 'dayjs/plugin/utc'

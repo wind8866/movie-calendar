@@ -1,5 +1,5 @@
-import { IMovieInfo, ICFAToDoubanMap } from './types'
-import { pullDoubanInfoMap } from './server-oss'
+import { IMovieInfo, ICFAToDoubanMap } from '../types'
+import { pullDoubanInfoMap } from '../server/oss'
 
 export async function getDouToCFA(
   movieIdToDouInfo: ICFAToDoubanMap,

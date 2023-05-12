@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { IMovieInfo } from './types'
+import { IMovieInfo } from '../types'
 import Papa from 'papaparse'
 
 export default function toCSV(movieList: IMovieInfo[]): string {

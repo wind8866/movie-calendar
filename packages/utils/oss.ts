@@ -1,7 +1,7 @@
 import OSS from 'ali-oss'
 import dotent from 'dotenv'
-dotent.config()
 import qs from 'querystring'
+dotent.config()
 
 const prefix = process.env.API_ENV === 'TEST' ? '/test/' : ''
 

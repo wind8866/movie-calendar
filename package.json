@@ -5,13 +5,12 @@
   "main": "main.js",
   "type": "module",
   "scripts": {
-    "version": "node -v",
-    "pull": "tsx packages/spider-man/index",
-    "status": "tsx packages/spider-man/sales-status",
-    "pull-demo": "tsx packages/spider-man/test.ts",
-    "douban-loop": "tsx packages/spider-man/loop-search-mapping.ts",
-    "check": "tsc --noEmit",
+    "pull": "tsx packages/spider-man/src/index",
+    "status": "tsx packages/spider-man/src/export/sales-status",
+    "douban-loop": "tsx packages/spider-man/src/tools/loop-search-mapping.ts",
     "lint-fix": "eslint --ext .js,.ts,.jsx,.tsx --fix --quiet ./packages",
+    "version": "node -v",
+    "check": "tsc --noEmit",
     "lint": "eslint --ext .js,.ts,.jsx,.tsx --quiet ./packages",
     "preinstall": "npx -y only-allow pnpm",
     "test": "node --experimental-vm-modules --no-warnings node_modules/jest/bin/jest.js -c=jest-esm.config.js --no-cache"

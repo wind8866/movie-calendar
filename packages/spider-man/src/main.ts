@@ -3,12 +3,12 @@ import chalk from 'chalk'
 import dayjs from 'dayjs'
 
 import { IMovieInfo, IAllData } from './types'
-import { getDoubanDataUseCache } from './server-douban'
-import { queryPlayDayList, getMovieInfoMap, getMovieList } from './server-cfa'
+import { getDoubanDataUseCache } from './server/douban'
+import { queryPlayDayList, getMovieInfoMap, getMovieList } from './server/cfa'
 import { config } from './config'
-import { createAlarm, createCalData, createCalendar } from './to-ics'
-import toCSV from './to-csv'
-import { appMessagePushEmail, addedMovieMsgPush } from './message-push'
+import { createAlarm, createCalData, createCalendar } from './export/to-ics'
+import toCSV from './export/to-csv'
+import { appMessagePushEmail, addedMovieMsgPush } from './export/message-push'
 import {
   pullMovieList,
   putMovieList,
@@ -16,7 +16,7 @@ import {
   putCal,
   putAddedNewMovieList,
   putAllData,
-} from './server-oss'
+} from './server/oss'
 
 dotent.config()
 

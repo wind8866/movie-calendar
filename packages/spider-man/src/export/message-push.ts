@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 import dotent from 'dotenv'
-import { IMovieInfo } from './types'
+import { IMovieInfo } from '../types'
 import nodemailer from 'nodemailer'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'

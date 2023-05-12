@@ -1,7 +1,7 @@
 import chalk from 'chalk'
 import dayjs from 'dayjs'
-import { IMovieInfo } from './types'
-import { getAllData } from './main'
+import { IMovieInfo } from '../types'
+import { getAllData } from '../main'
 
 export function logSoldState(movieList: IMovieInfo[]) {
   const sale80Up = movieList
