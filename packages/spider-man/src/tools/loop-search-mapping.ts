@@ -8,6 +8,7 @@ import dayjs from 'dayjs'
 import axios from 'axios'
 import { readFileSync, writeFileSync } from 'node:fs'
 import { queryMovieInfo } from '../server/cfa'
+import path from 'node:path'
 
 const iaxios = axios.create({
   baseURL: `https://movie.douban.com`,
@@ -15,6 +16,7 @@ const iaxios = axios.create({
 
 interface Douban {
   doubanId?: number
+  douName?: string
   douyear?: number
   commentCount?: number
   score?: number
@@ -173,30 +175,38 @@ async function cacheMovieList() {
     sleep(getTime(500, 1000))
     start++
   }
-  writeFileSync(`${__dirname}/.cache/list-all.json`, JSON.stringify(listAll))
-  writeFileSync(`${__dirname}/.cache/list.json`, JSON.stringify(list))
+  writeFileSync(
+    `${__dirname}/.cache/movie-id-order-data.json`,
+    JSON.stringify(listAll),
+  )
 }
 
 async function forEachSearch() {
-  const resStr = await readFileSync(`${__dirname}/.cache/list-all.json`, {
-    encoding: 'utf-8',
-    flag: 'r',
-  })
-  const mappingPath = `${__dirname}/.cache/mapping-movieid-douid.json`
+  const chacePath = path.resolve(__dirname, '../.cache')
+  const mappingPath = `${chacePath}/mapping-movieid-douid.json`
+  const todoPickPath = `${chacePath}/todo-pick-list.json`
+
+  const orderDataStr = await readFileSync(
+    `${chacePath}/movie-id-order-data.json`,
+    {
+      encoding: 'utf-8',
+      flag: 'r',
+    },
+  )
   const mappingStr = await readFileSync(mappingPath, {
     encoding: 'utf-8',
     flag: 'r',
   })
   const mappingCache = JSON.parse(mappingStr) as ICFAToDoubanMap
 
-  const resData = JSON.parse(resStr) as { [id: string]: Info }
+  const orderData = JSON.parse(orderDataStr) as { [id: string]: Info }
   const classify = {
     交流: {},
     影评: {},
     其他: {},
   }
   const movielist: { [id: string]: Info } = {}
-  for (const info of Object.values(resData)) {
+  for (const info of Object.values(orderData)) {
     if (info) {
       // @ts-ignore
       if (info?.movieName?.includes('影评')) {
@@ -229,23 +239,21 @@ async function forEachSearch() {
     }
   }
 
-  writeFileSync(
-    `${__dirname}/.cache/影评.json`,
-    JSON.stringify(classify['影评']),
-  )
-  writeFileSync(
-    `${__dirname}/.cache/交流.json`,
-    JSON.stringify(classify['交流']),
-  )
-  return
-  const resultList: Douban[] = []
+  writeFileSync(`${chacePath}/影评.json`, JSON.stringify(classify['影评']))
+  writeFileSync(`${chacePath}/交流.json`, JSON.stringify(classify['交流']))
+
+  const todoPickStr = await readFileSync(todoPickPath, {
+    encoding: 'utf-8',
+    flag: 'r',
+  })
+  const todoPick: Douban[] = JSON.parse(todoPickStr)
   const todoList = []
   const time = Date.now()
 
-  for (let id = 0; id < 300; id++) {
+  for (let id = 400; id < 800; id++) {
     const info = movielist[id]
     if (info == null) continue
-    if (mappingCache[Number(id)]) continue
+    // if (mappingCache[Number(id)]) continue
     if (info != null) {
       todoList.push({
         movieName: info.movieName,
@@ -281,59 +289,48 @@ async function forEachSearch() {
       }
 
       // console.log(infosimple)
-      resultList.push(infosimple)
+      todoPick.push(infosimple)
       await sleep(getTime(1000, 1500))
     }
   }
-  console.log(JSON.stringify(todoList))
+  // console.log(JSON.stringify(todoList))
 
-  writeFileSync(mappingPath, JSON.stringify(mappingCache))
-  // console.log(JSON.stringify(resultList))
-  writeFileSync(`${__dirname}/.cache/res-list.json`, JSON.stringify(resultList))
+  // writeFileSync(mappingPath, JSON.stringify(mappingCache))
+  // console.log(JSON.stringify(todoPick))
+
+  writeFileSync(todoPickPath, JSON.stringify(todoPick))
 }
 
-const iaxios2 = axios.create({
-  baseURL: `https://www.douban.com`,
-})
 export async function queryDoubanMovieInfoUseSearchPage(douban: Douban) {
   const name = douban.movieName
   const year = douban.movieTime
-  const response = await iaxios2<string>({
-    url: `/search`,
+  const response = await axios<string>({
+    url: `https://www.douban.com/search`,
     params: { cat: '1002', q: `${name}+${year}` },
   }).catch((e) => {
     console.log('error', name, year)
     return { data: '' }
   })
-  const moviePageHTML = response.data
+  const html = response.data
   // sid: 35376457, qcat: '1002'})" >爱情神话 </a>
   // <span>(700000人评价)</span>
   // <span class="rating_nums">8.1</span>
-  const result = /sid: (\d+), qcat: '1002'}\)" >(.*) <\/a>/.exec(moviePageHTML)
-  const doubanId = result?.[1]
-  const result2 = /<span class="subject-cast">.*(\d{4})<\/span>/.exec(
-    moviePageHTML,
-  )
-  const douyear = result2?.[1]
-
-  const result3 = /<span>\((\d+)人评价\)<\/span>/.exec(moviePageHTML)
-  const commentCount = result3?.[1]
-
-  const result4 = /<span class="rating_nums">([\d.]+)<\/span>/.exec(
-    moviePageHTML,
-  )
-  const score = result4?.[1]
-
+  const doubanId = /sid: (\d+), qcat: '1002'}\)" >(.*) <\/a>/.exec(html)?.[1]
+  const douyear = /class="subject-cast">.*(\d{4})/.exec(html)?.[1]
+  const commentCount = /<span>\((\d+)人评价\)<\/span>/.exec(html)?.[1]
+  const score = /<span class="rating_nums">([\d.]+)<\/span>/.exec(html)?.[1]
+  const douName = /'1002'}\)" >(.*) <\/a>/.exec(html)?.[1]
   // <img src="https://img2.doubanio.com/view/photo/s_ratio_poster/public/p2527824081.webp"></a>
   const result5 =
     /<img src="https:\/\/img\d.doubanio.com\/view\/photo\/s_ratio_poster\/public\/(.*)"><\/a>/.exec(
-      moviePageHTML,
-    )
-  const poster = `https://img2.doubanio.com/view/photo/raw/public/${result5?.[1]}`
+      html,
+    )?.[1]
+  const poster = `https://img2.doubanio.com/view/photo/raw/public/${result5}`
 
   const douInfo: Douban = {
     ...douban,
     poster: poster,
+    douName: douName,
     doubanId: Number(doubanId),
     douyear: Number(douyear),
     commentCount: Number(commentCount),
