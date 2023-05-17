@@ -40,11 +40,12 @@ export interface IServerMovieItem {
 }
 
 export interface IDoubanInfo {
-  doubanId: string
+  id: number
+  name: string
   score: number
   commentCount: number
   poster: string
-  year: string
+  year: number
 }
 export interface IMovieInfo {
   movieId: number
@@ -127,6 +128,37 @@ export interface ICFAToDoubanMap {
   [key: number]: {
     name: string
     updateTime: number
-    info: IDoubanInfo | IDoubanInfo[]
+    info: IDoubanInfo[]
   }
+}
+
+// data/cfa-to-dou-dic-map.json
+export interface CFAToDouDic {
+  movieId: number
+  movieName: string
+  movieMinute: number
+  movieTime: string
+  douban: {
+    id: number
+    name: string
+    score: number
+    commentCount: number
+    poster: string
+    year: number
+  }[]
+
+  updateTime: number
+  remark?: string
+}
+export interface CFAToDouDicMap {
+  [key: number]: CFAToDouDic
+}
+
+// data/dou-to-cfa-dic-map.json
+export interface DouToCFADic {
+  s?: string
+  i: number
+}
+export interface DouToCFADicMap {
+  [douId: number]: DouToCFADic[]
 }
