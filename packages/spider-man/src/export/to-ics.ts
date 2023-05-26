@@ -13,20 +13,24 @@ dayjs.tz.setDefault('Asia/Shanghai')
 export function createCalData(movieList: IMovieInfo[]): EventAttributes[] {
   return movieList.map((m) => {
     let douURL: undefined | string = undefined
-    const doubanInfo = m.doubanInfo?.info
+    const doubanInfo = m.doubanInfo?.douban
     let doubanInfoText = ''
-    if (Array.isArray(doubanInfo)) {
-      doubanInfoText = doubanInfo.reduce((per, current) => {
-        return `${per}
-豆瓣评分${current.score}  \
-评论人数${current.commentCount?.toLocaleString() ?? 0} \
-https://movie.douban.com/subject/${current.doubanId}/`
-      }, '')
-    } else if (doubanInfo) {
-      douURL = `https://movie.douban.com/subject/${doubanInfo.doubanId}/`
-      doubanInfoText = `
-评分${doubanInfo.score}  \
-人数${doubanInfo.commentCount?.toLocaleString()}`
+    if (doubanInfo != null) {
+      if (doubanInfo.length === 1) {
+        douURL = `https://movie.douban.com/subject/${doubanInfo[0].id}/`
+      }
+      doubanInfoText = doubanInfo
+        .map((current) => {
+          const url =
+            doubanInfo.length > 1
+              ? `https://movie.douban.com/subject/${current.id}/`
+              : ''
+          return `
+评分${current.score}  \
+人数${current.commentCount?.toLocaleString() ?? 0} \
+${url}`
+        })
+        .join('')
     }
 
     const country = (m.country ?? []).join('/')

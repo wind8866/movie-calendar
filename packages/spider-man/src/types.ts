@@ -162,6 +162,6 @@ export interface ICFAToDoubanMap {
   [key: number]: {
     name: string
     updateTime: number
-    info: IDoubanInfo[]
+    douban: IDoubanInfo[]
   }
 }

@@ -9,14 +9,10 @@ export async function getDouToCFA(
     updateTime: now,
   }
   for (const movieId in movieIdToDouInfo) {
-    const { info } = movieIdToDouInfo[movieId]
-    if (Array.isArray(info)) {
-      info.forEach((item) => {
-        douToCFA[Number(item.doubanId)] = Number(movieId)
-      })
-    } else {
-      douToCFA[Number(info.doubanId)] = Number(movieId)
-    }
+    const { douban } = movieIdToDouInfo[movieId]
+    douban.forEach((item) => {
+      douToCFA[Number(item.id)] = Number(movieId)
+    })
   }
   return douToCFA
 }

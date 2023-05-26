@@ -14,18 +14,31 @@ const iaxios = axios.create({
   baseURL: `https://movie.douban.com`,
 })
 
-interface Douban {
-  doubanId?: number
-  douName?: string
-  douyear?: number
-  commentCount?: number
-  score?: number
-  poster?: string
+const chacePath = path.resolve(__dirname, '../.cache')
+const mappingPath = `${chacePath}/mapping-movieid-douid.json`
+const movieIDOrderDataPath = `${chacePath}/movie-id-order-data.json`
+const todoPickPath = `${chacePath}/todo-pick-list.json`
+const videoTypePath = `${chacePath}/video.json`
+const videoTypeList: number[] = []
+let start = 1243
+const end = 1250
+const pickListUseCache = false
+
+export interface CFAMapping {
   movieId: number
   movieName: string
   movieMinute: number
   movieTime: string
 }
+export interface DoubanMapping {
+  doubanId: number
+  douName: string
+  douyear: number
+  commentCount: number
+  score: number
+  poster: string
+}
+export interface MovieMapping extends CFAMapping, DoubanMapping {}
 type Info = IServerMovieInfo | null
 
 export async function queryDoubanMovieInfo({
@@ -156,104 +169,63 @@ export async function getDoubanData(movieList: MovieInfoSimple[], now: number) {
 }
 
 async function cacheMovieList() {
-  let start = 1
-  const end = 1224
-  const list: { [id: number]: MovieInfoSimple } = {}
-  const listAll: { [id: number]: any } = {}
+  const movieIdOrderDataStr = await readFileSync(movieIDOrderDataPath, {
+    encoding: 'utf-8',
+    flag: 'r',
+  })
+  const listAll: { [id: number]: any } = JSON.parse(movieIdOrderDataStr)
   while (start <= end) {
     const resData = await queryMovieInfo(start)
     if (resData) {
-      const info: MovieInfoSimple = {
-        movieId: start,
-        name: resData.movieName,
-        movieTime: resData.movieTime,
-      }
       console.log(start + ' ' + resData.movieName)
-      list[start] = info
     }
     listAll[start] = resData
     sleep(getTime(500, 1000))
     start++
   }
-  writeFileSync(
-    `${__dirname}/.cache/movie-id-order-data.json`,
-    JSON.stringify(listAll),
-  )
+  writeFileSync(movieIDOrderDataPath, JSON.stringify(listAll))
 }
 
 async function forEachSearch() {
-  const chacePath = path.resolve(__dirname, '../.cache')
-  const mappingPath = `${chacePath}/mapping-movieid-douid.json`
-  const todoPickPath = `${chacePath}/todo-pick-list.json`
-
-  const orderDataStr = await readFileSync(
-    `${chacePath}/movie-id-order-data.json`,
-    {
-      encoding: 'utf-8',
-      flag: 'r',
-    },
-  )
+  const orderDataStr = await readFileSync(movieIDOrderDataPath, {
+    encoding: 'utf-8',
+    flag: 'r',
+  })
   const mappingStr = await readFileSync(mappingPath, {
     encoding: 'utf-8',
     flag: 'r',
   })
-  const mappingCache = JSON.parse(mappingStr) as ICFAToDoubanMap
-
-  const orderData = JSON.parse(orderDataStr) as { [id: string]: Info }
-  const classify = {
-    交流: {},
-    影评: {},
-    其他: {},
-  }
-  const movielist: { [id: string]: Info } = {}
-  for (const info of Object.values(orderData)) {
-    if (info) {
-      // @ts-ignore
-      if (info?.movieName?.includes('影评')) {
-        // @ts-ignore
-        classify['影评'][info?.movieName] = info
-      } else if (
-        // @ts-ignore
-        info?.movieName?.includes('交流') ||
-        // @ts-ignore
-        info?.movieName?.includes('专访') ||
-        // @ts-ignore
-        info?.movieName?.includes('映前') ||
-        // @ts-ignore
-        info?.movieName?.includes('映后') ||
-        // @ts-ignore
-        info?.movieName?.includes('电影课') ||
-        // @ts-ignore
-        info?.movieName?.includes('特别放映') ||
-        // @ts-ignore
-        info?.movieName?.includes('见面会')
-      ) {
-        // @ts-ignore
-        classify['交流'][info?.movieName] = info
-        // @ts-ignore
-      } else {
-        // @ts-ignore
-        classify['其他'][info?.movieName] = info
-        movielist[info.movieId] = info
-      }
-    }
-  }
-
-  writeFileSync(`${chacePath}/影评.json`, JSON.stringify(classify['影评']))
-  writeFileSync(`${chacePath}/交流.json`, JSON.stringify(classify['交流']))
-
+  const videoTypeStr = await readFileSync(videoTypePath, {
+    encoding: 'utf-8',
+    flag: 'r',
+  })
   const todoPickStr = await readFileSync(todoPickPath, {
     encoding: 'utf-8',
     flag: 'r',
   })
-  const todoPick: Douban[] = JSON.parse(todoPickStr)
+  const todoPick: MovieMapping[] = pickListUseCache
+    ? JSON.parse(todoPickStr)
+    : []
+  const mappingCache = JSON.parse(mappingStr) as ICFAToDoubanMap
+  const orderData = JSON.parse(orderDataStr) as { [id: string]: Info }
+  const videoType = JSON.parse(videoTypeStr) as { [movieName: string]: Info }
+
+  const movielist: { [id: string]: Info } = {}
+  for (const info of Object.values(orderData)) {
+    if (info == null) continue
+    if (videoTypeList.includes(info.movieId)) {
+      videoType[info.movieName] = info
+    } else {
+      movielist[info.movieId] = info
+    }
+  }
+
   const todoList = []
   const time = Date.now()
-
-  for (let id = 400; id < 800; id++) {
+  for (let id = start; id <= end; id++) {
     const info = movielist[id]
     if (info == null) continue
-    // if (mappingCache[Number(id)]) continue
+    if (mappingCache[Number(id)]) continue
     if (info != null) {
       todoList.push({
         movieName: info.movieName,
@@ -271,13 +243,16 @@ async function forEachSearch() {
         mappingCache[Number(id)] = {
           name: info.movieName,
           updateTime: time,
-          info: {
-            doubanId: String(infosimple.doubanId),
-            score: infosimple.score as number,
-            commentCount: infosimple.commentCount as number,
-            year: infosimple.movieTime,
-            poster: infosimple.poster as string,
-          },
+          douban: [
+            {
+              id: infosimple.doubanId,
+              name: infosimple.douName,
+              score: infosimple.score,
+              commentCount: infosimple.commentCount,
+              year: infosimple.douyear,
+              poster: infosimple.poster,
+            },
+          ],
         }
         console.log('search', infosimple.movieName, infosimple.movieId)
       } else {
@@ -293,17 +268,12 @@ async function forEachSearch() {
       await sleep(getTime(1000, 1500))
     }
   }
-  // console.log(JSON.stringify(todoList))
-
-  // writeFileSync(mappingPath, JSON.stringify(mappingCache))
-  // console.log(JSON.stringify(todoPick))
-
   writeFileSync(todoPickPath, JSON.stringify(todoPick))
 }
 
-export async function queryDoubanMovieInfoUseSearchPage(douban: Douban) {
-  const name = douban.movieName
-  const year = douban.movieTime
+export async function queryDoubanMovieInfoUseSearchPage(cfa: CFAMapping) {
+  const name = cfa.movieName
+  const year = cfa.movieTime
   const response = await axios<string>({
     url: `https://www.douban.com/search`,
     params: { cat: '1002', q: `${name}+${year}` },
@@ -327,10 +297,10 @@ export async function queryDoubanMovieInfoUseSearchPage(douban: Douban) {
     )?.[1]
   const poster = `https://img2.doubanio.com/view/photo/raw/public/${result5}`
 
-  const douInfo: Douban = {
-    ...douban,
+  const douInfo: MovieMapping = {
+    ...cfa,
     poster: poster,
-    douName: douName,
+    douName: douName ?? '',
     doubanId: Number(doubanId),
     douyear: Number(douyear),
     commentCount: Number(commentCount),
@@ -340,5 +310,18 @@ export async function queryDoubanMovieInfoUseSearchPage(douban: Douban) {
   return douInfo
 }
 
-forEachSearch()
-// cacheMovieList()
+cacheMovieList()
+// forEachSearch()
+
+/**
+ * 1. 清空 videoTypeList，界定 start 和 end 的范围
+ * 2. 运行 cacheMovieList 将新增的电影增量缓存到 movie-id-order-data.json
+ * 3. 手动挑选出不需要处理的视频信息，放入 videoTypeList
+ * 4. 运行 forEachSearch 去豆瓣搜索电影，缓存到 todo-pick-list.json
+ * 5. 修改index.html 100行界定对比范围
+ * 6. 在浏览器中打开index检查并挑选，控制台获取到审核通过的列表ID，放回index.html和connect.ts
+ * 7. 脚本未搜索到的电影使用 todo-pick-list 和 example/douban-spider.js 维护到douban-special.ts
+ * 8. 运行 connect中的pick，如果打印[]说明完成了，再运行erverseMap()
+ * 9. 将 videoTypeList 恢复到空
+ * 10.再上传到oss就可以了
+ */

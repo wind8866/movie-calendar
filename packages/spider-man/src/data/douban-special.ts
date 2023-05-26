@@ -4,7 +4,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   1154: {
     name: '我住在凡尔赛的日子+你好，世界！',
     updateTime: 1683531985027,
-    info: [
+    douban: [
       {
         id: 34813666,
         name: '我住在凡尔赛的日子',
@@ -28,7 +28,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   1141: {
     name: '狙击手+满江红',
     updateTime: 1683531985027,
-    info: [
+    douban: [
       {
         id: 35215390,
         name: '狙击手',
@@ -52,7 +52,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   1136: {
     name: '速度与爱情+黑猫白猫+被嫌弃的松子的一生',
     updateTime: 1683531985027,
-    info: [
+    douban: [
       {
         id: 35637259,
         name: '速度与爱情',
@@ -85,7 +85,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   1013: {
     name: '空谷兰+银幕艳史（后集）+鼠与蛙',
     updateTime: 1683531985027,
-    info: [
+    douban: [
       {
         id: 2382419,
         name: '空谷兰',
@@ -118,7 +118,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   1003: {
     name: '国货年+压岁钱',
     updateTime: 1683531985027,
-    info: [
+    douban: [
       {
         id: 35559346,
         name: '国货年',
@@ -142,7 +142,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   992: {
     name: '劳工之爱情+银幕艳史（后集）',
     updateTime: 1683531985027,
-    info: [
+    douban: [
       {
         id: 1466263,
         name: '劳工之爱情',
@@ -166,7 +166,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   814: {
     name: '路边野餐+破碎太阳之心',
     updateTime: 1683531985027,
-    info: [
+    douban: [
       {
         id: 26337866,
         name: '路边野餐',
@@ -190,7 +190,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   785: {
     name: '狂欢之夜+保卫我们的土地',
     updateTime: 1683531985027,
-    info: [
+    douban: [
       {
         id: 3119330,
         name: '狂欢之夜',
@@ -214,7 +214,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   768: {
     name: '西小河的夏天+沉默的拥抱+花的游吟+游水',
     updateTime: 1683531985027,
-    info: [
+    douban: [
       {
         id: 26799232,
         name: '西小河的夏天',
@@ -256,7 +256,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   482: {
     name: '薄荷糖+小妈妈+偶然与想象',
     updateTime: 1683531985027,
-    info: [
+    douban: [
       {
         id: 1303145,
         name: '薄荷糖',
@@ -289,7 +289,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   304: {
     name: '《体验》+《结婚礼服》',
     updateTime: 1683531985027,
-    info: [
+    douban: [
       {
         id: 5054692,
         name: '体验 تجربه',
@@ -313,7 +313,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   193: {
     name: '三毛流浪记+小八路',
     updateTime: 1683531985027,
-    info: [
+    douban: [
       {
         id: 3032870,
         name: '三毛流浪记',
@@ -337,7 +337,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   1165: {
     name: '女侠白玫瑰＋黄宝妹',
     updateTime: 1683531985027,
-    info: [
+    douban: [
       {
         id: 10785228,
         name: '女侠白玫瑰',
@@ -361,7 +361,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   1176: {
     name: '面包店的女孩+苏姗娜的故事',
     updateTime: 1680776012185,
-    info: [
+    douban: [
       {
         id: 1394348,
         name: '面包店的女孩',
@@ -385,7 +385,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   996: {
     name: '雁南飞',
     updateTime: 1682442438922,
-    info: [
+    douban: [
       {
         id: 1302077,
         name: '雁南飞',
@@ -400,7 +400,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   1208: {
     name: '小蝌蚪找妈妈+儿孙福',
     updateTime: 1682442438922,
-    info: [
+    douban: [
       {
         id: 3335371,
         name: '小蝌蚪找妈妈',
@@ -424,7 +424,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   833: {
     name: '笑笑笑',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 1305483,
         name: '笑笑笑',
@@ -439,7 +439,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   844: {
     name: '家',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 1955966,
         name: '家',
@@ -454,7 +454,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   872: {
     name: '遥远的爱',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 2148607,
         name: '遥远的爱',
@@ -469,7 +469,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   924: {
     name: '画皮',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 1440583,
         name: '画皮 畫皮',
@@ -484,7 +484,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   926: {
     name: '我来也',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 3992160,
         name: '我来也 我來也',
@@ -499,7 +499,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   949: {
     name: '妈妈！',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 34954093,
         name: '妈妈！',
@@ -514,7 +514,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   970: {
     name: '大学',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 35470663,
         name: '大学',
@@ -529,7 +529,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   971: {
     name: '红船',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 35289419,
         name: '红船',
@@ -544,7 +544,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   979: {
     name: '云霄之上',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 35474010,
         name: '云霄之上',
@@ -559,7 +559,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   980: {
     name: '梅艳芳（粤语版）',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 30176790,
         name: '梅艳芳 梅艷芳',
@@ -574,7 +574,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   993: {
     name: '爱',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 4798707,
         name: '爱 Amour',
@@ -589,7 +589,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   1004: {
     name: '劳工之爱情+姊妹花',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 1466263,
         name: '劳工之爱情',
@@ -613,7 +613,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   1006: {
     name: '乡愁',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 3332628,
         name: '乡愁',
@@ -628,7 +628,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   1008: {
     name: '二对一',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 3240854,
         name: '二对一',
@@ -643,7 +643,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   1017: {
     name: '法兰西',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 30465538,
         name: '法兰西 France',
@@ -658,7 +658,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   1040: {
     name: '大路',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 1307015,
         name: '大路',
@@ -673,7 +673,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   1075: {
     name: '放送+雅典，重返雅典古卫城',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 1299160,
         name: '放送 Η Εκπομπή',
@@ -697,7 +697,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   1077: {
     name: '夜半歌声（续）',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 1950107,
         name: '夜半歌声 续集',
@@ -712,7 +712,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   1079: {
     name: '苹果',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 35156098,
         name: '苹果 Μήλα',
@@ -727,7 +727,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   1137: {
     name: '劳工之爱情+步履不停',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 1466263,
         name: '劳工之爱情',
@@ -751,7 +751,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   1160: {
     name: '珍珠',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 35209748,
         name: '珍珠',
@@ -766,7 +766,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   1173: {
     name: '孔大山短片合集',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 10438922,
         name: '少年马力傲的烦恼',
@@ -808,7 +808,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   440: {
     name: '八月',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 26820836,
         name: '八月',
@@ -823,12 +823,12 @@ export const doubanSpecial: ICFAToDoubanMap = {
   485: {
     name: '十一月二十四',
     updateTime: 1684221745789,
-    info: [],
+    douban: [],
   },
   520: {
     name: '真相',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 30140107,
         name: '真相 La vérité',
@@ -843,7 +843,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   562: {
     name: '公社',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 24696729,
         name: '公社 Kollektivet',
@@ -858,7 +858,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   588: {
     name: '阿曼达',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 26987999,
         name: '阿曼达 Amanda',
@@ -873,7 +873,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   595: {
     name: '消失',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 21337258,
         name: '消失 Verdwijnen',
@@ -888,7 +888,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   616: {
     name: '方向',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 27018299,
         name: '方向 Посоки',
@@ -903,7 +903,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   705: {
     name: '视觉',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 27133211,
         name: '视觉 Vision',
@@ -918,7 +918,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   753: {
     name: '女人的故事',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 4154628,
         name: '女人的故事',
@@ -933,7 +933,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   759: {
     name: '安魂',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 34808495,
         name: '安魂',
@@ -948,7 +948,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   765: {
     name: '助理',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 30402843,
         name: '助理 The Assistant',
@@ -963,7 +963,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   9: {
     name: '桥',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 1944901,
         name: '桥',
@@ -978,7 +978,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   10: {
     name: '家',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 1308211,
         name: '家',
@@ -993,7 +993,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   36: {
     name: '壮志凌云（2K）',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 2057495,
         name: '壮志凌云',
@@ -1008,7 +1008,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   67: {
     name: '雷锋',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 1472234,
         name: '雷锋',
@@ -1023,7 +1023,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   79: {
     name: '万水千山',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 26298921,
         name: '万水千山',
@@ -1038,7 +1038,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   89: {
     name: '周恩来',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 1448751,
         name: '周恩来',
@@ -1053,7 +1053,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   149: {
     name: '她',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 26022182,
         name: '她 Elle',
@@ -1068,7 +1068,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   202: {
     name: '五一大游行',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 35461301,
         name: '五一大游行',
@@ -1083,7 +1083,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   207: {
     name: '恶之画',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 34850597,
         name: '恶之画',
@@ -1098,7 +1098,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   211: {
     name: '昆西四季',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 26685416,
         name: '昆西四季 The Seasons in Quincy: Four Portraits of John Berger',
@@ -1113,7 +1113,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   216: {
     name: '药',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 3793078,
         name: '药',
@@ -1128,7 +1128,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   217: {
     name: '无声',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 34850598,
         name: '无声 無聲',
@@ -1143,7 +1143,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   226: {
     name: '天鹅',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 26774768,
         name: '天鹅 Svanurinn',
@@ -1158,7 +1158,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   235: {
     name: '眉间尺+鲁迅战斗的一生',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 2135544,
         name: '眉间尺',
@@ -1182,7 +1182,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   263: {
     name: '柳青',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 30347930,
         name: '柳青',
@@ -1197,7 +1197,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   267: {
     name: '1921',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 35125443,
         name: '1921',
@@ -1212,7 +1212,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   312: {
     name: '七',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 5056406,
         name: '七 Sedmina',
@@ -1227,7 +1227,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   323: {
     name: '伍',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 1401919,
         name: '伍',
@@ -1242,7 +1242,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   349: {
     name: '十诫（上）',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 1301252,
         name: '十诫 Dekalog',
@@ -1257,7 +1257,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   351: {
     name: '十诫（下）',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 1301252,
         name: '十诫 Dekalog',
@@ -1272,7 +1272,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   836: {
     name: '《教父》三部曲',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 1291841,
         name: '教父 The Godfather',
@@ -1305,7 +1305,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   876: {
     name: '劳工之爱情+神女',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 1466263,
         name: '劳工之爱情',
@@ -1329,7 +1329,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   1015: {
     name: '劳工之爱情+江湖儿女',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 1466263,
         name: '劳工之爱情',
@@ -1353,7 +1353,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   1088: {
     name: '追捕',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 35970257,
         name: '追捕 Muru',
@@ -1368,7 +1368,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   1213: {
     name: '天伦（2K）',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 2055008,
         name: '天伦 天倫',
@@ -1383,7 +1383,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   653: {
     name: '潜水',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 30309223,
         name: '潜水 The Dive',
@@ -1398,7 +1398,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
   903: {
     name: '一江春水向东流（后集）天亮前后',
     updateTime: 1684221745789,
-    info: [
+    douban: [
       {
         id: 1389915,
         name: '一江春水向东流 一江春水向東流',
@@ -1413,11 +1413,131 @@ export const doubanSpecial: ICFAToDoubanMap = {
   491: {
     name: '2它他',
     updateTime: 1684221745789,
-    info: [],
+    douban: [],
   },
   494: {
     name: '十一月三十',
     updateTime: 1684221745789,
-    info: [],
+    douban: [],
+  },
+  1239: {
+    name: '1999+无用的人',
+    updateTime: 1685060131354,
+    douban: [
+      {
+        id: 36390743,
+        name: '1999',
+        score: 0,
+        commentCount: 0,
+        year: 1999,
+        poster:
+          'https://img2.doubanio.com/view/photo/row/public/p2891299982.webp',
+      },
+      {
+        id: 5318711,
+        name: '无用的人',
+        score: 7.8,
+        commentCount: 668,
+        year: 1999,
+        poster:
+          'https://img2.doubanio.com/view/photo/raw/public/p1770802101.jpg',
+      },
+    ],
+  },
+  1240: {
+    name: '长滨+密使与看守人',
+    updateTime: 1685060131354,
+    douban: [
+      {
+        id: 35041306,
+        name: '长滨 NAGAHAMA',
+        score: 7.3,
+        commentCount: 186,
+        year: 2016,
+        poster:
+          'https://img2.doubanio.com/view/photo/row/public/p2639671583.webp',
+      },
+      {
+        id: 27073953,
+        name: '密使与看守人',
+        year: 2017,
+        commentCount: 0,
+        score: 0,
+        poster:
+          'https://img2.doubanio.com/view/photo/raw/public/p2491002144.jpg',
+      },
+    ],
+  },
+  1241: {
+    name: '八月八日+你的鸟儿会唱歌',
+    updateTime: 1685060131354,
+    douban: [
+      {
+        id: 35041305,
+        name: '八月八日',
+        score: 0,
+        commentCount: 0,
+        year: 2016,
+        poster:
+          'https://img1.doubanio.com/view/photo/row/public/p2639671449.webp',
+      },
+      {
+        id: 26969120,
+        name: '你的鸟儿会唱歌 きみの鳥はうたえる',
+        score: 7.7,
+        commentCount: 23469,
+        year: 2018,
+        poster:
+          'https://img1.doubanio.com/view/photo/row/public/p2524186967.webp',
+      },
+    ],
+  },
+  1242: {
+    name: '野性之旅+无言日记2018',
+    updateTime: 1685060131354,
+    douban: [
+      {
+        id: 30463670,
+        name: '野性之旅 ワイルドツアー',
+        score: 7.5,
+        commentCount: 250,
+        year: 2018,
+        poster:
+          'https://img1.doubanio.com/view/photo/row/public/p2549983929.webp',
+      },
+      {
+        id: 34606418,
+        name: '无言日记2018 無言日記2018',
+        score: 0,
+        commentCount: 0,
+        year: 2018,
+        poster:
+          'https://img1.doubanio.com/view/photo/row/public/p2562932977.webp',
+      },
+    ],
+  },
+  1243: {
+    name: '神笔+草原英雄小姐妹',
+    updateTime: 1685060131354,
+    douban: [
+      {
+        id: 1431718,
+        name: '神笔',
+        score: 8.4,
+        commentCount: 66394,
+        year: 1955,
+        poster:
+          'https://img2.doubanio.com/view/photo/row/public/p2649081482.webp',
+      },
+      {
+        id: 1472238,
+        name: '草原英雄小姐妹',
+        score: 7.5,
+        commentCount: 7713,
+        year: 1965,
+        poster:
+          'https://img1.doubanio.com/view/photo/row/public/p2649088079.webp',
+      },
+    ],
   },
 }

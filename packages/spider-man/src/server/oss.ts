@@ -16,8 +16,8 @@ dayjs.tz.setDefault('Asia/Shanghai')
 const currentPath = 'current/'
 const movieListName = 'movie-list.json' // 最新的排片
 const addedNewMovieListName = 'movie-list-added.json' // 新增的排片
-const doubanInfoMapName = 'mapping-movieid-douid.json' // movieId: douId
-const douIdToMovieIdName = 'mapping-douid-movieid.json' // douId: movieId
+const doubanInfoMapName = 'cfa-to-dou-dic-map.json' // movieId: douId
+const douIdToMovieIdName = 'dou-to-cfa-dic-map.json' // douId: movieId
 const calName = 'current.ics' // 日历数据
 
 const archivedPath = 'archived/'

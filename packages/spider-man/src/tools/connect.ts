@@ -71,7 +71,7 @@ const same = [
   1005, 1012, 1020, 1039, 1047, 1062, 1064, 1073, 1091, 1123, 1132, 1170, 421,
   424, 437, 438, 441, 460, 510, 529, 534, 535, 537, 538, 541, 545, 556, 565,
   577, 579, 598, 613, 621, 679, 711, 715, 730, 733, 736, 752, 781, 793, 797,
-  798, 140,
+  798, 140, 1225, 1226, 1227, 1228, 1231, 1232, 1236, 1237, 1238, 1174, 1248,
 ]
 
 const remarks: { [id: number]: string } = {
@@ -92,8 +92,12 @@ async function pick() {
     encoding: 'utf-8',
     flag: 'r',
   })
+  const cfaToDouDicMapStr = await readFileSync(cfaToDouDicMapPath, {
+    encoding: 'utf-8',
+    flag: 'r',
+  })
   const todoPick: Douban[] = JSON.parse(todoPickStr)
-  const cfaToDouDicMap: CFAToDouDicMap = {}
+  const cfaToDouDicMap: CFAToDouDicMap = JSON.parse(cfaToDouDicMapStr)
   const different: [number, string][] = []
   for (const current of todoPick) {
     const id = current.movieId
@@ -105,7 +109,7 @@ async function pick() {
         movieMinute: current.movieMinute,
         movieTime: current.movieTime,
         updateTime: doubanSpecial[id].updateTime,
-        douban: doubanSpecial[id].info,
+        douban: doubanSpecial[id].douban,
       }
       if (remarks[id]) cfaToDouDicMap[id].remark = remarks[id]
       continue
@@ -135,7 +139,6 @@ async function pick() {
   writeFileSync(cfaToDouDicMapPath, JSON.stringify(cfaToDouDicMap))
   console.log(JSON.stringify(different))
 }
-// pick()
 
 async function erverseMap() {
   const cfaToDouDicMapStr = await readFileSync(cfaToDouDicMapPath, {
@@ -167,4 +170,6 @@ async function erverseMap() {
   writeFileSync(douToCFADicMapPath, JSON.stringify(douToCFADicMap))
   console.log(JSON.stringify(douToCFADicMap))
 }
+
+// pick()
 erverseMap()
