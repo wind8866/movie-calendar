@@ -1,7 +1,7 @@
 name: 'Auto Pull Data'
 on:
   schedule:
-    - cron: '0 23,13 * * *' # utc+8=7,21
+    - cron: '0 13 * * *' # utc+8=7,21
 env:
   API_HOSTNAME: ${{ vars.API_HOSTNAME }}
   API_PREFIX: ${{ vars.API_PREFIX }}
