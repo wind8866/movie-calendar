@@ -112,7 +112,7 @@ export async function getMovieList(dayList: string[], now: number) {
     barList.increment({
       val: day,
     })
-    await sleep(getTime(100, 500))
+    await sleep(getTime(500, 500))
   }
   barList.stop()
   return {

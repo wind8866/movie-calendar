@@ -104,11 +104,11 @@ export function createAlarm([
     if (Number(dayjs.tz(Date.now())) - Number(time) > 86400000) return
     alarmList.push({
       start: [
-        time.get('year'),
-        time.get('month') + 1,
-        time.get('date'),
-        time.get('hours'),
-        time.get('minutes'),
+        time.year(),
+        time.month() + 1,
+        time.date(),
+        time.hour(),
+        time.minute(),
       ],
       duration: { hours: 0, minutes: 30 },
       title: `⏰记得买电影票啊 ${time.format('HH:mm:ss')}`,
