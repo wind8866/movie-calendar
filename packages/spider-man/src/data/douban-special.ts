@@ -1540,4 +1540,91 @@ export const doubanSpecial: ICFAToDoubanMap = {
       },
     ],
   },
+  1251: {
+    name: '静静的嘛呢石（含短片版）',
+    updateTime: 1687961512957,
+    douban: [
+      {
+        id: 25866283,
+        name: '静静的嘛呢石（短片版）',
+        score: 7,
+        commentCount: 351,
+        year: 2002,
+        poster:
+          'https://img9.doubanio.com/view/photo/row/public/p2208375456.webp',
+      },
+      {
+        id: 1756057,
+        name: '静静的嘛呢石',
+        score: 8.3,
+        commentCount: 6198,
+        year: 2005,
+        poster:
+          'https://img9.doubanio.com/view/photo/row/public/p2884658614.webp',
+      },
+    ],
+  },
+  1292: {
+    name: '鼠与蛙+飞来祸',
+    updateTime: 1687961512957,
+    douban: [
+      {
+        id: 10605870,
+        name: '鼠与蛙',
+        score: 7.1,
+        commentCount: 73,
+        year: 1934,
+        poster:
+          'https://img2.doubanio.com/view/photo/s_ratio_poster/public/p2650218663.webp',
+      },
+    ],
+  },
+  1364: {
+    name: '提行李箱的人+洋槐旅馆',
+    updateTime: 1687961512957,
+    douban: [
+      {
+        id: 25827826,
+        name: '提行李箱的人',
+        score: 8,
+        commentCount: 715,
+        year: 1983,
+        poster:
+          'https://img2.doubanio.com/view/photo/row/public/p2546400921.webp',
+      },
+      {
+        id: 36209649,
+        name: '洋槐旅馆',
+        score: 7.5,
+        commentCount: 414,
+        year: 1982,
+        poster:
+          'https://img1.doubanio.com/view/photo/row/public/p2888744097.webp',
+      },
+    ],
+  },
+  1365: {
+    name: ' 香特尔×索妮亚：听她的歌+与索妮亚同行',
+    updateTime: 1687961512957,
+    douban: [
+      {
+        id: 5174117,
+        name: '与索妮亚同行 Avec Sonia Wieder-Atherton',
+        score: 0,
+        commentCount: 0,
+        year: 2003,
+        poster:
+          'https://img1.doubanio.com/view/photo/row/public/p2314652957.webp',
+      },
+      {
+        id: 35478733,
+        name: '香特尔×索妮亚：听她的歌 Son Chant',
+        score: 7.4,
+        commentCount: 89,
+        year: 2020,
+        poster:
+          'https://img1.doubanio.com/view/photo/row/public/p2889041187.webp',
+      },
+    ],
+  },
 }

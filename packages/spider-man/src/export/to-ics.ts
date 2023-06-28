@@ -102,16 +102,16 @@ export function createAlarm([
     const time = dayjs.tz(date)
     // hidden 24h ago
     if (Number(dayjs.tz(Date.now())) - Number(time) > 86400000) return
+    const start = time
+      .utc()
+      .format('YYYY MM DD HH mm')
+      .split(' ')
+      .map((str) => Number(str)) as [number, number, number, number, number]
     alarmList.push({
-      start: [
-        time.year(),
-        time.month() + 1,
-        time.date(),
-        time.hour(),
-        time.minute(),
-      ],
+      start: start,
+      startInputType: 'utc',
       duration: { hours: 0, minutes: 30 },
-      title: `⏰记得买电影票啊 ${time.format('HH:mm:ss')}`,
+      title: `⏰记得买电影票啊 ${time.format('HH:mm')}`,
       alarms: [
         {
           action: 'display',
