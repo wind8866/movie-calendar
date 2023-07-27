@@ -12,7 +12,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 72,
         year: 2021,
         poster:
-          'https://img1.doubanio.com/view/photo/s_ratio_poster/public/p2626437027.webp',
+          'https://img1.doubanio.com/view/photo/row/public/p2626437027.webp',
       },
       {
         id: 30401194,
@@ -21,7 +21,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 65278,
         year: 2021,
         poster:
-          'https://img1.doubanio.com/view/photo/s_ratio_poster/public/p2654818960.webp',
+          'https://img1.doubanio.com/view/photo/row/public/p2654818960.webp',
       },
     ],
   },
@@ -36,7 +36,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 343515,
         year: 2022,
         poster:
-          'https://img2.doubanio.com/view/photo/s_ratio_poster/public/p2738601191.webp',
+          'https://img2.doubanio.com/view/photo/row/public/p2738601191.webp',
       },
       {
         id: 35766491,
@@ -45,7 +45,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 897248,
         year: 2023,
         poster:
-          'https://img2.doubanio.com/view/photo/s_ratio_poster/public/p2887555071.webp',
+          'https://img2.doubanio.com/view/photo/row/public/p2887555071.webp',
       },
     ],
   },
@@ -60,7 +60,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 4407,
         year: 2023,
         poster:
-          'https://img2.doubanio.com/view/photo/s_ratio_poster/public/p2871557681.webp',
+          'https://img2.doubanio.com/view/photo/row/public/p2871557681.webp',
       },
       {
         id: 1293236,
@@ -69,7 +69,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 23141,
         year: 1998,
         poster:
-          'https://img1.doubanio.com/view/photo/s_ratio_poster/public/p2176669838.webp',
+          'https://img1.doubanio.com/view/photo/row/public/p2176669838.webp',
       },
       {
         id: 1787291,
@@ -78,7 +78,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 694253,
         year: 2006,
         poster:
-          'https://img9.doubanio.com/view/photo/s_ratio_poster/public/p884763596.webp',
+          'https://img9.doubanio.com/view/photo/row/public/p884763596.webp',
       },
     ],
   },
@@ -93,7 +93,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 0,
         year: 1934,
         poster:
-          'https://img2.doubanio.com/view/photo/s_ratio_poster/public/p2550485711.webp',
+          'https://img2.doubanio.com/view/photo/row/public/p2550485711.webp',
       },
       {
         id: 3205445,
@@ -102,7 +102,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 622,
         year: 1931,
         poster:
-          'https://img2.doubanio.com/view/photo/s_ratio_poster/public/p2585175632.webp',
+          'https://img2.doubanio.com/view/photo/row/public/p2585175632.webp',
       },
       {
         id: 10605870,
@@ -111,7 +111,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 73,
         year: 1934,
         poster:
-          'https://img2.doubanio.com/view/photo/s_ratio_poster/public/p2650218663.webp',
+          'https://img2.doubanio.com/view/photo/row/public/p2650218663.webp',
       },
     ],
   },
@@ -126,7 +126,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 0,
         year: 1933,
         poster:
-          'https://img2.doubanio.com/view/photo/s_ratio_poster/public/p2729742692.webp',
+          'https://img2.doubanio.com/view/photo/row/public/p2729742692.webp',
       },
       {
         id: 1484745,
@@ -135,7 +135,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 921,
         year: 1937,
         poster:
-          'https://img1.doubanio.com/view/photo/s_ratio_poster/public/p2324641699.webp',
+          'https://img1.doubanio.com/view/photo/row/public/p2324641699.webp',
       },
     ],
   },
@@ -150,7 +150,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 9466,
         year: 1922,
         poster:
-          'https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2446210084.webp',
+          'https://img9.doubanio.com/view/photo/row/public/p2446210084.webp',
       },
       {
         id: 3205445,
@@ -159,7 +159,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 622,
         year: 1931,
         poster:
-          'https://img2.doubanio.com/view/photo/s_ratio_poster/public/p2585175632.webp',
+          'https://img2.doubanio.com/view/photo/row/public/p2585175632.webp',
       },
     ],
   },
@@ -174,7 +174,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 166835,
         year: 2016,
         poster:
-          'https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2366570716.webp',
+          'https://img9.doubanio.com/view/photo/row/public/p2366570716.webp',
       },
       {
         id: 35788143,
@@ -183,7 +183,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 15292,
         year: 2022,
         poster:
-          'https://img1.doubanio.com/view/photo/s_ratio_poster/public/p2872097938.webp',
+          'https://img1.doubanio.com/view/photo/row/public/p2872097938.webp',
       },
     ],
   },
@@ -198,7 +198,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 711,
         year: 1956,
         poster:
-          'https://img1.doubanio.com/view/photo/s_ratio_poster/public/p2357459328.webp',
+          'https://img1.doubanio.com/view/photo/row/public/p2357459328.webp',
       },
       {
         id: 2140669,
@@ -207,7 +207,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 0,
         year: 1938,
         poster:
-          'https://img2.doubanio.com/view/photo/s_ratio_poster/public/p1947190513.webp',
+          'https://img2.doubanio.com/view/photo/row/public/p1947190513.webp',
       },
     ],
   },
@@ -222,7 +222,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 17220,
         year: 2018,
         poster:
-          'https://img1.doubanio.com/view/photo/s_ratio_poster/public/p2498706360.webp',
+          'https://img1.doubanio.com/view/photo/row/public/p2498706360.webp',
       },
       {
         id: 25918002,
@@ -231,7 +231,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 246,
         year: 2014,
         poster:
-          'https://img1.doubanio.com/view/photo/s_ratio_poster/public/p2189573417.webp',
+          'https://img1.doubanio.com/view/photo/row/public/p2189573417.webp',
       },
       {
         id: 35263095,
@@ -240,7 +240,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 6177,
         year: 2020,
         poster:
-          'https://img1.doubanio.com/view/photo/s_ratio_poster/public/p2626853180.webp',
+          'https://img1.doubanio.com/view/photo/row/public/p2626853180.webp',
       },
       {
         id: 35613850,
@@ -249,7 +249,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 170,
         year: 2021,
         poster:
-          'https://img1.doubanio.com/view/photo/s_ratio_poster/public/p2688778690.webp',
+          'https://img1.doubanio.com/view/photo/row/public/p2688778690.webp',
       },
     ],
   },
@@ -264,7 +264,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 78176,
         year: 1999,
         poster:
-          'https://img1.doubanio.com/view/photo/s_ratio_poster/public/p2519637549.webp',
+          'https://img1.doubanio.com/view/photo/row/public/p2519637549.webp',
       },
       {
         id: 35225859,
@@ -273,7 +273,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 15908,
         year: 2021,
         poster:
-          'https://img2.doubanio.com/view/photo/s_ratio_poster/public/p2677331311.webp',
+          'https://img2.doubanio.com/view/photo/row/public/p2677331311.webp',
       },
       {
         id: 35360296,
@@ -282,7 +282,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 68838,
         year: 2021,
         poster:
-          'https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2687984714.webp',
+          'https://img9.doubanio.com/view/photo/row/public/p2687984714.webp',
       },
     ],
   },
@@ -297,7 +297,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 1128,
         year: 1973,
         poster:
-          'https://img1.doubanio.com/view/photo/s_ratio_poster/public/p2526846680.webp',
+          'https://img1.doubanio.com/view/photo/row/public/p2526846680.webp',
       },
       {
         id: 4230918,
@@ -306,7 +306,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 94903,
         year: 2010,
         poster:
-          'https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2163657305.webp',
+          'https://img9.doubanio.com/view/photo/row/public/p2163657305.webp',
       },
     ],
   },
@@ -321,7 +321,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 2956,
         year: 1958,
         poster:
-          'https://img1.doubanio.com/view/photo/s_ratio_poster/public/p2649092478.webp',
+          'https://img1.doubanio.com/view/photo/row/public/p2649092478.webp',
       },
       {
         id: 2371971,
@@ -330,7 +330,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 343,
         year: 1974,
         poster:
-          'https://img1.doubanio.com/view/photo/s_ratio_poster/public/p2582446959.webp',
+          'https://img1.doubanio.com/view/photo/row/public/p2582446959.webp',
       },
     ],
   },
@@ -345,7 +345,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 204,
         year: 1929,
         poster:
-          'https://img1.doubanio.com/view/photo/s_ratio_poster/public/p2512923778.webp',
+          'https://img1.doubanio.com/view/photo/row/public/p2512923778.webp',
       },
       {
         id: 4899549,
@@ -354,7 +354,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 234,
         year: 1958,
         poster:
-          'https://img2.doubanio.com/view/photo/s_ratio_poster/public/p2579039122.webp',
+          'https://img2.doubanio.com/view/photo/row/public/p2579039122.webp',
       },
     ],
   },
@@ -369,7 +369,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 22755,
         year: 1963,
         poster:
-          'https://img1.doubanio.com/view/photo/s_ratio_poster/public/p2559172988.jpg',
+          'https://img1.doubanio.com/view/photo/row/public/p2559172988.jpg',
       },
       {
         id: 1293030,
@@ -378,7 +378,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 11749,
         year: 1963,
         poster:
-          'https://img2.doubanio.com/view/photo/s_ratio_poster/public/p2202641383.jpg',
+          'https://img2.doubanio.com/view/photo/row/public/p2202641383.jpg',
       },
     ],
   },
@@ -393,7 +393,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 17146,
         year: 1957,
         poster:
-          'https://img1.doubanio.com/view/photo/s_ratio_poster/public/p2058841317.webp',
+          'https://img1.doubanio.com/view/photo/row/public/p2058841317.webp',
       },
     ],
   },
@@ -408,7 +408,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 96364,
         year: 1960,
         poster:
-          'https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2250602634.webp',
+          'https://img9.doubanio.com/view/photo/row/public/p2250602634.webp',
       },
       {
         id: 3211002,
@@ -417,7 +417,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 295,
         year: 1926,
         poster:
-          'https://img2.doubanio.com/view/photo/s_ratio_poster/public/p2584464982.webp',
+          'https://img2.doubanio.com/view/photo/row/public/p2584464982.webp',
       },
     ],
   },
@@ -597,7 +597,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 9466,
         year: 1922,
         poster:
-          'https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2446210084.webp',
+          'https://img9.doubanio.com/view/photo/row/public/p2446210084.webp',
       },
       {
         id: 14072900,
@@ -735,7 +735,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 9466,
         year: 1922,
         poster:
-          'https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2446210084.webp',
+          'https://img9.doubanio.com/view/photo/row/public/p2446210084.webp',
       },
       {
         id: 2222996,
@@ -1313,7 +1313,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 9466,
         year: 1922,
         poster:
-          'https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2446210084.webp',
+          'https://img9.doubanio.com/view/photo/row/public/p2446210084.webp',
       },
       {
         id: 1302210,
@@ -1337,7 +1337,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 9466,
         year: 1922,
         poster:
-          'https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2446210084.webp',
+          'https://img9.doubanio.com/view/photo/row/public/p2446210084.webp',
       },
       {
         id: 1844550,
@@ -1575,7 +1575,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
         commentCount: 73,
         year: 1934,
         poster:
-          'https://img2.doubanio.com/view/photo/s_ratio_poster/public/p2650218663.webp',
+          'https://img2.doubanio.com/view/photo/row/public/p2650218663.webp',
       },
     ],
   },
@@ -1604,7 +1604,7 @@ export const doubanSpecial: ICFAToDoubanMap = {
     ],
   },
   1365: {
-    name: ' 香特尔×索妮亚：听她的歌+与索妮亚同行',
+    name: '香特尔×索妮亚：听她的歌+与索妮亚同行',
     updateTime: 1687961512957,
     douban: [
       {
@@ -1624,6 +1624,78 @@ export const doubanSpecial: ICFAToDoubanMap = {
         year: 2020,
         poster:
           'https://img1.doubanio.com/view/photo/row/public/p2889041187.webp',
+      },
+    ],
+  },
+  1410: {
+    name: '延安内貌+燃烧的影像',
+    updateTime: 1690468012563,
+    douban: [
+      {
+        id: 6852379,
+        name: '西北线上',
+        score: 0,
+        commentCount: 0,
+        year: 1941,
+        poster:
+          'https://img1.doubanio.com/view/photo/row/public/p2277950590.webp',
+      },
+      {
+        id: 26602281,
+        name: '燃烧的影像',
+        score: 0,
+        commentCount: 0,
+        year: 2015,
+        poster:
+          'https://img1.doubanio.com/view/photo/row/public/p2265026859.webp',
+      },
+    ],
+  },
+  1411: {
+    name: '淞沪抗战纪实+保卫我们的土地',
+    updateTime: 1690468012563,
+    douban: [
+      {
+        id: 20266536,
+        name: '淞沪抗战纪实',
+        score: 0,
+        commentCount: 0,
+        year: 1937,
+        poster:
+          'https://img1.doubanio.com/f/movie/30c6263b6db26d055cbbe73fe653e29014142ea3/pics/movie/movie_default_large.png',
+      },
+      {
+        id: 2140669,
+        name: '保卫我们的土地',
+        score: 0,
+        commentCount: 0,
+        year: 1938,
+        poster:
+          'https://img2.doubanio.com/view/photo/row/public/p1947190513.webp',
+      },
+    ],
+  },
+  1412: {
+    name: '抗战歌辑+八百壮士',
+    updateTime: 1690468012563,
+    douban: [
+      {
+        id: 4116952,
+        name: '抗战歌辑',
+        score: 0,
+        commentCount: 0,
+        year: 1938,
+        poster:
+          'https://img2.doubanio.com/view/photo/row/public/p2895958243.webp',
+      },
+      {
+        id: 1999622,
+        name: '八百壮士',
+        score: 7.5,
+        commentCount: 403,
+        year: 1938,
+        poster:
+          'https://img1.doubanio.com/view/photo/row/public/p2602780167.webp',
       },
     ],
   },

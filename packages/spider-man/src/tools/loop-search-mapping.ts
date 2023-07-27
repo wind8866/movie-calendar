@@ -20,8 +20,8 @@ const movieIDOrderDataPath = `${chacePath}/movie-id-order-data.json`
 const todoPickPath = `${chacePath}/todo-pick-list.json`
 const videoTypePath = `${chacePath}/video.json`
 const videoTypeList: number[] = []
-let start = 1250
-const end = 1380
+let start = 1271
+const end = 1500
 const pickListUseCache = false
 
 export interface CFAMapping {

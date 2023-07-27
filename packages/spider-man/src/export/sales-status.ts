@@ -33,9 +33,10 @@ export function logSoldState(movieList: IMovieInfo[]) {
   const soldOutList = movieList
     .filter((m) => m.soldOut)
     .map((m) => ({
-      name: m.name,
-      playTime: m.playTime,
-      room: m.cinema + m.room,
+      电影名: m.name,
+      放映时间: m.playTime,
+      影厅: m.cinema + m.room,
+      活动: m.isActivity ? '有' : '',
     }))
   console.log(
     chalk.bold.green(
