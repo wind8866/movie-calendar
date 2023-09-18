@@ -85,7 +85,7 @@ export interface IMovieInfo {
   movieId: number
   name: string
   minute: number
-  cinema: string
+  cinema: '小西天艺术影院' | '百子湾艺术影院'
   room: string
   playTime: string
   price: number

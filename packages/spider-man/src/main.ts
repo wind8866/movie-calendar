@@ -166,9 +166,39 @@ export async function completeProcess() {
     putCSV(csvStr)
   }
   await putMovieList(movieList)
-  const calObject = createCalData(movieList)
-  const calAlert = createAlarm(playDate.month)
-  const calString = await createCalendar(calObject.concat(calAlert))
-  putCal(calString)
+
+  // 全部
+  {
+    const calObject = createCalData(movieList)
+    const calAlert = createAlarm()
+    const calString = await createCalendar(calObject.concat(calAlert))
+    putCal(calString)
+  }
+
+  // 小西天
+  {
+    const calObject = createCalData(
+      movieList.filter((m) => m.cinema === '小西天艺术影院'),
+      'xiaoxitian',
+    )
+    const calAlert = createAlarm({
+      title: '资料馆电影日历(小西天)',
+    })
+    const calString = await createCalendar(calObject.concat(calAlert))
+    putCal(calString, 'xiaoxitian')
+  }
+  // 百子湾
+  {
+    const calObject = createCalData(
+      movieList.filter((m) => m.cinema === '百子湾艺术影院'),
+      'baiziwan',
+    )
+    const calAlert = createAlarm({
+      title: '资料馆电影日历(百子湾)',
+    })
+    const calString = await createCalendar(calObject.concat(calAlert))
+    putCal(calString, 'baiziwan')
+  }
+
   console.log(chalk.bold.green('[结束]'), '完成所有流程')
 }

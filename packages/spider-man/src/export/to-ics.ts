@@ -10,7 +10,12 @@ dayjs.extend(utc)
 dayjs.extend(timezone)
 dayjs.tz.setDefault('Asia/Shanghai')
 
-export function createCalData(movieList: IMovieInfo[]): EventAttributes[] {
+export type LocalType = 'all' | 'xiaoxitian' | 'baiziwan'
+
+export function createCalData(
+  movieList: IMovieInfo[],
+  localType: LocalType = 'all',
+): EventAttributes[] {
   return movieList.map((m) => {
     let douURL: undefined | string = undefined
     const doubanInfo = m.doubanInfo?.douban
@@ -48,15 +53,12 @@ ${m.price}元 \
 ${m.cinema}${m.room}
 ${m.isActivity ? '有放映活动  ' : ''}\
 ${otherDate ? `本月${otherDate}日也有放映` : ''}`
-    const title = `\
-${m.isActivity ? '🎉 ' : ''}\
-${m.name}\
-${
-  config.roomTitleShort[m.cinema + m.room]
-    ? ' ' + config.roomTitleShort[m.cinema + m.room]
-    : ''
-}
-`
+    let title = `${m.isActivity ? '🎉 ' : ''}${m.name}`
+    if (localType !== 'baiziwan') {
+      title += config.roomTitleShort[m.cinema + m.room]
+        ? ' ' + config.roomTitleShort[m.cinema + m.room]
+        : ''
+    }
     const start = dayjs
       .tz(m.playTime)
       .utc()
@@ -78,20 +80,20 @@ ${
   })
 }
 
-export function createAlarm([
-  current,
-  next,
-]: IAllData['playDate']['month']): EventAttributes[] {
+interface AlarmParams {
+  title?: string
+}
+export function createAlarm(params?: AlarmParams): EventAttributes[] {
   const yesterday = dayjs.tz(Date.now()).subtract(1, 'day')
-  const title = `资料馆电影日历`
+  const title = params?.title ?? `资料馆电影日历`
   const titleInfo: EventAttributes = {
     title: title,
     calName: title,
     start: [yesterday.year(), yesterday.month() + 1, yesterday.date(), 7, 0],
     duration: { hours: 0, minutes: 30 },
     description: `\
-首页🏠：https://movie.wind8866.top
-修改意见📩：https://github.com/wind8866/movie-calendar/issues
+帮助文档💡：https://www.yuque.com/qifengle-z7w1e/vu76du/fpnoal2o9z5aqrhu?singleDoc
+意见反馈📩：电影群里@起风了
 更新日期🕙：${dayjs.tz(Date.now()).format('MM/DD HH:mm:ss')}
 `,
     categories: ['资料馆'],

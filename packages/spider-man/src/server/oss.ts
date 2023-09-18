@@ -7,6 +7,7 @@ import { ossServer } from '@moviecal/utils/oss'
 import { appMessagePushEmail } from '../export/message-push'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
+import { LocalType } from '../export/to-ics'
 
 dotent.config()
 dayjs.extend(utc)
@@ -156,12 +157,18 @@ export async function doubanDataPutOSS({
 }
 
 // 存储生成的日历
-export async function putCal(str: string) {
+export async function putCal(str: string, localType: LocalType = 'all') {
   const encoder = new TextEncoder()
+  let serveName = 'current.ics'
+  if (localType === 'xiaoxitian') {
+    serveName = 'current-xiaoxitian.ics'
+  } else if (localType === 'baiziwan') {
+    serveName = 'current-baiziwan.ics'
+  }
   await ossServer
     .put({
       servePath: currentPath,
-      serveName: calName,
+      serveName,
       local: Buffer.from(encoder.encode(str)),
     })
     .catch(async (error) => {
