@@ -1699,4 +1699,116 @@ export const doubanSpecial: ICFAToDoubanMap = {
       },
     ],
   },
+
+  1430: {
+    name: '馆庆月珍贵档案特别放映+花姑娘',
+    updateTime: 1701097732580,
+    douban: [
+      {
+        id: 30136788,
+        name: '穿越中国的心脏 Door Het Hart van China',
+        score: 0,
+        commentCount: 0,
+        year: 2018,
+        poster:
+          'https://img1.doubanio.com/view/photo/row/public/p2512453907.webp',
+      },
+      {
+        id: 5088314,
+        name: '花姑娘',
+        score: 8,
+        commentCount: 394,
+        year: 1951,
+        poster:
+          'https://img2.doubanio.com/view/photo/row/public/p1529149181.webp',
+      },
+    ],
+  },
+  1439: {
+    name: '卡门',
+    updateTime: 1701097732580,
+    douban: [
+      {
+        id: 1303061,
+        name: '卡门 Carmen',
+        score: 8.2,
+        commentCount: 4451,
+        year: 1983,
+        poster:
+          'https://img9.doubanio.com/view/photo/row/public/p2558197046.webp',
+      },
+    ],
+  },
+  1487: {
+    name: '抗战歌辑+花莲港',
+    updateTime: 1701097732580,
+    douban: [
+      {
+        id: 4116952,
+        name: '抗战歌辑',
+        score: 0,
+        commentCount: 0,
+        year: 1938,
+        poster:
+          'https://img2.doubanio.com/view/photo/row/public/p2895958243.webp',
+      },
+      {
+        id: 3120335,
+        name: '花莲港',
+        score: 6.3,
+        commentCount: 88,
+        year: 1948,
+        poster:
+          'https://img1.doubanio.com/view/photo/row/public/p2588422157.webp',
+      },
+    ],
+  },
+  1488: {
+    name: '血溅樱花+气壮山河',
+    updateTime: 1701097732580,
+    douban: [
+      {
+        id: 11625160,
+        name: '血溅樱花',
+        score: 0,
+        commentCount: 0,
+        year: 1944,
+        poster:
+          'https://img1.doubanio.com/view/photo/row/public/p2535949647.webp',
+      },
+      {
+        id: 1294487,
+        name: '气壮山河',
+        score: 7,
+        commentCount: 231,
+        year: 1957,
+        poster:
+          'https://img9.doubanio.com/view/photo/row/public/p2178491206.webp',
+      },
+    ],
+  },
+  1527: {
+    name: '驾驶我的车+天使爱美丽',
+    updateTime: 1701097732580,
+    douban: [
+      {
+        id: 35235502,
+        name: '驾驶我的车',
+        score: 7.9,
+        commentCount: 115130,
+        year: 2021,
+        poster:
+          'https://img9.doubanio.com/view/photo/row/public/p2670263616.webp',
+      },
+      {
+        id: 1292215,
+        name: '天使爱美丽',
+        score: 8.7,
+        commentCount: 963389,
+        year: 2001,
+        poster:
+          'https://img2.doubanio.com/view/photo/row/public/p2447590313.webp',
+      },
+    ],
+  },
 }

@@ -20,8 +20,8 @@ const movieIDOrderDataPath = `${chacePath}/movie-id-order-data.json`
 const todoPickPath = `${chacePath}/todo-pick-list.json`
 const videoTypePath = `${chacePath}/video.json`
 const videoTypeList: number[] = []
-let start = 1271
-const end = 1500
+let start = 1416
+const end = 1540
 const pickListUseCache = false
 
 export interface CFAMapping {
@@ -314,7 +314,7 @@ export async function queryDoubanMovieInfoUseSearchPage(cfa: CFAMapping) {
 forEachSearch()
 
 /**
- * 1. 清空 videoTypeList，界定 start 和 end 的范围
+ * 1. 清空 videoTypeList 界定 start 和 end 的范围
  * 2. 运行 cacheMovieList 将新增的电影增量缓存到 movie-id-order-data.json
  * 3. 手动挑选出不需要处理的视频信息，放入 videoTypeList(可不用)
  * 4. 运行 forEachSearch 去豆瓣搜索电影，缓存到 todo-pick-list.json
