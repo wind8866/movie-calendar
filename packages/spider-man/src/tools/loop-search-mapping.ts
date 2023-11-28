@@ -20,8 +20,8 @@ const movieIDOrderDataPath = `${chacePath}/movie-id-order-data.json`
 const todoPickPath = `${chacePath}/todo-pick-list.json`
 const videoTypePath = `${chacePath}/video.json`
 const videoTypeList: number[] = []
-let start = 1416
-const end = 1540
+let start = 1245
+const end = 1381
 const pickListUseCache = false
 
 export interface CFAMapping {
@@ -213,7 +213,7 @@ async function forEachSearch() {
   const movielist: { [id: string]: Info } = {}
   for (const info of Object.values(orderData)) {
     if (info == null) continue
-    if (videoTypeList.includes(info.movieId)) {
+    if (!videoTypeList.includes(info.movieId)) {
       videoType[info.movieName] = info
     } else {
       movielist[info.movieId] = info
