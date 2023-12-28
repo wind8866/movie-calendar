@@ -1811,4 +1811,49 @@ export const doubanSpecial: ICFAToDoubanMap = {
       },
     ],
   },
+  1525: {
+    name: '葛楚',
+    updateTime: 1703737789113,
+    douban: [
+      {
+        id: 1420116,
+        name: '葛楚 Gertrud',
+        score: 8.1,
+        commentCount: 2533,
+        year: 1964,
+        poster:
+          'https://img3.doubanio.com/view/photo/row/public/p2890874903.webp',
+      },
+    ],
+  },
+  1532: {
+    name: '“再相见更想念”《非诚勿扰》重映礼',
+    updateTime: 1703737789113,
+    douban: [
+      {
+        id: 3313801,
+        name: '非诚勿扰',
+        score: 7.2,
+        commentCount: 425720,
+        year: 2008,
+        poster:
+          'https://img9.doubanio.com/view/photo/row/public/p484914984.webp',
+      },
+    ],
+  },
+  1536: {
+    name: '主竞赛',
+    updateTime: 1703737789113,
+    douban: [
+      {
+        id: 34960939,
+        name: '主竞赛 Competencia oficial',
+        score: 7.1,
+        commentCount: 3986,
+        year: 2021,
+        poster:
+          'https://img1.doubanio.com/view/photo/row/public/p2753324569.webp',
+      },
+    ],
+  },
 }

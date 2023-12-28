@@ -15,13 +15,14 @@ const iaxios = axios.create({
 })
 
 const chacePath = path.resolve(__dirname, '../.cache')
-const mappingPath = `${chacePath}/mapping-movieid-douid.json`
+const dataPath = path.resolve(__dirname, '../data')
+const mappingPath = `${dataPath}/cfa-to-dou-dic-map.json`
 const movieIDOrderDataPath = `${chacePath}/movie-id-order-data.json`
 const todoPickPath = `${chacePath}/todo-pick-list.json`
 const videoTypePath = `${chacePath}/video.json`
 const videoTypeList: number[] = []
-let start = 1245
-const end = 1381
+let start = 1230
+const end = 1545
 const pickListUseCache = false
 
 export interface CFAMapping {
@@ -213,7 +214,7 @@ async function forEachSearch() {
   const movielist: { [id: string]: Info } = {}
   for (const info of Object.values(orderData)) {
     if (info == null) continue
-    if (!videoTypeList.includes(info.movieId)) {
+    if (videoTypeList.includes(info.movieId)) {
       videoType[info.movieName] = info
     } else {
       movielist[info.movieId] = info
@@ -318,7 +319,7 @@ forEachSearch()
  * 2. 运行 cacheMovieList 将新增的电影增量缓存到 movie-id-order-data.json
  * 3. 手动挑选出不需要处理的视频信息，放入 videoTypeList(可不用)
  * 4. 运行 forEachSearch 去豆瓣搜索电影，缓存到 todo-pick-list.json
- * 5. 修改index.html 100行界定对比范围
+ * 5. 修改 src/.cache/index.html:100 行界定对比范围
  * 6. 在浏览器中打开index检查并挑选，控制台获取到审核通过的列表ID，放回index.html和connect.ts
  * 7. 脚本未搜索到的电影使用 todo-pick-list 和 example/douban-spider.js 维护到douban-special.ts
  * 8. 运行 connect中的pick，如果打印[]说明完成了，再运行erverseMap()
