@@ -103,7 +103,7 @@ export function toCVSSoldState(movieList: IMovieInfo[]) {
           ?.map((c) => c.categoryName)
           .join('/'),
         豆瓣链接: m.doubanInfo?.douban
-          .map((dou) => `https://movie.douban.com/subject/${dou.doubanId}/`)
+          .map((dou) => `https://movie.douban.com/subject/${dou.id}/`)
           .join(' '),
         销量: seatSold,
         上座率: scale,
