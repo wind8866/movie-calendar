@@ -92,6 +92,7 @@ export function toCVSSoldState(movieList: IMovieInfo[]) {
       return {
         电影名: m.name,
         年份: Number(dayjs.tz(m.movieTime).format('YYYY')),
+        时长: m.minute,
         导演: m.movieActorList
           .filter((m) => m.position === '导演')
           // https://zhuanlan.zhihu.com/p/33335629
@@ -108,7 +109,7 @@ export function toCVSSoldState(movieList: IMovieInfo[]) {
         销量: seatSold,
         上座率: scale,
         座位数: total,
-        放映日期: playTime.format(`MM月DD日`),
+        放映日期: playTime.format(`MM/DD HH:mm`),
         映后活动: m.isActivity ? '有' : '',
         备注: '',
       }
@@ -127,6 +128,8 @@ async function completeProcess() {
   logSoldState(allData.movieList)
   const cvsStr = toCVSSoldState(allData.movieList)
   const chacePath = path.resolve(__dirname, '../.cache/status.csv')
-  writeFileSync(chacePath, JSON.stringify(cvsStr))
+  const encoder = new TextEncoder()
+  const buffer = Buffer.from(encoder.encode(cvsStr))
+  writeFileSync(chacePath, buffer)
 }
 completeProcess()
