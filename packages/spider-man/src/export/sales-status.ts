@@ -89,6 +89,7 @@ export function toCVSSoldState(movieList: IMovieInfo[]) {
         }
       })
       const playTime = dayjs.tz(m.playTime)
+      const weekDic = ['日', '一', '二', '三', '四', '五', '六'] as const
       return {
         电影名: m.name,
         年份: Number(dayjs.tz(m.movieTime).format('YYYY')),
@@ -110,6 +111,7 @@ export function toCVSSoldState(movieList: IMovieInfo[]) {
         上座率: scale,
         座位数: total,
         放映日期: playTime.format(`MM/DD HH:mm`),
+        周: weekDic[Number(playTime.format('周d'))],
         映后活动: m.isActivity ? '有' : '',
         备注: '',
       }
@@ -127,7 +129,10 @@ async function completeProcess() {
   const allData = await getAllData()
   logSoldState(allData.movieList)
   const cvsStr = toCVSSoldState(allData.movieList)
-  const chacePath = path.resolve(__dirname, '../.cache/status.csv')
+  const chacePath = path.resolve(
+    __dirname,
+    `../.cache/status/${dayjs().format('MMDD')}.csv`,
+  )
   const encoder = new TextEncoder()
   const buffer = Buffer.from(encoder.encode(cvsStr))
   writeFileSync(chacePath, buffer)
