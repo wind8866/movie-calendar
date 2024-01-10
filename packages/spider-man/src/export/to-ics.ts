@@ -37,7 +37,10 @@ ${url}`
         })
         .join('')
     }
-
+    const director = m.movieActorList
+      .filter((v) => v.position === '导演')
+      .map((v) => v.realName)
+      .join('|')
     const country = (m.country ?? []).join('/')
     const otherDate = m.otherDate
       ?.filter((date) => date !== m.playTime)
@@ -46,7 +49,8 @@ ${url}`
     const description = `\
 ${dayjs.tz(m.movieTime).format('YYYY')}年 \
 ${m.minute}分钟 \
-${country} \
+${country}
+导演: ${director}
 ${doubanInfoText}
 
 ${m.price}元 \
@@ -93,7 +97,7 @@ export function createAlarm(params?: AlarmParams): EventAttributes[] {
     duration: { hours: 0, minutes: 30 },
     description: `\
 帮助文档💡：https://www.yuque.com/qifengle-z7w1e/vu76du/fpnoal2o9z5aqrhu?singleDoc
-意见反馈📩：电影群里@起风了
+意见反馈📩：电影群里@北风
 更新日期🕙：${dayjs.tz(Date.now()).format('MM/DD HH:mm:ss')}
 `,
     categories: ['资料馆'],
@@ -109,6 +113,8 @@ export function createAlarm(params?: AlarmParams): EventAttributes[] {
       .format('YYYY MM DD HH mm')
       .split(' ')
       .map((str) => Number(str)) as [number, number, number, number, number]
+    // TODO: 临时这么做，因为可能出现连续的提醒问题，后序改成在当前时间之后才提醒
+    if (start[3] !== 12) return
     alarmList.push({
       start: start,
       startInputType: 'utc',
