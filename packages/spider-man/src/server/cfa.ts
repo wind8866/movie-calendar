@@ -75,6 +75,15 @@ export async function queryPlayDayList(): Promise<{
   })
   const month = [resData.currentMonth?.month, resData.nextMonth?.month]
   console.log(chalk.green('[完成]'), '排片日期')
+  if (process.env.API_ENV !== 'PRD') {
+    const startDay = dayList.slice(0, 2)
+    console.log('测试开发环境只拉取2天', startDay.join(', '))
+
+    return {
+      month,
+      dayList: startDay,
+    }
+  }
   return {
     month,
     dayList,

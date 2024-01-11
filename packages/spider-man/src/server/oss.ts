@@ -62,7 +62,7 @@ export async function putAddedNewMovieList(movieList: IMovieInfo[]) {
     .put({
       servePath: currentPath,
       serveName: addedNewMovieListName,
-      local: new Buffer(encoder.encode(JSON.stringify(movieList))),
+      local: Buffer.from(encoder.encode(JSON.stringify(movieList))),
     })
     .catch(async (error) => {
       catchError('oss added movieList upload error', error)
@@ -71,7 +71,7 @@ export async function putAddedNewMovieList(movieList: IMovieInfo[]) {
     .put({
       servePath: archivedPath,
       serveName: addedNewMovieListBackupName,
-      local: new Buffer(encoder.encode(JSON.stringify(movieList))),
+      local: Buffer.from(encoder.encode(JSON.stringify(movieList))),
     })
     .catch(async (error) => {
       catchError('oss added movieList of archived upload error', error)
@@ -85,7 +85,7 @@ export async function putAllData(allData: IAllData) {
     .put({
       servePath: archivedPath,
       serveName: allDataName,
-      local: new Buffer(encoder.encode(JSON.stringify(allData))),
+      local: Buffer.from(encoder.encode(JSON.stringify(allData))),
       headers: {
         'x-oss-object-acl': 'private',
         'x-oss-storage-class': 'IA',
@@ -105,7 +105,7 @@ export async function putMovieList(movieList: IMovieInfo[]) {
     .put({
       servePath: currentPath,
       serveName: movieListName,
-      local: new Buffer(encoder.encode(JSON.stringify(movieList))),
+      local: Buffer.from(encoder.encode(JSON.stringify(movieList))),
     })
     .catch(async (error) => {
       catchError('!!! oss movieList upload error', error)
@@ -138,7 +138,7 @@ export async function doubanDataPutOSS({
     .put({
       servePath: currentPath,
       serveName: doubanInfoMapName,
-      local: new Buffer(encoder.encode(JSON.stringify(cfaToDou))),
+      local: Buffer.from(encoder.encode(JSON.stringify(cfaToDou))),
     })
     .catch(async (error) => {
       catchError('oss cfaToDou upload error', error)
@@ -149,7 +149,7 @@ export async function doubanDataPutOSS({
     .put({
       servePath: currentPath,
       serveName: douIdToMovieIdName,
-      local: new Buffer(encoder.encode(JSON.stringify(douToCFA))),
+      local: Buffer.from(encoder.encode(JSON.stringify(douToCFA))),
     })
     .catch(async (error) => {
       catchError('oss douToCFA upload error', error)

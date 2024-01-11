@@ -47,7 +47,7 @@ async function test() {
   // const result = await ossServer.put({
   //   servePath: `test/`,
   //   serveName: 'movie-list.json',
-  //   local: new Buffer(encoder.encode(JSON.stringify([{ a: '333' }]))),
+  //   local: Buffer.from(encoder.encode(JSON.stringify([{ a: '333' }]))),
   //   headers: {},
   // })
   // console.log(result)
