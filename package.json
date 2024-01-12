@@ -8,6 +8,7 @@
     "pull": "tsx packages/spider-man/src/index",
     "status": "tsx packages/spider-man/src/export/sales-status",
     "douban-loop": "tsx packages/spider-man/src/tools/loop-search-mapping.ts",
+    "pick-video": "tsx packages/spider-man/src/tools/pick-video.ts",
     "dic": "tsx packages/spider-man/src/tools/connect.ts",
     "lint-fix": "eslint --ext .js,.ts,.jsx,.tsx --fix --quiet ./packages",
     "version": "node -v",

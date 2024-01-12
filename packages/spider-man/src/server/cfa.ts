@@ -20,9 +20,10 @@ export type ResWrap<T> = {
 }
 const hostname = process.env.API_HOSTNAME
 const prefix = process.env.API_PREFIX
+const prefix2 = process.env.API_PREFIX_2
 
 const iaxios = axios.create({
-  baseURL: `https://${hostname}${prefix}`,
+  baseURL: `https://${hostname}`,
 })
 
 iaxios.interceptors.response.use(
@@ -63,7 +64,7 @@ export async function queryPlayDayList(): Promise<{
   month: (undefined | string)[]
 }> {
   const response = await iaxios<ResWrap<IPlayTimeList>>({
-    url: `/movieCinemaDate/new`,
+    url: `${prefix}/movieCinemaDate/new`,
   })
   const resData = response.data.data
   const dayList: string[] = []
@@ -95,7 +96,7 @@ export async function queryPlayDayList(): Promise<{
  */
 export async function queryMovie(day: string) {
   const response = await iaxios<ResWrap<IServerMovieItem[]>>({
-    url: `/movieCinemaList`,
+    url: `${prefix}/movieCinemaList`,
     params: { now: day },
   })
   return response.data.data
@@ -103,7 +104,7 @@ export async function queryMovie(day: string) {
 
 export async function queryMovieInfo(movieId: number) {
   const response = await iaxios<ResWrap<IServerMovieInfo | null>>({
-    url: `/movieInfo/${movieId}`,
+    url: `${prefix}/movieInfo/${movieId}`,
   })
   return response.data.data
 }
@@ -156,4 +157,30 @@ export async function getMovieInfoMap(
 
   barInfo.stop()
   return movieInfoMap
+}
+
+interface MovieLibrryInfo {
+  movieId: number
+  movieName: string
+  intro: string // 简介
+  movieCateList: {
+    categoryId: number
+    categoryName: string
+    categoryNameEn?: string
+    type?: unknown
+  }
+  realName: string // 貌似是导演或演员
+  movieTime: string // 2023-04-23 00:00:00
+  languageCategoryNameList: {
+    categoryId: number
+    categoryName: string // 中文/英语
+    categoryNameEn: string // Chinese
+    type: number
+  }[]
+}
+export async function queryMovieLibrryInfo(movieId: number) {
+  const response = await iaxios<ResWrap<MovieLibrryInfo>>({
+    url: `${prefix2}/movieLibrryInfo/${movieId}`,
+  })
+  return response.data.data
 }
