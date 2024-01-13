@@ -1,11 +1,18 @@
 import { same } from './connect'
 import { doubanSpecial } from '../data/douban-special'
-import { queryMovieInfo, queryMovieLibrryInfo } from '../server/cfa'
+import {
+  hostname,
+  queryMovieActorList,
+  queryMovieInfo,
+  queryMovieLibrryInfo,
+  queryMovieTrailerList,
+} from '../server/cfa'
+import dayjs from 'dayjs'
 
 const videoList: number[] = []
 const errorList: { [k: number]: string } = {}
 const end = 1560
-const start = 1
+const start = 400
 for (let i = start; i <= end; i++) {
   if (doubanSpecial[i]) continue
   if (same.includes(i)) continue
@@ -15,18 +22,48 @@ console.log(videoList)
 let count = 0
 const dic: {
   id: number
-  电影名: string
+  映后标题: string
+  '关联影人/影片': string
+  简介: string
+  活动方式: string
   日期: string
+  语言: string
+  映后人员: string
+  时长: string
+  视频地址: string
+  网页地址: string
+  备注: string
 }[] = []
 async function pull() {
   for (const id of videoList) {
-    if (count > 30) break
+    if (count > 40) break
     const res = await queryMovieLibrryInfo(id)
     if (res) {
+      const actorList = await queryMovieActorList(id)
+      const actorText = actorList
+        .map((item) => {
+          let role = item.position
+          if (item.portrayName) role = item.portrayName
+          return `${item.realName}(${role})`
+        })
+        .join(',')
+      const guess = /《(.*)》/.exec(res.movieName)?.[1] ?? ''
+      const videoInfo = await queryMovieTrailerList(id)
       dic.push({
         id: res.movieId,
-        电影名: res.movieName,
-        日期: res.movieTime,
+        映后标题: res.movieName,
+        '关联影人/影片': guess,
+        简介: 'res.intro',
+        活动方式: res.movieCateList.map((item) => item.categoryName).join(','),
+        日期: dayjs(res.movieTime).format('YYYY-MM-DD'),
+        语言: res.languageCategoryNameList
+          .map((item) => item.categoryName)
+          .join(','),
+        映后人员: actorText,
+        时长: videoInfo.map((item) => item.duration).join(','),
+        视频地址: videoInfo.map((item) => item.prevue).join(','),
+        网页地址: `${hostname}/h5/share.html?id=${id}&type=1`,
+        备注: '',
       })
     } else {
       const res = await queryMovieInfo(id)
@@ -41,40 +78,3 @@ async function pull() {
 pull()
 
 // /h5/share.html?id=1417&type=1
-
-// /api/movie/movieLibrryInfo/1417
-interface M {
-  movieId: number
-  movieName: string
-  intro: string // 简介
-  movieCateList: {
-    categoryId: number
-    categoryName: string
-    categoryNameEn?: string
-    type?: unknown
-  }
-  realName: string // 貌似是导演或演员
-  movieTime: string // 2023-04-23 00:00:00
-  languageCategoryNameList: {
-    categoryId: number
-    categoryName: string // 中文/英语
-    categoryNameEn: string // Chinese
-    type: number
-  }[]
-}
-
-// /api/movie/movieActorList/1417
-interface People {
-  position: string // 演员/导演
-  photo: string
-  realName: string // 杨鸽、巴斯·德沃斯
-  portrayName: string // 主持人
-  imaginedId?: unknown
-}
-
-// /api/movie/movieTrailerList/1417
-interface VideoInfo {
-  prevue: string // https://cdn.cfa.org.cn/2023/07/517ae8f8-2226-47bf-8c4c-a160999b83a6.mp4
-  duration: string // 17:45
-  title: string // 《小世界》映后交流
-}

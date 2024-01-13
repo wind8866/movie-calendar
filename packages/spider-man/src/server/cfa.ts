@@ -18,7 +18,7 @@ export type ResWrap<T> = {
   data: T
   msg: string
 }
-const hostname = process.env.API_HOSTNAME
+export const hostname = process.env.API_HOSTNAME
 const prefix = process.env.API_PREFIX
 const prefix2 = process.env.API_PREFIX_2
 
@@ -168,7 +168,7 @@ interface MovieLibrryInfo {
     categoryName: string
     categoryNameEn?: string
     type?: unknown
-  }
+  }[]
   realName: string // 貌似是导演或演员
   movieTime: string // 2023-04-23 00:00:00
   languageCategoryNameList: {
@@ -181,6 +181,32 @@ interface MovieLibrryInfo {
 export async function queryMovieLibrryInfo(movieId: number) {
   const response = await iaxios<ResWrap<MovieLibrryInfo>>({
     url: `${prefix2}/movieLibrryInfo/${movieId}`,
+  })
+  return response.data.data
+}
+
+interface Actor {
+  position: string // 演员/导演
+  photo: string
+  realName: string // 杨鸽、巴斯·德沃斯
+  portrayName: string // 主持人
+  imaginedId?: unknown
+}
+export async function queryMovieActorList(movieId: number) {
+  const response = await iaxios<ResWrap<Actor[]>>({
+    url: `${prefix2}/movieActorList/${movieId}`,
+  })
+  return response.data.data
+}
+
+interface VideoInfo {
+  prevue: string // 视频源地址
+  duration: string // 17:45
+  title: string // 《小世界》映后交流
+}
+export async function queryMovieTrailerList(movieId: number) {
+  const response = await iaxios<ResWrap<VideoInfo[]>>({
+    url: `${prefix2}/movieTrailerList/${movieId}`,
   })
   return response.data.data
 }
