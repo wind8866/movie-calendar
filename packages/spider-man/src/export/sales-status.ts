@@ -99,20 +99,21 @@ export function toCVSSoldState(movieList: IMovieInfo[]) {
           // https://zhuanlan.zhihu.com/p/33335629
           .map((m) => /(\p{Unified_Ideograph}|·| |-)+/gu.exec(m.realName)?.[0])
           .join('|'),
-        豆瓣评分: m.doubanInfo?.douban.map((dou) => dou.score).join('/'),
-        评论人数: m.doubanInfo?.douban.map((dou) => dou.commentCount).join('/'),
         '国家/地区': m.regionCategoryNameList
           ?.map((c) => c.categoryName)
           .join('/'),
+        豆瓣评分: m.doubanInfo?.douban.map((dou) => dou.score).join('/'),
+        评论人数: m.doubanInfo?.douban.map((dou) => dou.commentCount).join('/'),
         豆瓣链接: m.doubanInfo?.douban
           .map((dou) => `https://movie.douban.com/subject/${dou.id}/`)
           .join(' '),
-        销量: seatSold,
         上座率: scale,
+        销量: seatSold,
         座位数: total,
         放映日期: playTime.format(`MM/DD HH:mm`),
         周: weekDic[Number(playTime.format('周d'))],
         映后活动: m.isActivity ? '有' : '',
+        专题活动: m.topicName,
         备注: '',
       }
     })

@@ -77,8 +77,8 @@ export async function queryPlayDayList(): Promise<{
   const month = [resData.currentMonth?.month, resData.nextMonth?.month]
   console.log(chalk.green('[完成]'), '排片日期')
   if (process.env.API_ENV !== 'PRD') {
-    const startDay = dayList.slice(0, 2)
-    console.log('测试开发环境只拉取2天', startDay.join(', '))
+    const startDay = dayList.slice(0, 5)
+    console.log(`测试开发环境只拉取${startDay.length}天`, startDay.join(', '))
 
     return {
       month,
@@ -148,6 +148,20 @@ export async function getMovieInfoMap(
     const info = await queryMovieInfo(m.movieId)
     if (info == null) continue
     movieInfoMap[m.movieId] = info
+    const rewindingId = info.movieCinemaList?.[0]?.movieActiveDto.id
+    if (rewindingId) {
+      const exhibition = await queryPhotoExhibition(rewindingId)
+      movieInfoMap[m.movieId].topic = exhibition.map((m) => {
+        return {
+          id: m.id,
+          title: m.title,
+          coverPicture: m.coverPicture,
+          startTime: m.startTime,
+          endTime: m.endTime,
+          description: m.description,
+        }
+      })
+    }
 
     barInfo.increment({
       val: m.movieName,
@@ -207,6 +221,23 @@ interface VideoInfo {
 export async function queryMovieTrailerList(movieId: number) {
   const response = await iaxios<ResWrap<VideoInfo[]>>({
     url: `${prefix2}/movieTrailerList/${movieId}`,
+  })
+  return response.data.data
+}
+interface Exhibition {
+  id: number
+  title: string
+  coverPicture: string
+  startTime: string
+  endTime: string
+  description: string
+}
+export async function queryPhotoExhibition(rewindingId: number) {
+  const response = await iaxios<ResWrap<Exhibition[]>>({
+    url: `/v5/api/photoExhibition/queryPhotoExhibition`,
+    params: {
+      rewindingId,
+    },
   })
   return response.data.data
 }

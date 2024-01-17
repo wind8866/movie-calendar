@@ -136,7 +136,7 @@ function combineData({
       movieId: movie.movieId,
       name: movie.movieName,
       minute: movie.movieMinute,
-      cinema: movie.cinemaName,
+      cinema: movie.cinemaName as IMovieInfo['cinema'],
       room: movie.movieHall,
       playTime: movie.playTime,
       price: movie.fares,
@@ -150,6 +150,7 @@ function combineData({
       country: countryList,
       regionCategoryNameList,
       movieCinemaListMore: movieCinemaListMore,
+      topicName: movieInfoMapRaw[movieId]?.topic?.[0]?.title,
     }
     return movieInfo
   })

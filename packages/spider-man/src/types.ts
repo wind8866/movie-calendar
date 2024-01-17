@@ -68,7 +68,7 @@ export interface IServerMovieItem {
     categoryNameEn: null
     type: null
   }[]
-  movieCinemaList: { playTime: string; fares: number }[]
+  movieCinemaList: { playTime: string; fares: number; id: number }[] // 专题活动id
   movieActorList: { position: string; realName: string }[]
   movieTime: string
 }
@@ -97,7 +97,7 @@ export interface IMovieInfo {
     categoryNameEn: null
     type: null
   }[]
-  movieCinemaList: { playTime: string; fares: number }[]
+  movieCinemaList: { playTime: string; fares: number; id: number }[]
   movieActorList: { position: string; realName: string }[]
   movieTime: string
 
@@ -107,6 +107,7 @@ export interface IMovieInfo {
   regionCategoryNameList?: IServerMovieInfo['regionCategoryNameList']
   movieCinemaListMore?: IServerMovieInfo['movieCinemaList']
   doubanInfo?: ICFAToDoubanMap[number]
+  topicName?: string
 }
 
 export interface IServerMovieInfo {
@@ -123,8 +124,17 @@ export interface IServerMovieInfo {
     seatTotal?: number
     seatSold?: number
     movieActiveDto: {
+      id: number
       saleTime: string
     }
+  }[]
+  topic?: {
+    id: number
+    title: string
+    coverPicture: string
+    startTime: string
+    endTime: string
+    description: string
   }[]
 }
 

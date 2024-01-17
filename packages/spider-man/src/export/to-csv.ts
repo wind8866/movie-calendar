@@ -10,7 +10,7 @@ export default function toCSV(movieList: IMovieInfo[]): string {
     const doubanInfo = m.doubanInfo?.douban
     if (Array.isArray(doubanInfo)) {
       url = doubanInfo
-        ?.map((d) => `https://movie.douban.com/subject/${d.doubanId}/`)
+        ?.map((d) => `https://movie.douban.com/subject/${d.id}/`)
         .join(' ')
       score = doubanInfo.map((d) => d.score).join(' ')
       commentCount = doubanInfo.map((d) => d.commentCount).join(' ')
