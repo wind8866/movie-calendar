@@ -5,6 +5,7 @@ import { IMovieInfo } from '../types'
 import { getAllData } from '../main'
 import { readFileSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
+import { cutDirectorCN } from '@moviecal/utils'
 
 export function logSoldState(movieList: IMovieInfo[]) {
   const viewScale = 40
@@ -28,7 +29,7 @@ export function logSoldState(movieList: IMovieInfo[]) {
         导演: m.movieActorList
           .filter((m) => m.position === '导演')
           // https://zhuanlan.zhihu.com/p/33335629
-          .map((m) => /(\p{Unified_Ideograph}|·| |-)+/gu.exec(m.realName)?.[0])
+          .map((m) => cutDirectorCN(m.realName))
           .join('|'),
         豆瓣评分: m.doubanInfo?.douban.map((dou) => dou.score).join('/'),
         评论人数: m.doubanInfo?.douban.map((dou) => dou.commentCount).join('/'),
@@ -97,7 +98,7 @@ export function toCVSSoldState(movieList: IMovieInfo[]) {
         导演: m.movieActorList
           .filter((m) => m.position === '导演')
           // https://zhuanlan.zhihu.com/p/33335629
-          .map((m) => /(\p{Unified_Ideograph}|·| |-)+/gu.exec(m.realName)?.[0])
+          .map((m) => cutDirectorCN(m.realName))
           .join('|'),
         '国家/地区': m.regionCategoryNameList
           ?.map((c) => c.categoryName)

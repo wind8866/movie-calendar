@@ -49,3 +49,8 @@ export function createBar(title: string) {
     cliProgress.Presets.shades_classic,
   )
 }
+
+// 挑选出中文·空格与-，用于截取导演的中文名
+export function cutDirectorCN(text: string) {
+  return /(\p{Unified_Ideograph}|·| |-)+/gu.exec(text)?.[0]
+}

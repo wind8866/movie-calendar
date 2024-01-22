@@ -5,6 +5,7 @@ import { EventAttributes, createEvents } from 'ics'
 
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
+import { cutDirectorCN } from '@moviecal/utils'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -17,46 +18,126 @@ export function createCalData(
   localType: LocalType = 'all',
 ): EventAttributes[] {
   return movieList.map((m) => {
-    let douURL: undefined | string = undefined
+    let douURL: string | null = null
     const doubanInfo = m.doubanInfo?.douban
-    let doubanInfoText = ''
-    if (doubanInfo != null) {
-      if (doubanInfo.length === 1) {
-        douURL = `https://movie.douban.com/subject/${doubanInfo[0].id}/`
-      }
-      doubanInfoText = doubanInfo
-        .map((current) => {
-          const url =
-            doubanInfo.length > 1
-              ? `https://movie.douban.com/subject/${current.id}/`
-              : ''
-          return `
-评分${current.score}  \
-人数${current.commentCount?.toLocaleString() ?? 0} \
-${url}`
-        })
-        .join('')
+    if (doubanInfo != null && doubanInfo.length === 1) {
+      douURL = `https://movie.douban.com/subject/${doubanInfo[0].id}/`
     }
     const director = m.movieActorList
       .filter((v) => v.position === '导演')
-      .map((v) => v.realName)
-      .join('|')
-    const country = (m.country ?? []).join('/')
+      .map((v) => cutDirectorCN(v.realName) ?? v.realName)
+      .join('/')
     const otherDate = m.otherDate
       ?.filter((date) => date !== m.playTime)
       .map((date) => dayjs.tz(date).format('D'))
       .join(',')
-    const description = `\
-${dayjs.tz(m.movieTime).format('YYYY')}年 \
-${m.minute}分钟 \
-${country}
-导演: ${director}
-${doubanInfoText}
+    const _template = `
+2001年 123分钟 中国香港
+杜琪峰/韦家辉
 
-${m.price}元 \
-${m.cinema}${m.room}
-${m.isActivity ? '有放映活动  ' : ''}\
-${otherDate ? `本月${otherDate}日也有放映` : ''}`
+40元 小西天艺术影院2号厅
+#华语聚焦-2024年1月
+
+评分7 人数104412
+`
+    interface TextItem {
+      text: string | number | undefined
+      before?: string
+      next?: string
+    }
+    const textList: TextItem[][] = [
+      // 基本信息
+      [
+        {
+          text: dayjs.tz(m.movieTime).format('YYYY'),
+          next: '年',
+        },
+        {
+          text: m.minute,
+          next: '分钟',
+        },
+        {
+          text: (m.country ?? []).join('/'),
+        },
+      ],
+      [
+        {
+          text: director,
+        },
+      ],
+      // 放映信息
+      [],
+      [
+        {
+          text: m.price,
+          next: '元',
+        },
+        {
+          text: m.cinema + m.room,
+        },
+      ],
+      [
+        {
+          text: m.isActivity ? '有放映活动' : '',
+        },
+        {
+          text: otherDate,
+          next: '日也有放映',
+        },
+      ],
+      [
+        {
+          before: '#',
+          text: m.topicName,
+        },
+      ],
+    ]
+    // 豆瓣信息
+    if (doubanInfo != null) {
+      textList.push([])
+      doubanInfo.forEach((dou, index) => {
+        const line: TextItem[] = [
+          {
+            before: '评分',
+            text: dou.score,
+          },
+          {
+            before: '人数',
+            text: dou.commentCount,
+          },
+        ]
+        if (doubanInfo.length > 1) {
+          line.push({
+            text: `https://movie.douban.com/subject/${dou.id}/`,
+          })
+        }
+        textList.push(line)
+      })
+    }
+
+    let description = ``
+    textList.forEach((line, rowIndex) => {
+      let lineText = ``
+      line.forEach((item, colIndex) => {
+        if (item.text != null && item.text !== '') {
+          lineText += `${item.before ?? ''}${item.text}${item.next ?? ''}`
+          if (colIndex !== line.length - 1) {
+            lineText += ' '
+          }
+        }
+      })
+      if (lineText) {
+        description += lineText
+        if (rowIndex !== textList.length - 1) {
+          description += `
+`
+        }
+      }
+      if (line.length === 0) {
+        description += `
+`
+      }
+    })
     let title = `${m.isActivity ? '🎉 ' : ''}${m.name}`
     if (localType !== 'baiziwan') {
       title += config.roomTitleShort[m.cinema + m.room]
@@ -69,7 +150,7 @@ ${otherDate ? `本月${otherDate}日也有放映` : ''}`
       .format('YYYY MM DD HH mm')
       .split(' ')
       .map((str) => Number(str)) as [number, number, number, number, number]
-    return {
+    const calConfig = {
       start,
       startInputType: 'utc',
       duration: {
@@ -79,8 +160,10 @@ ${otherDate ? `本月${otherDate}日也有放映` : ''}`
       title,
       description,
       categories: ['资料馆'],
-      url: douURL,
     }
+    // @ts-ignore
+    if (douURL) calConfig.url = douURL
+    return calConfig
   })
 }
 
@@ -96,7 +179,8 @@ export function createAlarm(params?: AlarmParams): EventAttributes[] {
     start: [yesterday.year(), yesterday.month() + 1, yesterday.date(), 7, 0],
     duration: { hours: 0, minutes: 30 },
     description: `\
-帮助文档💡：https://www.yuque.com/qifengle-z7w1e/vu76du/fpnoal2o9z5aqrhu?singleDoc
+帮助文档💡：https://www.yuque.com/qifengle-z7w1e/vu76du/fpnoal2o9z5aqrhu
+销量榜单🔥：https://www.yuque.com/qifengle-z7w1e/vu76du/wecbyuyl9xg94vst
 意见反馈📩：电影群里@北风
 更新日期🕙：${dayjs.tz(Date.now()).format('MM/DD HH:mm:ss')}
 `,
