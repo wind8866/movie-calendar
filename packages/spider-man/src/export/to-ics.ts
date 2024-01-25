@@ -187,7 +187,36 @@ export function createAlarm(params?: AlarmParams): EventAttributes[] {
     categories: ['资料馆'],
     url: 'https://movie.wind8866.top',
   }
+
+  // 大年三十晚上下午7点(⏰提醒)到初八晚上11点
+  // 2024/2/9 19:00 - 2024/2/17 23:00
+  const happyNewYear: EventAttributes = {
+    title: '新年快乐🎈',
+    calName: '新年快乐🎈',
+    start: [2024, 2, 9, 19, 0],
+    duration: { days: 8, hours: 4, minutes: 0 },
+    alarms: [
+      {
+        action: 'display',
+        description: 'Reminder',
+        trigger: { hours: 0, minutes: 1, before: true },
+      },
+    ],
+    description: `\
+祝各位迷影朋友
+一帆风顺🚗
+辞旧迎新🧨
+龙腾虎跃🐲
+阖家团员🥟🥢👨‍👩‍👧‍👦
+红包多多🎁
+期待24年电影能带给我们更多的惊喜与感动🥳
+`,
+    categories: ['资料馆'],
+  }
   const alarmList: EventAttributes[] = [titleInfo]
+  // TODO 小年及以后自动添加日历 2/2日
+  // alarmList.push(happyNewYear)
+  // if ()
   config.saleTime.forEach((date) => {
     const time = dayjs.tz(date)
     // hidden 24h ago
