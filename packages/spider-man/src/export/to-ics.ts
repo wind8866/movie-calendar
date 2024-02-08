@@ -188,13 +188,20 @@ export function createAlarm(params?: AlarmParams): EventAttributes[] {
     url: 'https://movie.wind8866.top',
   }
 
-  // 大年三十晚上下午7点(⏰提醒)到初八晚上11点
+  // 大年三十到初三，三十晚上下午8点自动提醒拜年
   // 2024/2/9 19:00 - 2024/2/17 23:00
+  const yearStart = dayjs
+    .tz('2024/2/9')
+    .utc()
+    .format('YYYY MM DD HH mm')
+    .split(' ')
+    .map((str) => Number(str)) as [number, number, number, number, number]
   const happyNewYear: EventAttributes = {
     title: '新年快乐🧨',
     calName: '新年快乐🧨',
-    start: [2024, 2, 9, 0, 0],
-    duration: { days: 9, hours: 0, minutes: 0 },
+    start: yearStart,
+    startInputType: 'utc',
+    duration: { days: 4, hours: 0, minutes: 0 },
     alarms: [
       {
         action: 'display',
