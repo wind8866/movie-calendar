@@ -206,7 +206,7 @@ export function createAlarm(params?: AlarmParams): EventAttributes[] {
       {
         action: 'display',
         description: 'Reminder',
-        trigger: { hours: 0, minutes: 0, before: true },
+        trigger: { hours: 0, minutes: 1, before: true },
       },
     ],
     description: `\
