@@ -191,7 +191,7 @@ export function createAlarm(params?: AlarmParams): EventAttributes[] {
   // 大年三十到初三，三十晚上下午8点自动提醒拜年
   // 2024/2/9 19:00 - 2024/2/17 23:00
   const yearStart = dayjs
-    .tz('2024/2/9')
+    .tz('2024/2/10')
     .utc()
     .format('YYYY MM DD HH mm')
     .split(' ')
@@ -201,12 +201,12 @@ export function createAlarm(params?: AlarmParams): EventAttributes[] {
     calName: '新年快乐🧨',
     start: yearStart,
     startInputType: 'utc',
-    duration: { days: 4, hours: 0, minutes: 0 },
+    duration: { days: 3, hours: 0, minutes: 0 },
     alarms: [
       {
         action: 'display',
         description: 'Reminder',
-        trigger: { hours: 20, minutes: 0, before: false },
+        trigger: { hours: 0, minutes: 0, before: true },
       },
     ],
     description: `\
