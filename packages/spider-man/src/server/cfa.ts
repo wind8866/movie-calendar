@@ -68,10 +68,10 @@ export async function queryPlayDayList(): Promise<{
   })
   const resData = response.data.data
   const dayList: string[] = []
-  resData.currentMonth?.cinemaDateDtoList.forEach((m) => {
+  resData.currentMonth?.cinemaDateDtoList?.forEach((m) => {
     dayList.push(m.playTime)
   })
-  resData.nextMonth?.cinemaDateDtoList.forEach((m) => {
+  resData.nextMonth?.cinemaDateDtoList?.forEach((m) => {
     dayList.push(m.playTime)
   })
   const month = [resData.currentMonth?.month, resData.nextMonth?.month]

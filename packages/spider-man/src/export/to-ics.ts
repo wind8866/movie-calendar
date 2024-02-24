@@ -221,9 +221,6 @@ export function createAlarm(params?: AlarmParams): EventAttributes[] {
     categories: ['资料馆'],
   }
   const alarmList: EventAttributes[] = [titleInfo]
-  if (Date.now() > Number(new Date('2024/02/7'))) {
-    alarmList.push(happyNewYear)
-  }
   config.saleTime.forEach((date) => {
     const time = dayjs.tz(date)
     // hidden 24h ago
