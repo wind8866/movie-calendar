@@ -231,7 +231,10 @@ export function createAlarm(params?: AlarmParams): EventAttributes[] {
       .split(' ')
       .map((str) => Number(str)) as [number, number, number, number, number]
     // TODO: 临时这么做，因为可能出现连续的提醒问题，后序改成在当前时间之后才提醒
-    if (start[3] !== 12) return
+    if (start[3] !== 4) {
+      console.log(start)
+      return
+    }
     alarmList.push({
       start: start,
       startInputType: 'utc',

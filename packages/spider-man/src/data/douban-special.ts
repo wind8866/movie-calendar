@@ -1856,4 +1856,79 @@ export const doubanSpecial: ICFAToDoubanMap = {
       },
     ],
   },
+  1550: {
+    name: '伦敦生活',
+    updateTime: 1708928020624,
+    douban: [
+      {
+        id: 34795703,
+        name: '伦敦生活',
+        score: 9.1,
+        commentCount: 13089,
+        year: 2019,
+        poster:
+          'https://img9.doubanio.com/view/photo/row/public/p2575437114.webp',
+      },
+    ],
+  },
+  1552: {
+    name: '鲸鱼马戏团',
+    updateTime: 1708928020624,
+    douban: [
+      {
+        id: 1416898,
+        name: '鲸鱼马戏团',
+        score: 8.8,
+        commentCount: 12761,
+        year: 2000,
+        poster:
+          'https://img9.doubanio.com/view/photo/row/public/p726224656.webp',
+      },
+    ],
+  },
+  1556: {
+    name: '诗',
+    updateTime: 1708928020624,
+    douban: [
+      {
+        id: 3212965,
+        name: '诗',
+        score: 8.7,
+        commentCount: 59306,
+        year: 2010,
+        poster:
+          'https://img9.doubanio.com/view/photo/row/public/p694844104.webp',
+      },
+    ],
+  },
+  1570: {
+    name: '北斗七星',
+    updateTime: 1708928020624,
+    douban: [
+      {
+        id: 35622280,
+        name: '北斗七星',
+        score: 6.9,
+        commentCount: 1342,
+        year: 2023,
+        poster:
+          'https://img3.doubanio.com/view/photo/row/public/p2886869387.webp',
+      },
+    ],
+  },
+  1575: {
+    name: '我的罪行',
+    updateTime: 1708928020624,
+    douban: [
+      {
+        id: 35891597,
+        name: '我的罪行',
+        score: 7.3,
+        commentCount: 6692,
+        year: 2023,
+        poster:
+          'https://img2.doubanio.com/view/photo/row/public/p2886288431.webp',
+      },
+    ],
+  },
 }
