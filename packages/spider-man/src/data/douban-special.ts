@@ -1931,4 +1931,19 @@ export const doubanSpecial: ICFAToDoubanMap = {
       },
     ],
   },
+  1544: {
+    name: '真正的家人',
+    updateTime: 1708928020624,
+    douban: [
+      {
+        id: 35374911,
+        name: '真正的家人',
+        score: 8.3,
+        commentCount: 1745,
+        year: 2021,
+        poster:
+          'https://img1.doubanio.com/view/photo/row/public/p2784280079.webp',
+      },
+    ],
+  },
 }
