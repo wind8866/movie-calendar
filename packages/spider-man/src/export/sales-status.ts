@@ -73,6 +73,7 @@ export function logSoldState(movieList: IMovieInfo[]) {
 }
 
 export function toCVSSoldState(movieList: IMovieInfo[]) {
+  let index = 0
   const saleStatus = movieList
     .map((m) => {
       let scale = 0
@@ -108,11 +109,13 @@ export function toCVSSoldState(movieList: IMovieInfo[]) {
         豆瓣链接: m.doubanInfo?.douban
           .map((dou) => `https://movie.douban.com/subject/${dou.id}/`)
           .join(' '),
+        资料馆分享链接: `https://${process.env.API_HOSTNAME}/h5/share.html?id=${m.movieId}`,
         上座率: scale,
         销量: seatSold,
         座位数: total,
         放映日期: playTime.format(`MM/DD HH:mm`),
-        周: weekDic[Number(playTime.format('周d'))],
+        周: weekDic[Number(playTime.format('d'))],
+        索引: index++,
         映后活动: m.isActivity ? '有' : '',
         专题活动: m.topicName,
         备注: '',

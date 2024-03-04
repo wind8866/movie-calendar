@@ -63,42 +63,32 @@ export async function queryPlayDayList(): Promise<{
   dayList: string[]
   month: (undefined | string)[]
 }> {
+  const response = await iaxios<ResWrap<IPlayTimeList>>({
+    url: `${prefix}/movieCinemaDate/new`,
+  })
+  const resData = response.data.data
   const dayList: string[] = []
-  for (let m = 3; m <= 4; m++) {
-    for (let d = 1; d < 31; d++) {
-      dayList.push(`2024-0${m}-${d.toString().padStart(2, '0')}`)
+  resData.currentMonth?.cinemaDateDtoList?.forEach((m) => {
+    dayList.push(m.playTime)
+  })
+  resData.nextMonth?.cinemaDateDtoList?.forEach((m) => {
+    dayList.push(m.playTime)
+  })
+  const month = [resData.currentMonth?.month, resData.nextMonth?.month]
+  console.log(chalk.green('[完成]'), '排片日期')
+  if (process.env.API_ENV !== 'PRD') {
+    const startDay = dayList.slice(0, 5)
+    console.log(`测试开发环境只拉取${startDay.length}天`, startDay.join(', '))
+
+    return {
+      month,
+      dayList: startDay,
     }
   }
   return {
-    month: ['3', '4'],
+    month,
     dayList,
   }
-  // const response = await iaxios<ResWrap<IPlayTimeList>>({
-  //   url: `${prefix}/movieCinemaDate/new`,
-  // })
-  // const resData = response.data.data
-  // const dayList: string[] = []
-  // resData.currentMonth?.cinemaDateDtoList?.forEach((m) => {
-  //   dayList.push(m.playTime)
-  // })
-  // resData.nextMonth?.cinemaDateDtoList?.forEach((m) => {
-  //   dayList.push(m.playTime)
-  // })
-  // const month = [resData.currentMonth?.month, resData.nextMonth?.month]
-  // console.log(chalk.green('[完成]'), '排片日期')
-  // if (process.env.API_ENV !== 'PRD') {
-  //   const startDay = dayList.slice(0, 5)
-  //   console.log(`测试开发环境只拉取${startDay.length}天`, startDay.join(', '))
-
-  //   return {
-  //     month,
-  //     dayList: startDay,
-  //   }
-  // }
-  // return {
-  //   month,
-  //   dayList,
-  // }
 }
 
 /**
