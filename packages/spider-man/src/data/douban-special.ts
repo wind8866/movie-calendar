@@ -1946,4 +1946,109 @@ export const doubanSpecial: ICFAToDoubanMap = {
       },
     ],
   },
+  1598: {
+    name: '表',
+    updateTime: 1714395075029,
+    douban: [
+      {
+        id: 3017842,
+        name: '表',
+        score: 6.8,
+        commentCount: 206,
+        year: 1949,
+        poster:
+          'https://img9.doubanio.com/view/photo/row/public/p2595673386.webp',
+      },
+    ],
+  },
+  1601: {
+    name: '美国之窗',
+    updateTime: 1714395075029,
+    douban: [
+      {
+        id: 4881670,
+        name: '美国之窗',
+        score: 8.3,
+        commentCount: 348,
+        year: 1952,
+        poster:
+          'https://img1.doubanio.com/view/photo/row/public/p2593507669.webp',
+      },
+    ],
+  },
+  1604: {
+    name: '四百击',
+    updateTime: 1714395075029,
+    douban: [
+      {
+        id: 1300056,
+        name: '四百击',
+        score: 8.9,
+        commentCount: 124244,
+        year: 1959,
+        poster:
+          'https://img3.doubanio.com/view/photo/row/public/p2191743027.webp',
+      },
+    ],
+  },
+  1613: {
+    name: '老枪',
+    updateTime: 1714395075029,
+    douban: [
+      {
+        id: 33458979,
+        name: '老枪',
+        score: 0,
+        commentCount: 0,
+        year: 2023,
+        poster:
+          'https://img1.doubanio.com/view/photo/row/public/p2900174768.webp',
+      },
+    ],
+  },
+  1622: {
+    name: '逍遥·游',
+    updateTime: 1714395075029,
+    douban: [
+      {
+        id: 35371151,
+        name: '逍遥·游',
+        score: 0,
+        commentCount: 0,
+        year: 2023,
+        poster:
+          'https://img9.doubanio.com/view/photo/row/public/p2898375414.webp',
+      },
+    ],
+  },
+  1626: {
+    name: '照明商店',
+    updateTime: 1714395075029,
+    douban: [
+      {
+        id: 36086210,
+        name: '照明商店',
+        score: 6.2,
+        commentCount: 89541,
+        year: 2023,
+        poster:
+          'https://img9.doubanio.com/view/photo/row/public/p2901397955.webp',
+      },
+    ],
+  },
+  1633: {
+    name: '年会不能停！',
+    updateTime: 1714395075029,
+    douban: [
+      {
+        id: 35725869,
+        name: '年会不能停！',
+        score: 8.1,
+        commentCount: 886249,
+        year: 2023,
+        poster:
+          'https://img1.doubanio.com/view/photo/row/public/p2901057189.webp',
+      },
+    ],
+  },
 }
