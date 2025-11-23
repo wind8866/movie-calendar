@@ -2,6 +2,8 @@ import { EventAttributes } from 'ics'
 
 import dayjs from '../tools/time-format'
 import { fetchComingApi } from './api'
+import { ossServer } from '@moviecal/utils/oss'
+import { createCalendar } from '../export/to-ics'
 
 interface ComingMovieItem {
   id: string
@@ -15,11 +17,14 @@ interface ComingMovieItem {
 }
 
 export default class ComingMovie {
+  pageHtml: string = ''
+  comingList: ComingMovieItem[] = []
+  calList: EventAttributes[] = []
+
   async pull() {
-    const comingPage = await fetchComingApi()
-    return comingPage
+    this.pageHtml = await fetchComingApi()
   }
-  async parse(html: string) {
+  async parse() {
     /**
       <table width="100%" class="coming_list">
         <tbody>
@@ -40,7 +45,7 @@ export default class ComingMovie {
       </table>
      */
     const { load } = await import('cheerio')
-    const $ = load(html)
+    const $ = load(this.pageHtml)
     const trList = $('.coming_list tbody tr')
     const list: ComingMovieItem[] = []
     trList.each((_i, el) => {
@@ -65,11 +70,11 @@ export default class ComingMovie {
       list.push({ id, day, title, link, tags, region, watch, unit })
     })
     console.table(list)
-    return list
+    this.comingList = list
   }
-  async getCalAttributes(list: ComingMovieItem[]) {
-    const cals: EventAttributes[] = []
-    list.forEach((item) => {
+  async getCalAttributes() {
+    const calList: EventAttributes[] = []
+    this.comingList.forEach((item) => {
       const { day, title, link, unit } = item
       const start = dayjs
         .tz(day.replace(/[年月日]/g, '/'))
@@ -78,7 +83,7 @@ export default class ComingMovie {
         .split(' ')
         .map((str) => Number(str)) as [number, number, number, number, number]
 
-      cals.push({
+      calList.push({
         title: unit === 'month' ? `${title} (本月)` : `${title}`,
         start: start,
         end: start,
@@ -86,7 +91,7 @@ export default class ComingMovie {
         description: `想看人数: ${item.watch}\n类型: ${item.tags}\n地区: ${item.region}`,
       })
     })
-    return cals
+    this.calList = this.calList.concat(calList)
   }
   getCalTitle() {
     const timeNow = dayjs()
@@ -104,10 +109,22 @@ export default class ComingMovie {
       categories: ['豆瓣'],
       url: 'https://movie.douban.com/coming',
     }
-    return titleInfo
+    this.calList.unshift(titleInfo)
   }
-  pushToOss(list: ComingMovieItem[]) {
-    // TODO: put to oss
+  async pushToOss() {
+    const calString = await createCalendar(this.calList)
+    const localArrayBuffer = new TextEncoder().encode(calString).buffer
+    const localBuffer = Buffer.from(calString, 'utf8')
+    await ossServer
+      .put({
+        servePath: 'current/',
+        serveName: 'douban-coming.ics',
+        local: localBuffer,
+      })
+      .catch(async (error) => {
+        console.error('oss put error of coming push to oss', error)
+        throw error
+      })
   }
   pushCalToDB(list: EventAttributes[]) {
     // TODO: put cal to db
