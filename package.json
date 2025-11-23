@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "pull": "tsx packages/spider-man/src/index",
+    "coming": "tsx packages/spider-man/src/coming/run",
     "status": "tsx packages/spider-man/src/export/sales-status",
     "douban-loop": "tsx packages/spider-man/src/tools/loop-search-mapping.ts",
     "pick-video": "tsx packages/spider-man/src/tools/pick-video.ts",

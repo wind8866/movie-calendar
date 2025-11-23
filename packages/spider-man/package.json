@@ -11,9 +11,11 @@
   "license": "ISC",
   "dependencies": {
     "@moviecal/utils": "workspace:^",
+    "cheerio": "^1.1.2",
     "cli-progress": "^3.12.0"
   },
   "devDependencies": {
-    "@types/cli-progress": "^3.11.0"
+    "@types/cli-progress": "^3.11.0",
+    "jest-environment-jsdom": "^30.2.0"
   }
 }
