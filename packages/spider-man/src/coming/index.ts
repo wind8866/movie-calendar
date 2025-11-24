@@ -105,7 +105,7 @@ export default class ComingMovie {
       calName: '即将上映-豆瓣电影',
       start: timeNow,
       duration: { hours: 0, minutes: 30 },
-      description: `不定期更新`,
+      description: `更新时间：${dayjs().format('MM月DD日 HH:mm')}`,
       categories: ['豆瓣'],
       url: 'https://movie.douban.com/coming',
     }
