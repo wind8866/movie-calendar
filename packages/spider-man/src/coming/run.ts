@@ -6,8 +6,10 @@ async function runComingMovie() {
     const comingMovie = new ComingMovie()
     await comingMovie.pull()
     await comingMovie.parse()
+    await comingMovie.getCalAttributes()
     comingMovie.getCalTitle()
     await comingMovie.pushToOss()
+    // console.log(comingMovie.calList)
     console.log('✅ coming movie done')
 
     sendComingMsg({
